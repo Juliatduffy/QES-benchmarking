@@ -1,0 +1,11 @@
+# Original QES code
+/QES-Public/
+
+build*/
+Build*/
+bench/.venv/
+__pycache__/
+bench/bin/
+bench/tools/ncdiff_fields
+*.nc
+.vscode/
