@@ -1,0 +1,10 @@
+node: grn053  job: 2153803  Thu Oct  8 23:53:48 MDT 2026
+=== speed_map.py
+saved /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/figures/speed_map.png
+=== views_2d.py
+grid 122x125x78, origin (5.0, 5.0, 1.5), spacing (10.0, 10.0, 3.0)
+tallest building: 111.0 m at x = 375, y = 685
+saved /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/figures/top_view.png
+saved /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/figures/side_view.png
+=== streamlines_3d.py
+saved /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/figures/streamlines_3d.png

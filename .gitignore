@@ -1,5 +1,7 @@
 build*/
+.claude*/
 Build*/
+CLAUDE.md
 bench/.venv/
 __pycache__/
 bench/bin/
