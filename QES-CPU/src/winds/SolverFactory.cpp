@@ -36,8 +36,14 @@ Solver *SolverFactory::create(const int &solveType, const qes::Domain &domain, c
 {
   Solver *solver = nullptr;
   if (solveType == CPU_Type) {
-#ifdef _OPENMP 
-    solver = new Solver_CPU_RB(domain, tolerance);
+#ifdef _OPENMP
+    if (windOptimization == "") {
+      solver = new Solver_CPU_RB(domain, tolerance);
+    } else if (windOptimization == "bugfix") {
+      solver = new Solver_CPU_RB_bugfix(domain, tolerance);
+    } else {
+      QESout::error("Unknown windOptimization '" + windOptimization + "' (valid: bugfix)");
+    }
 #else
     solver = new Solver_CPU(domain, tolerance);
 #endif

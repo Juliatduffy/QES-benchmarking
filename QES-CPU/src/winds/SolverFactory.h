@@ -35,6 +35,7 @@
 #include "Solver.h"
 #include "Solver_CPU.h"
 #include "Solver_CPU_RB.h"
+#include "Solver_CPU_RB_bugfix.h"
 #ifdef HAS_CUDA
 // While we get this verified on CUDA 12.8, we will
 // replace use of it with the GlobalMemory solver.
@@ -54,5 +55,5 @@ enum solverTypes : int { CPU_Type = 1,
 class SolverFactory
 {
 public:
-  static Solver *create(const int &, const qes::Domain &, const float &, std::string);
+  static Solver *create(const int &, const qes::Domain &, const float &, std::string = "");
 };
