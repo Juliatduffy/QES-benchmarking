@@ -7,7 +7,7 @@
 #SBATCH --account=cs6230
 #SBATCH --cpus-per-task=16
 #SBATCH -t 0:10:00
-#SBATCH -o ./Testing/logs/%j.out
+#SBATCH -o ./Testing/logs/build.out
 echo "*** Assigned Granite Node: " $SLURMD_NODENAME
 cd ~/QES
 source QES-Public/CHPC/loadmodules_QES.sh
