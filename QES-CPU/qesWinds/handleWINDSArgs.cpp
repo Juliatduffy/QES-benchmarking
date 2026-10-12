@@ -50,7 +50,7 @@ WINDSArgs::WINDSArgs()
 
   reg("windsolveroff", "Turns off the wind solver and wind output", ArgumentParsing::NONE, 'x');
   reg("solvetype", "selects the method for solving the windfield", ArgumentParsing::INT, 's');
-
+  reg("windOptimization", "Specifies the optimization we would like to test", ArgumentParsing::STRING, 'c');
   reg("qesWindsParamFile", "Specifies input xml settings file", ArgumentParsing::STRING, 'q');
 
   reg("outbasename", "Specifies the basename for netcdf files", ArgumentParsing::STRING, 'o');
@@ -75,7 +75,9 @@ void WINDSArgs::processArguments(int argc, char *argv[])
     exit(EXIT_SUCCESS);
   }
 
-  isSet("qesWindsParamFile", qesWindsParamFile);
+  isSet("windOptimization", windOptimization);
+
+   isSet("qesWindsParamFile", qesWindsParamFile);
   if (qesWindsParamFile.empty()) {
     QESout::error("qesWindsParamFile not specified");
   }
@@ -138,7 +140,7 @@ void WINDSArgs::processArguments(int argc, char *argv[])
   std::cout << "----------------------------" << std::endl;
   // parameter files:
   std::cout << "qesWindsParamFile: " << qesWindsParamFile << std::endl;
-
+  std::cout << "windOptimization: " << windOptimization << std::endl;
   std::cout << "----------------------------" << std::endl;
 
   // code options:

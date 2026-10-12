@@ -132,7 +132,7 @@ int main(int argc, char *argv[])
 
   // Set the QES-Winds Solver
   SolverFactory solverFactory;
-  Solver *solver = solverFactory.create(arguments.solveType, WGD->domain, WID->simParams->tolerance);
+  Solver *solver = solverFactory.create(arguments.solveType, WGD->domain, WID->simParams->tolerance, arguments.windOptimization);
 
   int numIterations = 1;
   int tempMaxIter = WID->simParams->maxIterations;

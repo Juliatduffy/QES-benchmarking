@@ -54,5 +54,5 @@ enum solverTypes : int { CPU_Type = 1,
 class SolverFactory
 {
 public:
-  static Solver *create(const int &, const qes::Domain &, const float &);
+  static Solver *create(const int &, const qes::Domain &, const float &, std::string);
 };

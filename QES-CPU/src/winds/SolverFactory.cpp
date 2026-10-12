@@ -32,11 +32,11 @@
 
 #include "SolverFactory.h"
 
-Solver *SolverFactory::create(const int &solveType, const qes::Domain &domain, const float &tolerance)
+Solver *SolverFactory::create(const int &solveType, const qes::Domain &domain, const float &tolerance, std::string windOptimization)
 {
   Solver *solver = nullptr;
   if (solveType == CPU_Type) {
-#ifdef _OPENMP
+#ifdef _OPENMP 
     solver = new Solver_CPU_RB(domain, tolerance);
 #else
     solver = new Solver_CPU(domain, tolerance);

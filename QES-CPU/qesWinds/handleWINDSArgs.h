@@ -67,7 +67,7 @@ public:
 
 
   std::string qesWindsParamFile; /**< Input files (from cmd line) */
-
+  std::string windOptimization = "v0"; // Which CPU optimization to use
   std::string netCDFFileBasename; /**< Base name for all NetCDF output files */
 
   ///@{
