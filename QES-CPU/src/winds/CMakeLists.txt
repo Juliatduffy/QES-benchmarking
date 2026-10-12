@@ -24,6 +24,7 @@ SET(qesWindCoreSources
         Solver_CPU.cpp
         Solver_CPU_RB.cpp
         Solver_CPU_RB_bugfix.cpp
+        Solver_CPU_RB_checkerboard.cpp
         SolverFactory.cpp
         TURBParams.h
         TURBGeneralData.cpp

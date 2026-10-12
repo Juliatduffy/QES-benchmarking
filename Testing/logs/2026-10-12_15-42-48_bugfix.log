@@ -1,0 +1,29 @@
+QES-Public vs bugfix
+Input wind field: /uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/winds_OklahomaCity.xml
+Node grn053, job 2165410, Mon Oct 12 15:42:48 MDT 2026
+
+Solver time in seconds, 10 alternating trials of each:
+1 thread(s):
+  QES-Public:  Min: 3.7146  Max: 4.7492  Avg: 4.1799
+  bugfix:  Min: 3.6679  Max: 4.6756  Avg: 4.1158
+  Speedup (avg): 1.02x
+  Residual: QES-Public 0.032714844, bugfix 0.032714844 (match)
+
+Solver time in seconds, 10 alternating trials of each:
+16 thread(s):
+  QES-Public:  Min: 0.3783  Max: 0.4170  Avg: 0.3899
+  bugfix:  Min: 0.3725  Max: 0.3982  Avg: 0.3848
+  Speedup (avg): 1.01x
+  Residual: QES-Public 0.032714844, bugfix 0.032714844 (match)
+
+Solver time in seconds, 10 alternating trials of each:
+64 thread(s):
+  QES-Public:  Min: 0.4929  Max: 0.5052  Avg: 0.4975
+  bugfix:  Min: 0.4977  Max: 0.5064  Avg: 0.5004
+  Speedup (avg): 0.99x
+  Residual: QES-Public 0.032714844, bugfix 0.032714844 (match)
+
+Correctness: bugfix's u, v, w compared with QES-Public's, every value:
+  1 thread(s): IDENTICAL
+  16 thread(s): IDENTICAL
+  64 thread(s): IDENTICAL

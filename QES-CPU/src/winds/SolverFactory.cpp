@@ -39,10 +39,15 @@ Solver *SolverFactory::create(const int &solveType, const qes::Domain &domain, c
 #ifdef _OPENMP
     if (windOptimization == "") {
       solver = new Solver_CPU_RB(domain, tolerance);
-    } else if (windOptimization == "bugfix") {
+    } 
+    else if (windOptimization == "bugfix") {
       solver = new Solver_CPU_RB_bugfix(domain, tolerance);
-    } else {
-      QESout::error("Unknown windOptimization '" + windOptimization + "' (valid: bugfix)");
+    }
+    else if (windOptimization == "checkerboard") {
+      solver = new Solver_CPU_RB_checkerboard(domain, tolerance);
+    } 
+    else {
+      QESout::error("Unknown windOptimization '" + windOptimization + "' (valid: bugfix, checkerboard)");
     }
 #else
     solver = new Solver_CPU(domain, tolerance);

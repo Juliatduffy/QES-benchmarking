@@ -36,6 +36,7 @@
 #include "Solver_CPU.h"
 #include "Solver_CPU_RB.h"
 #include "Solver_CPU_RB_bugfix.h"
+#include "Solver_CPU_RB_checkerboard.h"
 #ifdef HAS_CUDA
 // While we get this verified on CUDA 12.8, we will
 // replace use of it with the GlobalMemory solver.
