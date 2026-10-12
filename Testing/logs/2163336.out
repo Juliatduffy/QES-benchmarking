@@ -1,0 +1,127 @@
++ '[' -z '' ']'
++ case "$-" in
++ __lmod_vx=x
++ '[' -n x ']'
++ set +x
+Shell debugging temporarily silenced: export LMOD_SH_DBG_ON=1 for this output (/uufs/chpc.utah.edu/sys/installdir/lmod/9.4.2-r8/init/bash)
+Shell debugging restarted
++ unset __lmod_vx
++ echo '*** Assigned Granite Node: ' grn057
+*** Assigned Granite Node:  grn057
++ cd /uufs/chpc.utah.edu/common/home/u1417379/QES
++ source QES-Public/CHPC/loadmodules_QES.sh
+++ echo --------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+++ echo 'Load module for QES on UTAH CHPC cluster'
+Load module for QES on UTAH CHPC cluster
+++ module --force purge
+++ '[' -z '' ']'
+++ case "$-" in
+++ __lmod_sh_dbg=x
+++ '[' -n x ']'
+++ set +x
+Shell debugging temporarily silenced: export LMOD_SH_DBG_ON=1 for Lmod's output
+Shell debugging restarted
+++ unset __lmod_sh_dbg
+++ return 0
+++ module load cuda/11.8
+++ '[' -z '' ']'
+++ case "$-" in
+++ __lmod_sh_dbg=x
+++ '[' -n x ']'
+++ set +x
+Shell debugging temporarily silenced: export LMOD_SH_DBG_ON=1 for Lmod's output
+Shell debugging restarted
+++ unset __lmod_sh_dbg
+++ return 0
+++ module load cmake/3.21.4
+++ '[' -z '' ']'
+++ case "$-" in
+++ __lmod_sh_dbg=x
+++ '[' -n x ']'
+++ set +x
+Shell debugging temporarily silenced: export LMOD_SH_DBG_ON=1 for Lmod's output
+Shell debugging restarted
+++ unset __lmod_sh_dbg
+++ return 0
+++ module load gcc/11.2.0
+++ '[' -z '' ']'
+++ case "$-" in
+++ __lmod_sh_dbg=x
+++ '[' -n x ']'
+++ set +x
+Shell debugging temporarily silenced: export LMOD_SH_DBG_ON=1 for Lmod's output
+Shell debugging restarted
+++ unset __lmod_sh_dbg
+++ return 0
+++ module load boost/1.83.0
+++ '[' -z '' ']'
+++ case "$-" in
+++ __lmod_sh_dbg=x
+++ '[' -n x ']'
+++ set +x
+Shell debugging temporarily silenced: export LMOD_SH_DBG_ON=1 for Lmod's output
+Shell debugging restarted
+++ unset __lmod_sh_dbg
+++ return 0
+++ module load gdal/3.8.5
+++ '[' -z '' ']'
+++ case "$-" in
+++ __lmod_sh_dbg=x
+++ '[' -n x ']'
+++ set +x
+Shell debugging temporarily silenced: export LMOD_SH_DBG_ON=1 for Lmod's output
+Shell debugging restarted
+++ unset __lmod_sh_dbg
+++ return 0
+++ module load netcdf-c/4.9.2
+++ '[' -z '' ']'
+++ case "$-" in
+++ __lmod_sh_dbg=x
+++ '[' -n x ']'
+++ set +x
+Shell debugging temporarily silenced: export LMOD_SH_DBG_ON=1 for Lmod's output
+Shell debugging restarted
+++ unset __lmod_sh_dbg
+++ return 0
+++ module load netcdf-cxx/4.2
+++ '[' -z '' ']'
+++ case "$-" in
+++ __lmod_sh_dbg=x
+++ '[' -n x ']'
+++ set +x
+Shell debugging temporarily silenced: export LMOD_SH_DBG_ON=1 for Lmod's output
+Shell debugging restarted
+++ unset __lmod_sh_dbg
+++ return 0
+++ module list
+++ '[' -z '' ']'
+++ case "$-" in
+++ __lmod_sh_dbg=x
+++ '[' -n x ']'
+++ set +x
+Shell debugging temporarily silenced: export LMOD_SH_DBG_ON=1 for Lmod's output
+
+Currently Loaded Modules:
+  1) cuda/11.8.0  (g)   4) zlib/1.2.13    7) hdf5/1.14.3
+  2) cmake/3.21.4       5) boost/1.83.0   8) netcdf-c/4.9.2
+  3) gcc/11.2.0         6) gdal/3.8.5     9) netcdf-cxx/4.2
+
+  Where:
+   g:  built for GPU
+
+ 
+
+Shell debugging restarted
+++ unset __lmod_sh_dbg
+++ return 0
+++ echo --------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
++ export OMP_NUM_THREADS=16
++ OMP_NUM_THREADS=16
++ export OMP_PLACES=cores OMP_PROC_BIND=close
++ OMP_PLACES=cores
++ OMP_PROC_BIND=close
++ mkdir -p /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/okc
++ ./build-public/qesWinds/qesWinds -q /uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/winds_OklahomaCity.xml -o /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/okc/okc -w
+/uufs/granite/sys/var/slurm/slurmd.spool/grn057//job2163336/slurm_script: line 19: ./build-public/qesWinds/qesWinds: No such file or directory
