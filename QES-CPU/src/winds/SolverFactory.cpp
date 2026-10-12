@@ -45,9 +45,15 @@ Solver *SolverFactory::create(const int &solveType, const qes::Domain &domain, c
     }
     else if (windOptimization == "checkerboard") {
       solver = new Solver_CPU_RB_checkerboard(domain, tolerance);
-    } 
+    }
+    else if (windOptimization == "fuse") {
+      solver = new Solver_CPU_RB_fuse(domain, tolerance);
+    }
+    else if (windOptimization == "collapse") {
+      solver = new Solver_CPU_RB_collapse(domain, tolerance);
+    }
     else {
-      QESout::error("Unknown windOptimization '" + windOptimization + "' (valid: bugfix, checkerboard)");
+      QESout::error("Unknown windOptimization '" + windOptimization + "' (valid: bugfix, checkerboard, fuse, collapse)");
     }
 #else
     solver = new Solver_CPU(domain, tolerance);

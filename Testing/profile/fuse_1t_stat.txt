@@ -1,0 +1,33 @@
+# started on Mon Oct 12 16:44:32 2026
+
+
+ Performance counter stats for './build-prof/qesWinds/qesWinds -c fuse -q /uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/winds_OklahomaCity.xml':
+
+           3338.70 msec task-clock:u              #    0.981 CPUs utilized          
+                 0      context-switches:u        #    0.000 /sec                   
+                 0      cpu-migrations:u          #    0.000 /sec                   
+             38201      page-faults:u             #   11.442 K/sec                  
+        6672759777      cycles:u                  #    1.999 GHz                    
+       31309065835      instructions:u            #    4.69  insn per cycle         
+         585228269      branches:u                #  175.286 M/sec                  
+           3749861      branch-misses:u           #    0.64% of all branches        
+       40032400020      slots:u                   #   11.990 G/sec                  
+       31397960800      topdown-retiring:u        #     78.4% retiring              
+         475129955      topdown-bad-spec:u        #      1.2% bad speculation       
+         790180425      topdown-fe-bound:u        #      2.0% frontend bound        
+        7378520788      topdown-be-bound:u        #     18.4% backend bound         
+         784949020      topdown-heavy-ops:u       #      2.0% heavy operations       #     76.5% light operations      
+         470969412      topdown-br-mispredict:u   #      1.2% branch mispredict      #      0.0% machine clears        
+         333213097      topdown-fetch-lat:u       #      0.8% fetch latency          #      1.1% fetch bandwidth       
+         627959216      topdown-mem-bound:u       #      1.6% memory bound           #     16.9% Core bound            
+       10328756871      L1-dcache-loads:u         #    3.094 G/sec                  
+         181250748      L1-dcache-load-misses:u   #    1.75% of all L1-dcache accesses
+           3143603      LLC-loads:u               #  941.564 K/sec                  
+            128561      LLC-load-misses:u         #    4.09% of all LL-cache accesses
+
+       3.404466072 seconds time elapsed
+
+       3.206312000 seconds user
+       0.126095000 seconds sys
+
+
