@@ -1,0 +1,29 @@
+QES-Public vs blocks
+Input wind field: /uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/winds_OklahomaCity.xml
+Node grn057, job 2168834, Tue Oct 13 15:22:59 MDT 2026
+
+Solver time in seconds, 10 alternating trials of each:
+1 thread(s):
+  QES-Public:  Min: 3.7116  Max: 4.6489  Avg: 3.9905
+  blocks:  Min: 4.1656  Max: 5.3517  Avg: 4.4392
+  Speedup (avg): 0.90x
+  Residual: QES-Public 0.032714844, blocks 0.032714844 (match)
+
+Solver time in seconds, 10 alternating trials of each:
+16 thread(s):
+  QES-Public:  Min: 0.3778  Max: 0.4088  Avg: 0.3835
+  blocks:  Min: 0.4980  Max: 0.7054  Avg: 0.5216
+  Speedup (avg): 0.74x
+  Residual: QES-Public 0.032714844, blocks 0.032714844 (match)
+
+Solver time in seconds, 10 alternating trials of each:
+64 thread(s):
+  QES-Public:  Min: 0.4877  Max: 0.5063  Avg: 0.4935
+  blocks:  Min: 0.4479  Max: 0.4557  Avg: 0.4522
+  Speedup (avg): 1.09x
+  Residual: QES-Public 0.032714844, blocks 0.032714844 (match)
+
+Correctness: blocks's u, v, w compared with QES-Public's, every value:
+  1 thread(s): IDENTICAL
+  16 thread(s): IDENTICAL
+  64 thread(s): IDENTICAL

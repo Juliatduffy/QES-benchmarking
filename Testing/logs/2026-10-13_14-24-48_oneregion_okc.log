@@ -1,0 +1,29 @@
+QES-Public vs oneregion
+Input wind field: /uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/winds_OklahomaCity.xml
+Node grn053, job 2168513, Tue Oct 13 14:24:48 MDT 2026
+
+Solver time in seconds, 10 alternating trials of each:
+1 thread(s):
+  QES-Public:  Min: 3.7086  Max: 4.7602  Avg: 4.0051
+  oneregion:  Min: 3.6840  Max: 4.7029  Avg: 3.9694
+  Speedup (avg): 1.01x
+  Residual: QES-Public 0.032714844, oneregion 0.032714844 (match)
+
+Solver time in seconds, 10 alternating trials of each:
+16 thread(s):
+  QES-Public:  Min: 0.3788  Max: 0.4056  Avg: 0.3912
+  oneregion:  Min: 0.3761  Max: 0.4078  Avg: 0.3888
+  Speedup (avg): 1.01x
+  Residual: QES-Public 0.032714844, oneregion 0.032714844 (match)
+
+Solver time in seconds, 10 alternating trials of each:
+64 thread(s):
+  QES-Public:  Min: 0.4950  Max: 0.5056  Avg: 0.4994
+  oneregion:  Min: 0.4754  Max: 0.5142  Avg: 0.4932
+  Speedup (avg): 1.01x
+  Residual: QES-Public 0.032714844, oneregion 0.032714844 (match)
+
+Correctness: oneregion's u, v, w compared with QES-Public's, every value:
+  1 thread(s): IDENTICAL
+  16 thread(s): IDENTICAL
+  64 thread(s): IDENTICAL

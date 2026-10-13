@@ -199,7 +199,7 @@ make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-c
 Consolidate compiler generated dependencies of target qeswindscore
 make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
 make[3]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
-[ 26%] Building CXX object src/winds/CMakeFiles/qeswindscore.dir/Solver_CPU_RB_oneregion.cpp.o
+[ 26%] Building CXX object src/winds/CMakeFiles/qeswindscore.dir/Solver_CPU_RB_blocks.cpp.o
 [ 28%] Linking CXX static library libqeswindscore.a
 make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
 [ 96%] Built target qeswindscore
