@@ -95,17 +95,34 @@ void Solver_CPU_RB_blocks::solve(WINDSGeneralData *WGD, const int &itermax)
   int num_blocks_j = num_blocks_k;
   int planes_to_update = domain.nz() - 3;
   int rows_to_update = domain.ny() -3;
+  int planes_to_check = domain.nz() - 2;
+  int rows_to_check = domain.ny() - 1;
   while (iter < itermax && max_error > tol) {
 
   max_error = 0.0;// Reset error value before error calculation
 
 // Save previous iteration values for error calculation
-#pragma omp parallel private(icell_cent, icell_face, error) default(none) shared(WGD, lambda, lambda_old, max_error, R, num_blocks_k, num_blocks_j, planes_to_update, rows_to_update)
+#pragma omp parallel private(icell_cent, icell_face, error) default(none) shared(WGD, lambda, lambda_old, max_error, R, num_blocks_k, num_blocks_j, planes_to_update, rows_to_update, planes_to_check, rows_to_check)
     {
+      // Copy lambda to lambda_old, block by block, so each thread copies the cells it checks later
 #pragma omp for
-      for (auto k = 0u; k < lambda.size(); ++k) {
-        lambda_old[k] = lambda[k];
+  for (int block = 0; block < num_blocks_k * num_blocks_j; ++block) {
+    int block_k = block / num_blocks_j;
+    int block_j = block % num_blocks_j;
+    int k_start = 1 + block_k * planes_to_check / num_blocks_k;
+    int k_end   = 1 + (block_k + 1) * planes_to_check / num_blocks_k;
+    int j_start = block_j * rows_to_check / num_blocks_j;// j starts at 0 here
+    int j_end   = (block_j + 1) * rows_to_check / num_blocks_j;
+
+    for (int k = k_start; k < k_end; ++k) {
+      for (int j = j_start; j < j_end; ++j) {
+        for (int i = 0; i < domain.nx() - 1; ++i) {
+          icell_cent = domain.cell(i, j, k);
+          lambda_old[icell_cent] = lambda[icell_cent];
+        }
       }
+    }
+  }
       // end of omp for (with implicit barrier)
 
 
@@ -191,18 +208,26 @@ void Solver_CPU_RB_blocks::solve(WINDSGeneralData *WGD, const int &itermax)
       // Error calculation
 #pragma omp for reduction(max \
                           : max_error)
-      for (int k = 1; k < domain.nz() - 1; ++k) {
-        for (int j = 0; j < domain.ny() - 1; ++j) {
-          for (int i = 0; i < domain.nx() - 1; ++i) {
-            // icell_cent = i + j * (WGD->nx - 1) + k * (WGD->nx - 1) * (WGD->ny - 1);// Lineralized index for cell centered values
-            icell_cent = domain.cell(i, j, k);
-            error = fabs(lambda[icell_cent] - lambda_old[icell_cent]);
-            if (error > max_error) {
-              max_error = error;
-            }
+  for (int block = 0; block < num_blocks_k * num_blocks_j; ++block) {
+    int block_k = block / num_blocks_j;
+    int block_j = block % num_blocks_j;
+    int k_start = 1 + block_k * planes_to_check / num_blocks_k;
+    int k_end   = 1 + (block_k + 1) * planes_to_check / num_blocks_k;
+    int j_start = block_j * rows_to_check / num_blocks_j;// j starts at 0 here
+    int j_end   = (block_j + 1) * rows_to_check / num_blocks_j;
+
+    for (int k = k_start; k < k_end; ++k) {
+      for (int j = j_start; j < j_end; ++j) {
+        for (int i = 0; i < domain.nx() - 1; ++i) {
+          icell_cent = domain.cell(i, j, k);
+          error = fabs(lambda[icell_cent] - lambda_old[icell_cent]);
+          if (error > max_error) {
+            max_error = error;
           }
         }
       }
+    }
+  }
       // end of omp for (with implicit barrier)
     }
     // end of omp parallel workshare
