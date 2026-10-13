@@ -13,12 +13,20 @@ echo "*** Assigned Granite Node: " $SLURMD_NODENAME
 cd ~/QES
 source QES-Public/CHPC/loadmodules_QES.sh
 export OMP_PLACES=cores OMP_PROC_BIND=close
-for NT in 1 16 64; do
+CASE_NAME=${1:-okc}
+CASE=~/QES/QES-Public/tests/runTestsFiles/winds_OklahomaCity.xml
+THREADS="1 16 64"
+if [ "$CASE_NAME" = slc ]; then
+  CASE=~/QES/QES-Public/tests/runTestsFiles/winds_SaltLakeCity.xml
+  THREADS="16 64"
+fi
+
+for NT in $THREADS; do
   export OMP_NUM_THREADS=$NT
-  mkdir -p ~/QES/Testing/runs/public/okc_${NT}threads
+  mkdir -p ~/QES/Testing/runs/public/${CASE_NAME}_${NT}threads
   ./build-public/qesWinds/qesWinds \
-      -q ~/QES/QES-Public/tests/runTestsFiles/winds_OklahomaCity.xml \
-      -o ~/QES/Testing/runs/public/okc_${NT}threads/okc \
+      -q $CASE \
+      -o ~/QES/Testing/runs/public/${CASE_NAME}_${NT}threads/${CASE_NAME} \
       -w
 done
 

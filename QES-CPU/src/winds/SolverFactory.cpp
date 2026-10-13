@@ -52,8 +52,20 @@ Solver *SolverFactory::create(const int &solveType, const qes::Domain &domain, c
     else if (windOptimization == "collapse") {
       solver = new Solver_CPU_RB_collapse(domain, tolerance);
     }
+    else if (windOptimization == "oneregion") {
+      solver = new Solver_CPU_RB_oneregion(domain, tolerance);
+    }
+    else if (windOptimization == "blocks") {
+      solver = new Solver_CPU_RB_blocks(domain, tolerance);
+    }
+    else if (windOptimization == "hoist") {
+      solver = new Solver_CPU_RB_hoist(domain, tolerance);
+    }
+    else if (windOptimization == "numa") {
+      solver = new Solver_CPU_RB_numa(domain, tolerance);
+    }
     else {
-      QESout::error("Unknown windOptimization '" + windOptimization + "' (valid: bugfix, checkerboard, fuse, collapse)");
+      QESout::error("Unknown windOptimization '" + windOptimization + "' (valid: bugfix, checkerboard, fuse, collapse, oneregion, blocks, hoist, numa)");
     }
 #else
     solver = new Solver_CPU(domain, tolerance);

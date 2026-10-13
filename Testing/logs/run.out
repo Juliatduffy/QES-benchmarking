@@ -6,8 +6,8 @@
 Shell debugging temporarily silenced: export LMOD_SH_DBG_ON=1 for this output (/uufs/chpc.utah.edu/sys/installdir/lmod/9.4.2-r8/init/bash)
 Shell debugging restarted
 + unset __lmod_vx
-+ echo '*** Assigned Granite Node: ' grn052
-*** Assigned Granite Node:  grn052
++ echo '*** Assigned Granite Node: ' grn055
+*** Assigned Granite Node:  grn055
 + cd /uufs/chpc.utah.edu/common/home/u1417379/QES
 + source QES-Public/CHPC/loadmodules_QES.sh
 ++ echo --------------------------------------------------------------------------------
@@ -120,86 +120,17 @@ Shell debugging restarted
 + export OMP_PLACES=cores OMP_PROC_BIND=close
 + OMP_PLACES=cores
 + OMP_PROC_BIND=close
-+ for NT in 1 16 64
-+ export OMP_NUM_THREADS=1
-+ OMP_NUM_THREADS=1
-+ mkdir -p /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/okc_1threads
-+ ./build-public/qesWinds/qesWinds -q /uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/winds_OklahomaCity.xml -o /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/okc_1threads/okc -w
-###################################################################
-#                                                                 #
-#                        Welcome to QES                           #
-#                                                                 #
-###################################################################
-Version: v2.3.1
-* No CUDA support - CPU Only Computations!
-* OpenMP is available!
-###################################################################
-Summary of QES-WINDS options: 
-----------------------------
-qesWindsParamFile: /uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/winds_OklahomaCity.xml
-----------------------------
-Wind Solver:		 ON	 [Red/Black Solver (CPU)]
-Turbulence model:	 OFF
-Verbose:		 OFF
-----------------------------
-Output file basename:        /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/okc_1threads/okc
-Winds visualization output:  ON
-Winds workspace output:      ON
-Winds terrain mesh output:   OFF
-Turbulence output:           OFF
-###################################################################
-[!! WARNING !!]	 Optix not supported -> set method to serial (methodLocalMixing = 1)
--------------------------------------------------------------------
-[ESRIShapefile]	 Initialization of shapefile reader...
-Reading ESRIShapefile: /uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/OklahomaCity/OKCSmallDomainJU2003.shp
-SHP File Driver: ESRI Shapefile/ESRI Shapefile
-Summary of Vector Data:
-----------------------------
-- Number of Layers: 1
-- Layer Name: OKCSmallDomainJU2003
-- Number of Features: 155
-- Number of Fields: 1
-- Field Names: AVGHT_M
-----------------------------
-Bounds of SHP: Min=(634173, 3.92536e+06), Max=(635267, 3.9265e+06)
-Domain Size: 1094 X 1140
-[ESRIShapefile]	 Loading completed.
-		 elapsed time: 0.0572538 s
--------------------------------------------------------------------
-[QES-WINDS]	 Initialization of wind model...
-[QES-WINDS]	 Allocating Memory...[QES-WINDS]	 Allocating Memory... [DONE]
-[QES-WINDS]	 Sensors have been loaded (total sensors = 1).
-[QES-WINDS]	 Creating buildings from shapefile...[QES-WINDS]	 Creating buildings from shapefile... [DONE]
-[QES-WINDS]	 Sorting buildings by height...[QES-WINDS]	 Sorting buildings by height... [DONE]
-		 elapsed time: 0.0805495 s
-[QES-WINDS]	 Defining solid walls...[QES-WINDS]	 Defining solid walls... [DONE]
-		 elapsed time: 0.0513356 s
-[NetCDFOutput] 	 create new file: /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/okc_1threads/okc_windsOut.nc
-[QES-WINDS] 	 Getting output fields for visualisation file
-[NetCDFOutput] 	 create new file: /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/okc_1threads/okc_windsWk.nc
-[QES-WINDS] 	 Setting fields of workspace file
-m_utmx:   0
--------------------------------------------------------------------
-[Solver]	 Initializing Red/Black Solver (CPU) ...
--------------------------------------------------------------------
-[QES-WINDS]	 Wind field at 2020-01-01T01:00:00 (1/1).
-100% [||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||]
-----------------------------
-[QES-WINDS]	 Applying Wind Profile...
-		 elapsed time: 0.011574 s
-[QES-WINDS]	 Applying parameterizations...
-		 elapsed time: 0.00288561 s
-[Solver]	 Running Red/Black CPU Solver ...
-[Solver]	 Residual after 500 itertations: 0.032714844
-		 elapsed time: 4.56105 s
-[NetCDFOutput] 	 closing file: /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/okc_1threads/okc_windsOut.nc
-[NetCDFOutput] 	 closing file: /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/okc_1threads/okc_windsWk.nc
-QES-Winds Exiting.
-+ for NT in 1 16 64
++ CASE_NAME=slc
++ CASE=/uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/winds_OklahomaCity.xml
++ THREADS='1 16 64'
++ '[' slc = slc ']'
++ CASE=/uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/winds_SaltLakeCity.xml
++ THREADS='16 64'
++ for NT in $THREADS
 + export OMP_NUM_THREADS=16
 + OMP_NUM_THREADS=16
-+ mkdir -p /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/okc_16threads
-+ ./build-public/qesWinds/qesWinds -q /uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/winds_OklahomaCity.xml -o /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/okc_16threads/okc -w
++ mkdir -p /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/slc_16threads
++ ./build-public/qesWinds/qesWinds -q /uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/winds_SaltLakeCity.xml -o /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/slc_16threads/slc -w
 ###################################################################
 #                                                                 #
 #                        Welcome to QES                           #
@@ -211,70 +142,75 @@ Version: v2.3.1
 ###################################################################
 Summary of QES-WINDS options: 
 ----------------------------
-qesWindsParamFile: /uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/winds_OklahomaCity.xml
+qesWindsParamFile: /uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/winds_SaltLakeCity.xml
 ----------------------------
 Wind Solver:		 ON	 [Red/Black Solver (CPU)]
 Turbulence model:	 OFF
 Verbose:		 OFF
 ----------------------------
-Output file basename:        /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/okc_16threads/okc
+Output file basename:        /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/slc_16threads/slc
 Winds visualization output:  ON
 Winds workspace output:      ON
 Winds terrain mesh output:   OFF
 Turbulence output:           OFF
 ###################################################################
+[!! WARNING !!]	 No timestamp -> using system UTC time (2026-10-13T19:46:27)
 [!! WARNING !!]	 Optix not supported -> set method to serial (methodLocalMixing = 1)
 -------------------------------------------------------------------
 [ESRIShapefile]	 Initialization of shapefile reader...
-Reading ESRIShapefile: /uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/OklahomaCity/OKCSmallDomainJU2003.shp
+Reading ESRIShapefile: /uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/SaltLakeCity/slc_cut.shp
 SHP File Driver: ESRI Shapefile/ESRI Shapefile
 Summary of Vector Data:
 ----------------------------
 - Number of Layers: 1
-- Layer Name: OKCSmallDomainJU2003
-- Number of Features: 155
+- Layer Name: slc_cut
+- Number of Features: 165
 - Number of Fields: 1
-- Field Names: AVGHT_M
+- Field Names: MEANHEIGHT
 ----------------------------
-Bounds of SHP: Min=(634173, 3.92536e+06), Max=(635267, 3.9265e+06)
-Domain Size: 1094 X 1140
+Bounds of SHP: Min=(424565, 4.51235e+06), Max=(425499, 4.51352e+06)
+Domain Size: 935 X 1171
 [ESRIShapefile]	 Loading completed.
-		 elapsed time: 0.049616 s
+		 elapsed time: 0.0190623 s
 -------------------------------------------------------------------
 [QES-WINDS]	 Initialization of wind model...
 [QES-WINDS]	 Allocating Memory...[QES-WINDS]	 Allocating Memory... [DONE]
 [QES-WINDS]	 Sensors have been loaded (total sensors = 1).
 [QES-WINDS]	 Creating buildings from shapefile...[QES-WINDS]	 Creating buildings from shapefile... [DONE]
 [QES-WINDS]	 Sorting buildings by height...[QES-WINDS]	 Sorting buildings by height... [DONE]
-		 elapsed time: 0.0800546 s
+		 elapsed time: 0.00941838 s
 [QES-WINDS]	 Defining solid walls...[QES-WINDS]	 Defining solid walls... [DONE]
-		 elapsed time: 0.0512399 s
-[NetCDFOutput] 	 create new file: /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/okc_16threads/okc_windsOut.nc
+		 elapsed time: 2.68097 s
+[NetCDFOutput] 	 create new file: /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/slc_16threads/slc_windsOut.nc
 [QES-WINDS] 	 Getting output fields for visualisation file
-[NetCDFOutput] 	 create new file: /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/okc_16threads/okc_windsWk.nc
+[NetCDFOutput] 	 create new file: /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/slc_16threads/slc_windsWk.nc
 [QES-WINDS] 	 Setting fields of workspace file
-m_utmx:   0
+m_utmx:   1.76398e-38
 -------------------------------------------------------------------
 [Solver]	 Initializing Red/Black Solver (CPU) ...
 -------------------------------------------------------------------
-[QES-WINDS]	 Wind field at 2020-01-01T01:00:00 (1/1).
+[QES-WINDS]	 Wind field at 2026-10-13T19:46:27 (1/1).
 100% [||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||]
 ----------------------------
 [QES-WINDS]	 Applying Wind Profile...
-		 elapsed time: 0.0125445 s
+		 elapsed time: 0.153892 s
 [QES-WINDS]	 Applying parameterizations...
-		 elapsed time: 0.00313258 s
+[QES-WINDS]	 Applying upwind cavity parameterization...
+[QES-WINDS]	 Applying wake behind building parameterization...
+[QES-WINDS]	 Applying street canyon parameterization...
+[QES-WINDS]	 Applying rooftop parameterization...
+		 elapsed time: 0.773877 s
 [Solver]	 Running Red/Black CPU Solver ...
-[Solver]	 Residual after 500 itertations: 0.032714844
-		 elapsed time: 0.381 s
-[NetCDFOutput] 	 closing file: /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/okc_16threads/okc_windsOut.nc
-[NetCDFOutput] 	 closing file: /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/okc_16threads/okc_windsWk.nc
+[Solver]	 Residual after 500 itertations: 0.121520996
+		 elapsed time: 17.3291 s
+[NetCDFOutput] 	 closing file: /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/slc_16threads/slc_windsOut.nc
+[NetCDFOutput] 	 closing file: /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/slc_16threads/slc_windsWk.nc
 QES-Winds Exiting.
-+ for NT in 1 16 64
++ for NT in $THREADS
 + export OMP_NUM_THREADS=64
 + OMP_NUM_THREADS=64
-+ mkdir -p /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/okc_64threads
-+ ./build-public/qesWinds/qesWinds -q /uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/winds_OklahomaCity.xml -o /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/okc_64threads/okc -w
++ mkdir -p /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/slc_64threads
++ ./build-public/qesWinds/qesWinds -q /uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/winds_SaltLakeCity.xml -o /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/slc_64threads/slc -w
 ###################################################################
 #                                                                 #
 #                        Welcome to QES                           #
@@ -286,62 +222,67 @@ Version: v2.3.1
 ###################################################################
 Summary of QES-WINDS options: 
 ----------------------------
-qesWindsParamFile: /uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/winds_OklahomaCity.xml
+qesWindsParamFile: /uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/winds_SaltLakeCity.xml
 ----------------------------
 Wind Solver:		 ON	 [Red/Black Solver (CPU)]
 Turbulence model:	 OFF
 Verbose:		 OFF
 ----------------------------
-Output file basename:        /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/okc_64threads/okc
+Output file basename:        /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/slc_64threads/slc
 Winds visualization output:  ON
 Winds workspace output:      ON
 Winds terrain mesh output:   OFF
 Turbulence output:           OFF
 ###################################################################
+[!! WARNING !!]	 No timestamp -> using system UTC time (2026-10-13T19:46:59)
 [!! WARNING !!]	 Optix not supported -> set method to serial (methodLocalMixing = 1)
 -------------------------------------------------------------------
 [ESRIShapefile]	 Initialization of shapefile reader...
-Reading ESRIShapefile: /uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/OklahomaCity/OKCSmallDomainJU2003.shp
+Reading ESRIShapefile: /uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/SaltLakeCity/slc_cut.shp
 SHP File Driver: ESRI Shapefile/ESRI Shapefile
 Summary of Vector Data:
 ----------------------------
 - Number of Layers: 1
-- Layer Name: OKCSmallDomainJU2003
-- Number of Features: 155
+- Layer Name: slc_cut
+- Number of Features: 165
 - Number of Fields: 1
-- Field Names: AVGHT_M
+- Field Names: MEANHEIGHT
 ----------------------------
-Bounds of SHP: Min=(634173, 3.92536e+06), Max=(635267, 3.9265e+06)
-Domain Size: 1094 X 1140
+Bounds of SHP: Min=(424565, 4.51235e+06), Max=(425499, 4.51352e+06)
+Domain Size: 935 X 1171
 [ESRIShapefile]	 Loading completed.
-		 elapsed time: 0.0481567 s
+		 elapsed time: 0.00905817 s
 -------------------------------------------------------------------
 [QES-WINDS]	 Initialization of wind model...
 [QES-WINDS]	 Allocating Memory...[QES-WINDS]	 Allocating Memory... [DONE]
 [QES-WINDS]	 Sensors have been loaded (total sensors = 1).
 [QES-WINDS]	 Creating buildings from shapefile...[QES-WINDS]	 Creating buildings from shapefile... [DONE]
 [QES-WINDS]	 Sorting buildings by height...[QES-WINDS]	 Sorting buildings by height... [DONE]
-		 elapsed time: 0.0796675 s
+		 elapsed time: 0.0115461 s
 [QES-WINDS]	 Defining solid walls...[QES-WINDS]	 Defining solid walls... [DONE]
-		 elapsed time: 0.0512921 s
-[NetCDFOutput] 	 create new file: /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/okc_64threads/okc_windsOut.nc
+		 elapsed time: 3.23252 s
+[NetCDFOutput] 	 create new file: /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/slc_64threads/slc_windsOut.nc
 [QES-WINDS] 	 Getting output fields for visualisation file
-[NetCDFOutput] 	 create new file: /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/okc_64threads/okc_windsWk.nc
+[NetCDFOutput] 	 create new file: /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/slc_64threads/slc_windsWk.nc
 [QES-WINDS] 	 Setting fields of workspace file
-m_utmx:   0
+m_utmx:   4.27299e-38
 -------------------------------------------------------------------
 [Solver]	 Initializing Red/Black Solver (CPU) ...
 -------------------------------------------------------------------
-[QES-WINDS]	 Wind field at 2020-01-01T01:00:00 (1/1).
+[QES-WINDS]	 Wind field at 2026-10-13T19:46:59 (1/1).
 100% [||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||]
 ----------------------------
 [QES-WINDS]	 Applying Wind Profile...
-		 elapsed time: 0.0108605 s
+		 elapsed time: 0.194459 s
 [QES-WINDS]	 Applying parameterizations...
-		 elapsed time: 0.00230239 s
+[QES-WINDS]	 Applying upwind cavity parameterization...
+[QES-WINDS]	 Applying wake behind building parameterization...
+[QES-WINDS]	 Applying street canyon parameterization...
+[QES-WINDS]	 Applying rooftop parameterization...
+		 elapsed time: 0.980546 s
 [Solver]	 Running Red/Black CPU Solver ...
-[Solver]	 Residual after 500 itertations: 0.032714844
-		 elapsed time: 0.29516 s
-[NetCDFOutput] 	 closing file: /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/okc_64threads/okc_windsOut.nc
-[NetCDFOutput] 	 closing file: /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/okc_64threads/okc_windsWk.nc
+[Solver]	 Residual after 500 itertations: 0.121520996
+		 elapsed time: 10.4016 s
+[NetCDFOutput] 	 closing file: /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/slc_64threads/slc_windsOut.nc
+[NetCDFOutput] 	 closing file: /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/public/slc_64threads/slc_windsWk.nc
 QES-Winds Exiting.
