@@ -49,7 +49,7 @@
 
 /**
  * @class Solver_CPU_RB_fuse
- * @brief Checkerboard rung with the error check fused into the red/black passes (rung "fuse").
+ * @brief bugfix + fuse: the change |new - old| is measured inside the red and black passes, so there is no lambda_old copy and no error loop (rung "fuse").
  */
 class Solver_CPU_RB_fuse : public Solver
 {

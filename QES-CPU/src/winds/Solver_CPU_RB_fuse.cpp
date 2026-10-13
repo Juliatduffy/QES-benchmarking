@@ -94,7 +94,7 @@ void Solver_CPU_RB_fuse::solve(WINDSGeneralData *WGD, const int &itermax)
 
   while (iter < itermax && max_error > tol) {
 
-  max_error = 0.0;// Reset error value before error calculation
+    max_error = 0.0;// Reset error value before error calculation
 
 #pragma omp parallel private(icell_cent, icell_face, error) default(none) shared(WGD, lambda, max_error, R)
     {
@@ -104,47 +104,52 @@ void Solver_CPU_RB_fuse::solve(WINDSGeneralData *WGD, const int &itermax)
 #pragma omp for reduction(max : max_error)
       for (int k = 1; k < domain.nz() - 2; ++k) {
         for (int j = 1; j < domain.ny() - 2; ++j) {
-          for (int i =  (j + k) % 2  == 0 ? 2 : 1; i < domain.nx() - 2; i+=2) {
+          for (int i = 1; i < domain.nx() - 2; ++i) {
+
+            if (((i + j + k) % 2) == 0) {
               // icell_cent = i + j * (WGD->nx - 1) + k * (WGD->nx - 1) * (WGD->ny - 1);
               icell_cent = domain.cell(i, j, k);
               float new_lambda = (omega / (WGD->e[icell_cent] + WGD->f[icell_cent] + WGD->g[icell_cent] + WGD->h[icell_cent] + WGD->m[icell_cent] + WGD->n[icell_cent]))
-                                     * (WGD->e[icell_cent] * lambda[domain.cellAdd(icell_cent, 1, 0, 0)]
-                                        + WGD->f[icell_cent] * lambda[domain.cellAdd(icell_cent, -1, 0, 0)]
-                                        + WGD->g[icell_cent] * lambda[domain.cellAdd(icell_cent, 0, 1, 0)]
-                                        + WGD->h[icell_cent] * lambda[domain.cellAdd(icell_cent, 0, -1, 0)]
-                                        + WGD->m[icell_cent] * lambda[domain.cellAdd(icell_cent, 0, 0, 1)]
-                                        + WGD->n[icell_cent] * lambda[domain.cellAdd(icell_cent, 0, 0, -1)] - R[icell_cent])
-                                   + (1.0f - omega) * lambda[icell_cent];// SOR formulation
-                                   error = fabs(new_lambda - lambda[icell_cent]);
+                                   * (WGD->e[icell_cent] * lambda[domain.cellAdd(icell_cent, 1, 0, 0)]
+                                      + WGD->f[icell_cent] * lambda[domain.cellAdd(icell_cent, -1, 0, 0)]
+                                      + WGD->g[icell_cent] * lambda[domain.cellAdd(icell_cent, 0, 1, 0)]
+                                      + WGD->h[icell_cent] * lambda[domain.cellAdd(icell_cent, 0, -1, 0)]
+                                      + WGD->m[icell_cent] * lambda[domain.cellAdd(icell_cent, 0, 0, 1)]
+                                      + WGD->n[icell_cent] * lambda[domain.cellAdd(icell_cent, 0, 0, -1)] - R[icell_cent])
+                                 + (1.0f - omega) * lambda[icell_cent];// SOR formulation
+              error = fabs(new_lambda - lambda[icell_cent]);// lambda still holds the old value here
               if (error > max_error) {
                 max_error = error;
               }
               lambda[icell_cent] = new_lambda;
+            }
           }
         }
       }
       // end of omp for (with implicit barrier)
 
       // Black nodes pass
-#pragma omp for reduction (max : max_error)
+#pragma omp for reduction(max : max_error)
       for (int k = 1; k < domain.nz() - 2; ++k) {
         for (int j = 1; j < domain.ny() - 2; ++j) {
-          for (int i = (j + k) % 2  == 0 ? 1 : 2; i < domain.nx() - 2; i+=2) {
+          for (int i = 1; i < domain.nx() - 2; ++i) {
+            if (((i + j + k) % 2) == 1) {
               // icell_cent = i + j * (WGD->nx - 1) + k * (WGD->nx - 1) * (WGD->ny - 1);
               icell_cent = domain.cell(i, j, k);
               float new_lambda = (omega / (WGD->e[icell_cent] + WGD->f[icell_cent] + WGD->g[icell_cent] + WGD->h[icell_cent] + WGD->m[icell_cent] + WGD->n[icell_cent]))
-                                     * (WGD->e[icell_cent] * lambda[domain.cellAdd(icell_cent, 1, 0, 0)]
-                                        + WGD->f[icell_cent] * lambda[domain.cellAdd(icell_cent, -1, 0, 0)]
-                                        + WGD->g[icell_cent] * lambda[domain.cellAdd(icell_cent, 0, 1, 0)]
-                                        + WGD->h[icell_cent] * lambda[domain.cellAdd(icell_cent, 0, -1, 0)]
-                                        + WGD->m[icell_cent] * lambda[domain.cellAdd(icell_cent, 0, 0, 1)]
-                                        + WGD->n[icell_cent] * lambda[domain.cellAdd(icell_cent, 0, 0, -1)] - R[icell_cent])
-                                   + (1.0f - omega) * lambda[icell_cent];// SOR formulation
-                                   error = fabs(new_lambda - lambda[icell_cent]);
-          if (error > max_error) {
+                                   * (WGD->e[icell_cent] * lambda[domain.cellAdd(icell_cent, 1, 0, 0)]
+                                      + WGD->f[icell_cent] * lambda[domain.cellAdd(icell_cent, -1, 0, 0)]
+                                      + WGD->g[icell_cent] * lambda[domain.cellAdd(icell_cent, 0, 1, 0)]
+                                      + WGD->h[icell_cent] * lambda[domain.cellAdd(icell_cent, 0, -1, 0)]
+                                      + WGD->m[icell_cent] * lambda[domain.cellAdd(icell_cent, 0, 0, 1)]
+                                      + WGD->n[icell_cent] * lambda[domain.cellAdd(icell_cent, 0, 0, -1)] - R[icell_cent])
+                                 + (1.0f - omega) * lambda[icell_cent];// SOR formulation
+              error = fabs(new_lambda - lambda[icell_cent]);// lambda still holds the old value here
+              if (error > max_error) {
                 max_error = error;
               }
               lambda[icell_cent] = new_lambda;
+            }
           }
         }
       }

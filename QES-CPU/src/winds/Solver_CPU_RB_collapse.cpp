@@ -101,7 +101,6 @@ void Solver_CPU_RB_collapse::solve(WINDSGeneralData *WGD, const int &itermax)
     {
 #pragma omp for
       for (auto k = 0u; k < lambda.size(); ++k) {
-        float formula = 
         lambda_old[k] = lambda[k];
       }
       // end of omp for (with implicit barrier)
@@ -109,11 +108,13 @@ void Solver_CPU_RB_collapse::solve(WINDSGeneralData *WGD, const int &itermax)
 
       // main SOR formulation loop
 
-      // Red nodes pass
+      // Red nodes pass (collapse: k and j are split together, ~9,500 rows instead of 77 planes)
 #pragma omp for collapse(2)
       for (int k = 1; k < domain.nz() - 2; ++k) {
         for (int j = 1; j < domain.ny() - 2; ++j) {
-          for (int i =  (j + k) % 2  == 0 ? 2 : 1; i < domain.nx() - 2; i+=2) {
+          for (int i = 1; i < domain.nx() - 2; ++i) {
+
+            if (((i + j + k) % 2) == 0) {
               // icell_cent = i + j * (WGD->nx - 1) + k * (WGD->nx - 1) * (WGD->ny - 1);
               icell_cent = domain.cell(i, j, k);
               lambda[icell_cent] = (omega / (WGD->e[icell_cent] + WGD->f[icell_cent] + WGD->g[icell_cent] + WGD->h[icell_cent] + WGD->m[icell_cent] + WGD->n[icell_cent]))
@@ -124,16 +125,18 @@ void Solver_CPU_RB_collapse::solve(WINDSGeneralData *WGD, const int &itermax)
                                         + WGD->m[icell_cent] * lambda[domain.cellAdd(icell_cent, 0, 0, 1)]
                                         + WGD->n[icell_cent] * lambda[domain.cellAdd(icell_cent, 0, 0, -1)] - R[icell_cent])
                                    + (1.0f - omega) * lambda[icell_cent];// SOR formulation
+            }
           }
         }
       }
       // end of omp for (with implicit barrier)
 
-      // Black nodes pass
+      // Black nodes pass (collapse(2), as above)
 #pragma omp for collapse(2)
       for (int k = 1; k < domain.nz() - 2; ++k) {
         for (int j = 1; j < domain.ny() - 2; ++j) {
-          for (int i = (j + k) % 2  == 0 ? 1 : 2; i < domain.nx() - 2; i+=2) {
+          for (int i = 1; i < domain.nx() - 2; ++i) {
+            if (((i + j + k) % 2) == 1) {
               // icell_cent = i + j * (WGD->nx - 1) + k * (WGD->nx - 1) * (WGD->ny - 1);
               icell_cent = domain.cell(i, j, k);
               lambda[icell_cent] = (omega / (WGD->e[icell_cent] + WGD->f[icell_cent] + WGD->g[icell_cent] + WGD->h[icell_cent] + WGD->m[icell_cent] + WGD->n[icell_cent]))
@@ -144,6 +147,7 @@ void Solver_CPU_RB_collapse::solve(WINDSGeneralData *WGD, const int &itermax)
                                         + WGD->m[icell_cent] * lambda[domain.cellAdd(icell_cent, 0, 0, 1)]
                                         + WGD->n[icell_cent] * lambda[domain.cellAdd(icell_cent, 0, 0, -1)] - R[icell_cent])
                                    + (1.0f - omega) * lambda[icell_cent];// SOR formulation
+            }
           }
         }
       }

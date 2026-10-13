@@ -49,7 +49,7 @@
 
 /**
  * @class Solver_CPU_RB_collapse
- * @brief Checkerboard rung with collapse(2) on the k and j loops (rung "collapse").
+ * @brief bugfix + collapse: collapse(2) on the k and j loops of the red pass, black pass and error loop (rung "collapse").
  */
 class Solver_CPU_RB_collapse : public Solver
 {
