@@ -185,7 +185,7 @@ void Solver_CPU_RB_oneregion::solve(WINDSGeneralData *WGD, const int &itermax)
       // end of omp for (with implicit barrier)
     }
     // end of omp parallel workshare
-    iter += 1;
+
   }
 
   // std::cout << "Solved!\n";
