@@ -15,8 +15,8 @@ source QES-Public/CHPC/loadmodules_QES.sh
 FLAGS="-DNETCDF_CXX_DIR=/uufs/chpc.utah.edu/sys/installdir/netcdf-cxx/4.3.0-5.4.0g/include -DENABLE_OPENMP=ON -DHAS_CUDA_SUPPORT=OFF"
 
 cmake -S QES-Public -B build-public $FLAGS
-make -C build-public -j16 qesWinds
+make -C build-public -j16 qesWinds qesFire
 
 cmake -S QES-CPU -B build-cpu $FLAGS
-make -C build-cpu -j16 qesWinds
+make -C build-cpu -j16 qesWinds qesFire
 

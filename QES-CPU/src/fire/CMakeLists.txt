@@ -20,7 +20,8 @@ SET( qesFireCoreSources
   LSinit.cpp
   Move.cpp
   OldFuelProperties.hpp
-        PotentialSerial.cpp
+  PotentialSerial.cpp
+  PotentialParallel.cpp
   Rothermel.cpp
   Smoke.cpp
   Smoke.h 

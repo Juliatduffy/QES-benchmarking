@@ -140,6 +140,7 @@ public:
 
   void potential(WINDSGeneralData *);
   void potentialSerial(WINDSGeneralData *);
+  void potentialParallel(WINDSGeneralData *);
 
 #ifdef HAS_CUDA
   void potentialGlobal(WINDSGeneralData *);
