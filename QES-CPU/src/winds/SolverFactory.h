@@ -42,6 +42,7 @@
 #include "Solver_CPU_RB_oneregion.h"
 #include "Solver_CPU_RB_blocks.h"
 #include "Solver_CPU_RB_combined.h"
+#include "Solver_CPU_RB_combined2.h"
 #ifdef HAS_CUDA
 // While we get this verified on CUDA 12.8, we will
 // replace use of it with the GlobalMemory solver.

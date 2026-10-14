@@ -172,9 +172,9 @@ make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-p
 [ 17%] Built target qesutil
 Consolidate compiler generated dependencies of target qesfirecore
 make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-public'
+[ 62%] Built target qeswindscore
 Consolidate compiler generated dependencies of target qesplumecore
 make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-public'
-[ 67%] Built target qeswindscore
 [ 69%] Built target qesfirecore
 [ 97%] Built target qesplumecore
 make[3]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-public'
@@ -217,12 +217,12 @@ make[3]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-
 make[3]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
 Consolidate compiler generated dependencies of target qesutil
 make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
-[ 26%] Built target qesutil
+[ 25%] Built target qesutil
 Consolidate compiler generated dependencies of target qeswindscore
 make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
 make[3]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
-[ 28%] Building CXX object src/winds/CMakeFiles/qeswindscore.dir/Solver_CPU_RB_combined.cpp.o
-[ 30%] Linking CXX static library libqeswindscore.a
+[ 25%] Building CXX object src/winds/CMakeFiles/qeswindscore.dir/Solver_CPU_RB_combined2.cpp.o
+[ 26%] Linking CXX static library libqeswindscore.a
 make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
 [ 96%] Built target qeswindscore
 make[3]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
@@ -241,15 +241,15 @@ make[3]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-
 make[3]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
 make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
 make[3]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
-[ 16%] Built target qesutil
+[ 15%] Built target qesutil
 Consolidate compiler generated dependencies of target qesfirecore
-make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
-Consolidate compiler generated dependencies of target qeswindscore
 make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
 Consolidate compiler generated dependencies of target qesplumecore
 make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
-[ 29%] Built target qesfirecore
-[ 91%] Built target qesplumecore
+Consolidate compiler generated dependencies of target qeswindscore
+make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
+[ 28%] Built target qesfirecore
+[ 86%] Built target qesplumecore
 [ 97%] Built target qeswindscore
 make[3]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
 Consolidate compiler generated dependencies of target qesFire

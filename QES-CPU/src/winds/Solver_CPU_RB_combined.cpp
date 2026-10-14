@@ -30,6 +30,9 @@
 
 /** @file Solver_CPU_RB_combined.cpp */
 
+/*
+ *  bugfix + checkerboard + blocks + oneregion
+ */
 #include "Solver_CPU_RB_combined.h"
 
 /** :document this:

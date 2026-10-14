@@ -49,7 +49,7 @@
 
 /**
  * @class Solver_CPU_RB_combined
- * @brief Starts as a copy of bugfix (rung "combined"). Goal: a combination of the simpler rungs (planned: blocks + one region + fuse + checkerboard loops, "bof").
+ * @brief "combined": bugfix + checkerboard + blocks + one region
  */
 class Solver_CPU_RB_combined : public Solver
 {

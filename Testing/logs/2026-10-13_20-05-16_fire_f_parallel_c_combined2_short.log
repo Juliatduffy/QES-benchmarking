@@ -1,0 +1,17 @@
+QES-Public qesFire vs QES-CPU qesFire -f parallel -c combined2
+Input: /scratch/general/vast/u1417379/qes-fire/inputs/fire_short.xml
+Node grn054, job 2169806, Tue Oct 13 20:05:16 MDT 2026
+
+16 threads, average of 3 alternating trials (seconds):
+  QES-Public               fire loop   275.79   potential   263.92   wind solver   11.73
+  -f parallel -c combined2 fire loop    26.23   potential    21.85   wind solver    4.23
+  Speedup (fire loop): 10.51x
+
+64 threads, average of 3 alternating trials (seconds):
+  QES-Public               fire loop   276.81   potential   263.90   wind solver   12.75
+  -f parallel -c combined2 fire loop     8.37   potential     6.03   wind solver    2.19
+  Speedup (fire loop): 33.07x
+
+Correctness: every variable of the fire output, compared with QES-Public's:
+  16 threads: IDENTICAL
+  64 threads: IDENTICAL

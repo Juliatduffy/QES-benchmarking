@@ -1,0 +1,50 @@
+QES-Public vs combined2
+Node grn052, job 2169801, Tue Oct 13 20:04:23 MDT 2026
+
+===== okc: /uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/winds_OklahomaCity.xml =====
+
+Solver time in seconds, 10 alternating trials of each:
+1 thread(s):
+  QES-Public:  Min: 3.7109  Max: 3.7465  Avg: 3.7175
+  combined2:  Min: 2.4295  Max: 2.4629  Avg: 2.4456
+  Speedup (avg): 1.52x
+  Residual: QES-Public 0.032714844, combined2 0.032714844 (match)
+
+Solver time in seconds, 10 alternating trials of each:
+16 thread(s):
+  QES-Public:  Min: 0.3789  Max: 0.4199  Avg: 0.4072
+  combined2:  Min: 0.2966  Max: 0.3412  Avg: 0.3314
+  Speedup (avg): 1.23x
+  Residual: QES-Public 0.032714844, combined2 0.032714844 (match)
+
+Solver time in seconds, 10 alternating trials of each:
+64 thread(s):
+  QES-Public:  Min: 0.4893  Max: 0.4989  Avg: 0.4945
+  combined2:  Min: 0.1937  Max: 0.1974  Avg: 0.1959
+  Speedup (avg): 2.52x
+  Residual: QES-Public 0.032714844, combined2 0.032714844 (match)
+
+Correctness: combined2's u, v, w compared with QES-Public's, every value:
+  1 thread(s): IDENTICAL
+  16 thread(s): IDENTICAL
+  64 thread(s): IDENTICAL
+
+===== slc: /uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/winds_SaltLakeCity.xml =====
+
+Solver time in seconds, 3 alternating trials of each:
+16 thread(s):
+  QES-Public:  Min: 17.3743  Max: 17.4769  Avg: 17.4143
+  combined2:  Min: 11.4761  Max: 11.5137  Avg: 11.5010
+  Speedup (avg): 1.51x
+  Residual: QES-Public 0.121520996, combined2 0.121520996 (match)
+
+Solver time in seconds, 3 alternating trials of each:
+64 thread(s):
+  QES-Public:  Min: 10.1020  Max: 10.2905  Avg: 10.2157
+  combined2:  Min: 7.5639  Max: 7.5882  Avg: 7.5749
+  Speedup (avg): 1.35x
+  Residual: QES-Public 0.121520996, combined2 0.121520996 (match)
+
+Correctness: combined2's u, v, w compared with QES-Public's, every value:
+  16 thread(s): IDENTICAL
+  64 thread(s): IDENTICAL

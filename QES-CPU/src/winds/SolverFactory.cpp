@@ -61,8 +61,11 @@ Solver *SolverFactory::create(const int &solveType, const qes::Domain &domain, c
     else if (windOptimization == "combined") {
       solver = new Solver_CPU_RB_combined(domain, tolerance);
     }
+    else if (windOptimization == "combined2") {
+      solver = new Solver_CPU_RB_combined2(domain, tolerance);
+    }
     else {
-      QESout::error("Unknown windOptimization '" + windOptimization + "' (valid: bugfix, checkerboard, fuse, collapse, oneregion, blocks, combined)");
+      QESout::error("Unknown windOptimization '" + windOptimization + "' (valid: bugfix, checkerboard, fuse, collapse, oneregion, blocks, combined, combined2)");
     }
 #else
     solver = new Solver_CPU(domain, tolerance);
