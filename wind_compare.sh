@@ -3,22 +3,14 @@
 #SBATCH --nodes=1                       
 #SBATCH --ntasks=1                      
 #SBATCH --partition=coe-class-grn       
-#SBATCH --qos=coe-class-shortbatch-grn  
+#SBATCH --qos=coe-students-grn         
 #SBATCH --account=cs6230                
 #SBATCH --cpus-per-task=64              
 #SBATCH --exclusive                     
-#SBATCH -t 0:10:00                      
-#SBATCH -o ./Testing/logs/compare.out
+#SBATCH -t 0:30:00
+#SBATCH -o ./Testing/logs/wind_compare.out
 
 OPTIMIZATION=$1     # $1 is the first word after script name, ex: bugfix
-CASE_OVERRIDE=${2:-okc}
-NTRIALS=10          
-CASE=~/QES/QES-Public/tests/runTestsFiles/winds_OklahomaCity.xml   
-THREADS="1 16 64"
-
-if [ "$CASE_OVERRIDE" = slc ]; then 
-  CASE=~/QES/QES-Public/tests/runTestsFiles/winds_SaltLakeCity.xml; THREADS="16 64"; NTRIALS=3; 
-fi
 
 
 BASELINE=~/QES/build-public/qesWinds/qesWinds                     
@@ -28,13 +20,11 @@ cd ~/QES
 source QES-Public/CHPC/loadmodules_QES.sh
 export OMP_PLACES=cores OMP_PROC_BIND=close    # keeps each thread on its own core    
 
-LOG=~/QES/Testing/logs/$(date +%Y-%m-%d_%H-%M-%S)_${OPTIMIZATION}_${CASE_OVERRIDE}.log
+LOG=~/QES/Testing/logs/$(date +%Y-%m-%d_%H-%M-%S)_${OPTIMIZATION}.log
 echo "Summary will be written to: $LOG"    
 exec > "$LOG" 2>&1
 
 
-# collect_results "<program and flags>": runs QES once and collects its results:
-# TIME (the solver's own elapsed time, in seconds) and RESID (the residual it printed)
 collect_results() {
   OUTPUT=$($1 -q $CASE 2>/dev/null)
   RESID=$(echo "$OUTPUT" | awk '/Residual after/ {print $NF}')
@@ -42,16 +32,23 @@ collect_results() {
 }
 
 echo "QES-Public vs $OPTIMIZATION"
-echo "Input wind field: $CASE"
 echo "Node $SLURMD_NODENAME, job $SLURM_JOB_ID, $(date)"
+
+for CASE_NAME in okc slc; do
+if [ "$CASE_NAME" = slc ]; then
+  CASE=~/QES/QES-Public/tests/runTestsFiles/winds_SaltLakeCity.xml; THREADS="16 64"; NTRIALS=3
+else
+  CASE=~/QES/QES-Public/tests/runTestsFiles/winds_OklahomaCity.xml; THREADS="1 16 64"; NTRIALS=10
+fi
+echo
+echo "===== $CASE_NAME: $CASE ====="
 
 for NT in $THREADS; do
   export OMP_NUM_THREADS=$NT   
-  # warmup runs, not timed; the optimization's also saves its u, v, w
   $BASELINE -q $CASE > /dev/null 2>&1
-  OPT_OUT=~/QES/Testing/runs/cpu/$OPTIMIZATION/${CASE_OVERRIDE}_${NT}threads
+  OPT_OUT=~/QES/Testing/runs/cpu/$OPTIMIZATION/${CASE_NAME}_${NT}threads
   mkdir -p $OPT_OUT
-  if ! $OPTIMIZED -c $OPTIMIZATION -q $CASE -o $OPT_OUT/$CASE_OVERRIDE -w > /dev/null 2>&1; then
+  if ! $OPTIMIZED -c $OPTIMIZATION -q $CASE -o $OPT_OUT/$CASE_NAME -w > /dev/null 2>&1; then
     echo "ERROR: '$OPTIMIZATION' failed to run."
     exit 1
   fi
@@ -99,13 +96,16 @@ module load nccmp/1.9.1.0 > /dev/null 2>&1
 echo
 echo "Correctness: $OPTIMIZATION's u, v, w compared with QES-Public's, every value:"
 for NT in $THREADS; do
-  BASE_FILE=~/QES/Testing/runs/public/${CASE_OVERRIDE}_${NT}threads/${CASE_OVERRIDE}_windsWk.nc
-  OPT_FILE=~/QES/Testing/runs/cpu/$OPTIMIZATION/${CASE_OVERRIDE}_${NT}threads/${CASE_OVERRIDE}_windsWk.nc
+  BASE_FILE=~/QES/Testing/runs/public/${CASE_NAME}_${NT}threads/${CASE_NAME}_windsWk.nc
+  OPT_FILE=~/QES/Testing/runs/cpu/$OPTIMIZATION/${CASE_NAME}_${NT}threads/${CASE_NAME}_windsWk.nc
   if nccmp -d -S -f -q -v u,v,w $BASE_FILE $OPT_FILE; then
     echo "  $NT thread(s): IDENTICAL"
   else
     echo "  $NT thread(s): DIFFERENT (see the table above)"
   fi
-  if [ "$CASE_OVERRIDE" = slc ]; then rm -f $OPT_FILE ${OPT_FILE%Wk.nc}Out.nc; fi
+  if [ "$CASE_NAME" = slc ]; then rm -f $OPT_FILE ${OPT_FILE%Wk.nc}Out.nc; fi
 done
+# reload QES's exact modules before the next case
+source ~/QES/QES-Public/CHPC/loadmodules_QES.sh > /dev/null 2>&1
+done  
 

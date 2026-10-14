@@ -3,17 +3,17 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --partition=coe-class-grn
-#SBATCH --qos=coe-class-shortbatch-grn
+#SBATCH --qos=coe-students-grn          
 #SBATCH --account=cs6230
 #SBATCH --cpus-per-task=64
 #SBATCH --exclusive 
-#SBATCH -t 0:10:00
+#SBATCH -t 0:30:00
 #SBATCH -o ./Testing/logs/run.out
 echo "*** Assigned Granite Node: " $SLURMD_NODENAME 
 cd ~/QES
 source QES-Public/CHPC/loadmodules_QES.sh
 export OMP_PLACES=cores OMP_PROC_BIND=close
-CASE_NAME=${1:-okc}
+for CASE_NAME in okc slc; do
 CASE=~/QES/QES-Public/tests/runTestsFiles/winds_OklahomaCity.xml
 THREADS="1 16 64"
 if [ "$CASE_NAME" = slc ]; then
@@ -29,5 +29,6 @@ for NT in $THREADS; do
       -o ~/QES/Testing/runs/public/${CASE_NAME}_${NT}threads/${CASE_NAME} \
       -w
 done
+done  
 
 
