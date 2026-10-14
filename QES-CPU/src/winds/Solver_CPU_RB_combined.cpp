@@ -92,29 +92,67 @@ void Solver_CPU_RB_combined::solve(WINDSGeneralData *WGD, const int &itermax)
 
   std::cout << "[Solver]\t Running Red/Black CPU Solver (combined) ..." << std::endl;
 
-  while (iter < itermax && max_error > tol) {
+  int num_blocks_k = sqrt(omp_get_max_threads()); // TODO: Make work for threads that are not perfect squares
+  int num_blocks_j = num_blocks_k;
+  int planes_to_update = domain.nz() - 3;
+  int rows_to_update = domain.ny() -3;
+  int planes_to_check = domain.nz() - 2;
+  int rows_to_check = domain.ny() - 1;
 
-  max_error = 0.0;// Reset error value before error calculation
+  // one parallel region for the whole SOR loop
+  #pragma omp parallel private(icell_cent, icell_face, error) default(none) shared(WGD, lambda, lambda_old, max_error, R, iter, itermax, num_blocks_k, num_blocks_j, planes_to_update, rows_to_update, planes_to_check, rows_to_check)
+  {
 
-// Save previous iteration values for error calculation
-#pragma omp parallel private(icell_cent, icell_face, error) default(none) shared(WGD, lambda, lambda_old, max_error, R)
-    {
+    while (iter < itermax && max_error > tol) {
+
+// Copy lambda to lambda_old, block by block, so each thread copies the cells it checks later
 #pragma omp for
-      for (auto k = 0u; k < lambda.size(); ++k) {
-        lambda_old[k] = lambda[k];
+  for (int block = 0; block < num_blocks_k * num_blocks_j; ++block) {
+    int block_k = block / num_blocks_j;
+    int block_j = block % num_blocks_j;
+    int k_start = 1 + block_k * planes_to_check / num_blocks_k;
+    int k_end   = 1 + (block_k + 1) * planes_to_check / num_blocks_k;
+    int j_start = block_j * rows_to_check / num_blocks_j;// j starts at 0 here
+    int j_end   = (block_j + 1) * rows_to_check / num_blocks_j;
+
+    for (int k = k_start; k < k_end; ++k) {
+      for (int j = j_start; j < j_end; ++j) {
+        for (int i = 0; i < domain.nx() - 1; ++i) {
+          icell_cent = domain.cell(i, j, k);
+          lambda_old[icell_cent] = lambda[icell_cent];
+        }
       }
+    }
+  }
       // end of omp for (with implicit barrier)
 
+
+
+      #pragma omp single nowait
+      {
+        max_error = 0.0;
+        iter++;
+      }
 
       // main SOR formulation loop
 
       // Red nodes pass
 #pragma omp for
-      for (int k = 1; k < domain.nz() - 2; ++k) {
-        for (int j = 1; j < domain.ny() - 2; ++j) {
-          for (int i = 1; i < domain.nx() - 2; ++i) {
+  for (int block = 0; block < num_blocks_k * num_blocks_j; ++block) {
 
-            if (((i + j + k) % 2) == 0) {
+    // which block row and column this is
+    int block_k = block / num_blocks_j;
+    int block_j = block % num_blocks_j;
+
+    // which planes and rows this block is responsible for
+    int k_start = 1 + block_k * planes_to_update / num_blocks_k;
+    int k_end   = 1 + (block_k + 1) * planes_to_update / num_blocks_k;
+    int j_start = 1 + block_j * rows_to_update / num_blocks_j;
+    int j_end   = 1 + (block_j + 1) * rows_to_update / num_blocks_j;
+
+    for (int k = k_start; k < k_end; ++k) {
+      for (int j = j_start; j < j_end; ++j) {
+        for (int i =  (j + k) % 2  == 0 ? 2 : 1; i < domain.nx() - 2; i+=2) {
               // icell_cent = i + j * (WGD->nx - 1) + k * (WGD->nx - 1) * (WGD->ny - 1);
               icell_cent = domain.cell(i, j, k);
               lambda[icell_cent] = (omega / (WGD->e[icell_cent] + WGD->f[icell_cent] + WGD->g[icell_cent] + WGD->h[icell_cent] + WGD->m[icell_cent] + WGD->n[icell_cent]))
@@ -125,18 +163,25 @@ void Solver_CPU_RB_combined::solve(WINDSGeneralData *WGD, const int &itermax)
                                         + WGD->m[icell_cent] * lambda[domain.cellAdd(icell_cent, 0, 0, 1)]
                                         + WGD->n[icell_cent] * lambda[domain.cellAdd(icell_cent, 0, 0, -1)] - R[icell_cent])
                                    + (1.0f - omega) * lambda[icell_cent];// SOR formulation
-            }
           }
         }
       }
+    }
       // end of omp for (with implicit barrier)
 
       // Black nodes pass
 #pragma omp for
-      for (int k = 1; k < domain.nz() - 2; ++k) {
-        for (int j = 1; j < domain.ny() - 2; ++j) {
-          for (int i = 1; i < domain.nx() - 2; ++i) {
-            if (((i + j + k) % 2) == 1) {
+  for (int block = 0; block < num_blocks_k * num_blocks_j; ++block) {
+    int block_k = block / num_blocks_j;
+    int block_j = block % num_blocks_j;
+    int k_start = 1 + block_k * planes_to_update / num_blocks_k;
+    int k_end   = 1 + (block_k + 1) * planes_to_update / num_blocks_k;
+    int j_start = 1 + block_j * rows_to_update / num_blocks_j;
+    int j_end   = 1 + (block_j + 1) * rows_to_update / num_blocks_j;
+
+    for (int k = k_start; k < k_end; ++k) {
+      for (int j = j_start; j < j_end; ++j) {
+        for (int i = (j + k) % 2  == 0 ? 1 : 2; i < domain.nx() - 2; i+=2) {
               // icell_cent = i + j * (WGD->nx - 1) + k * (WGD->nx - 1) * (WGD->ny - 1);
               icell_cent = domain.cell(i, j, k);
               lambda[icell_cent] = (omega / (WGD->e[icell_cent] + WGD->f[icell_cent] + WGD->g[icell_cent] + WGD->h[icell_cent] + WGD->m[icell_cent] + WGD->n[icell_cent]))
@@ -148,13 +193,13 @@ void Solver_CPU_RB_combined::solve(WINDSGeneralData *WGD, const int &itermax)
                                         + WGD->n[icell_cent] * lambda[domain.cellAdd(icell_cent, 0, 0, -1)] - R[icell_cent])
                                    + (1.0f - omega) * lambda[icell_cent];// SOR formulation
             }
-          }
         }
       }
+    }
       // end of omp for (with implicit barrier)
 
       // Mirror boundary condition (lambda (@k=0) = lambda (@k=1))
-#pragma omp for
+#pragma omp for nowait
       for (int j = 0; j < domain.ny() - 1; ++j) {
         for (int i = 0; i < domain.nx() - 1; ++i) {
           // icell_cent = i + j * (WGD->nx - 1);// Lineralized index for cell centered values
@@ -162,28 +207,33 @@ void Solver_CPU_RB_combined::solve(WINDSGeneralData *WGD, const int &itermax)
           lambda[icell_cent] = lambda[domain.cellAdd(icell_cent, 0, 0, 1)];
         }
       }
-      // end of omp for (with implicit barrier)
+      // end of omp for (no barrier)
 
       // Error calculation
-#pragma omp for reduction(max \
-                          : max_error)
-      for (int k = 1; k < domain.nz() - 1; ++k) {
-        for (int j = 0; j < domain.ny() - 1; ++j) {
-          for (int i = 0; i < domain.nx() - 1; ++i) {
-            // icell_cent = i + j * (WGD->nx - 1) + k * (WGD->nx - 1) * (WGD->ny - 1);// Lineralized index for cell centered values
-            icell_cent = domain.cell(i, j, k);
-            error = fabs(lambda[icell_cent] - lambda_old[icell_cent]);
-            if (error > max_error) {
-              max_error = error;
-            }
+#pragma omp for reduction(max : max_error)
+  for (int block = 0; block < num_blocks_k * num_blocks_j; ++block) {
+    int block_k = block / num_blocks_j;
+    int block_j = block % num_blocks_j;
+    int k_start = 1 + block_k * planes_to_check / num_blocks_k;
+    int k_end   = 1 + (block_k + 1) * planes_to_check / num_blocks_k;
+    int j_start = block_j * rows_to_check / num_blocks_j;// j starts at 0 here
+    int j_end   = (block_j + 1) * rows_to_check / num_blocks_j;
+
+    for (int k = k_start; k < k_end; ++k) {
+      for (int j = j_start; j < j_end; ++j) {
+        for (int i = 0; i < domain.nx() - 1; ++i) {
+          icell_cent = domain.cell(i, j, k);
+          error = fabs(lambda[icell_cent] - lambda_old[icell_cent]);
+          if (error > max_error) {
+            max_error = error;
           }
         }
       }
-      // end of omp for (with implicit barrier)
     }
-    // end of omp parallel workshare
-    iter += 1;
   }
+      // end of omp for (with implicit barrier)
+    }// end of while
+  }// end of omp parallel
 
   // std::cout << "Solved!\n";
 
@@ -284,6 +334,7 @@ void Solver_CPU_RB_combined::solve(WINDSGeneralData *WGD, const int &itermax)
     }
     // end of omp for (with implicit barrier)
   }
+  
   auto finish = std::chrono::high_resolution_clock::now();// Finish recording execution time
   std::chrono::duration<float> elapsedTotal = finish - startOfSolveMethod;
   std::chrono::duration<float> elapsedSolve = finish - startSolveSection;
