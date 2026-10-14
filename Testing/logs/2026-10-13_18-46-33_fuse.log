@@ -1,0 +1,52 @@
+QES-Public vs fuse
+Node grn053, job 2169580, Tue Oct 13 18:46:33 MDT 2026
+
+===== okc: /uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/winds_OklahomaCity.xml =====
+
+Solver time in seconds, 10 alternating trials of each:
+1 thread(s):
+  QES-Public:  Min: 3.7052  Max: 3.7270  Avg: 3.7166
+  fuse:  Min: 2.8107  Max: 2.8220  Avg: 2.8162
+  Speedup (avg): 1.32x
+  Residual: QES-Public 0.032714844, fuse 0.032714844 (match)
+
+Solver time in seconds, 10 alternating trials of each:
+16 thread(s):
+  QES-Public:  Min: 0.3799  Max: 0.4154  Avg: 0.3989
+  fuse:  Min: 0.3146  Max: 0.3610  Avg: 0.3373
+  Speedup (avg): 1.18x
+  Residual: QES-Public 0.032714844, fuse 0.032714844 (match)
+
+Solver time in seconds, 10 alternating trials of each:
+64 thread(s):
+  QES-Public:  Min: 0.4912  Max: 0.5198  Avg: 0.5009
+  fuse:  Min: 0.4518  Max: 0.4624  Avg: 0.4578
+  Speedup (avg): 1.09x
+  Residual: QES-Public 0.032714844, fuse 0.032714844 (match)
+
+Correctness: fuse's u, v, w compared with QES-Public's, every value:
+  1 thread(s): IDENTICAL
+  16 thread(s): IDENTICAL
+  64 thread(s): IDENTICAL
+
+===== slc: /uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/winds_SaltLakeCity.xml =====
+
+Solver time in seconds, 3 alternating trials of each:
+16 thread(s):
+  QES-Public:  Min: 17.4265  Max: 17.5382  Avg: 17.4872
+  fuse:  Min: 12.9469  Max: 13.0833  Avg: 13.0111
+  Speedup (avg): 1.34x
+  Residual: QES-Public 0.121520996, fuse 0.121520996 (match)
+
+Solver time in seconds, 3 alternating trials of each:
+64 thread(s):
+  QES-Public:  Min: 10.0439  Max: 10.2422  Avg: 10.1464
+  fuse:  Min: 7.8595  Max: 7.8744  Avg: 7.8658
+  Speedup (avg): 1.29x
+  Residual: QES-Public 0.121520996, fuse 0.121520996 (match)
+
+Correctness: fuse's u, v, w compared with QES-Public's, every value:
+2026-10-13 18:54:29.353171 -0600 ERROR /scratch/local/hpcapps/spack-stage/spack-stage-nccmp-1.9.1.0-5wurbmatrtbvi5xjdzeuwejpumbzsjog/spack-src/src/nccmp_state.c:163 File not found: /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/cpu/fuse/slc_16threads/slc_windsWk.nc
+  16 thread(s): DIFFERENT (see the table above)
+2026-10-13 18:54:29.411952 -0600 ERROR /scratch/local/hpcapps/spack-stage/spack-stage-nccmp-1.9.1.0-5wurbmatrtbvi5xjdzeuwejpumbzsjog/spack-src/src/nccmp_state.c:163 File not found: /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/runs/cpu/fuse/slc_64threads/slc_windsWk.nc
+  64 thread(s): DIFFERENT (see the table above)

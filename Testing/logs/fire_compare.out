@@ -1,0 +1,15 @@
+--------------------------------------------------------------------------------
+Load module for QES on UTAH CHPC cluster
+
+Currently Loaded Modules:
+  1) cuda/11.8.0  (g)   4) zlib/1.2.13    7) hdf5/1.14.3
+  2) cmake/3.21.4       5) boost/1.83.0   8) netcdf-c/4.9.2
+  3) gcc/11.2.0         6) gdal/3.8.5     9) netcdf-cxx/4.2
+
+  Where:
+   g:  built for GPU
+
+ 
+
+--------------------------------------------------------------------------------
+Summary will be written to: /uufs/chpc.utah.edu/common/home/u1417379/QES/Testing/logs/2026-10-13_18-14-02_fire_f_parallel_c_blocks_tiny.log

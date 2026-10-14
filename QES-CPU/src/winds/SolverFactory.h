@@ -41,8 +41,7 @@
 #include "Solver_CPU_RB_collapse.h"
 #include "Solver_CPU_RB_oneregion.h"
 #include "Solver_CPU_RB_blocks.h"
-#include "Solver_CPU_RB_hoist.h"
-#include "Solver_CPU_RB_numa.h"
+#include "Solver_CPU_RB_combined.h"
 #ifdef HAS_CUDA
 // While we get this verified on CUDA 12.8, we will
 // replace use of it with the GlobalMemory solver.

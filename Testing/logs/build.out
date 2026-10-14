@@ -6,8 +6,8 @@
 Shell debugging temporarily silenced: export LMOD_SH_DBG_ON=1 for this output (/uufs/chpc.utah.edu/sys/installdir/lmod/9.4.2-r8/init/bash)
 Shell debugging restarted
 + unset __lmod_vx
-+ echo '*** Assigned Granite Node: ' grn059
-*** Assigned Granite Node:  grn059
++ echo '*** Assigned Granite Node: ' grn055
+*** Assigned Granite Node:  grn055
 + cd /uufs/chpc.utah.edu/common/home/u1417379/QES
 + source QES-Public/CHPC/loadmodules_QES.sh
 ++ echo --------------------------------------------------------------------------------
@@ -41,8 +41,6 @@ Shell debugging restarted
 ++ '[' -n x ']'
 ++ set +x
 Shell debugging temporarily silenced: export LMOD_SH_DBG_ON=1 for Lmod's output
-[ 28%] Linking CXX static library libqeswindscore.a
-make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
 Shell debugging restarted
 ++ unset __lmod_sh_dbg
 ++ return 0
@@ -53,12 +51,6 @@ Shell debugging restarted
 ++ '[' -n x ']'
 ++ set +x
 Shell debugging temporarily silenced: export LMOD_SH_DBG_ON=1 for Lmod's output
-[ 96%] Built target qeswindscore
-make[3]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
-Consolidate compiler generated dependencies of target qesWinds
-make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
-make[3]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
-[ 98%] Linking CXX executable qesWinds
 Shell debugging restarted
 ++ unset __lmod_sh_dbg
 ++ return 0
@@ -69,11 +61,6 @@ Shell debugging restarted
 ++ '[' -n x ']'
 ++ set +x
 Shell debugging temporarily silenced: export LMOD_SH_DBG_ON=1 for Lmod's output
-make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
-[100%] Built target qesWinds
-make[2]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
-make[1]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
-make: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
 Shell debugging restarted
 ++ unset __lmod_sh_dbg
 ++ return 0
@@ -156,7 +143,7 @@ CMake Warning at CMakeLists.txt:425 (MESSAGE):
 -- Configuring done
 -- Generating done
 -- Build files have been written to: /uufs/chpc.utah.edu/common/home/u1417379/QES/build-public
-+ make -C build-public -j16 qesWinds
++ make -C build-public -j16 qesWinds qesFire
 make: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-public'
 make[1]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-public'
 make[2]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-public'
@@ -164,14 +151,36 @@ make[3]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-
 make[3]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-public'
 Consolidate compiler generated dependencies of target qesutil
 make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-public'
-[ 29%] Built target qesutil
 Consolidate compiler generated dependencies of target qeswindscore
 make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-public'
+[ 29%] Built target qesutil
 [ 94%] Built target qeswindscore
 make[3]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-public'
 Consolidate compiler generated dependencies of target qesWinds
 make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-public'
 [100%] Built target qesWinds
+make[2]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-public'
+make[1]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-public'
+make[1]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-public'
+make[2]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-public'
+make[3]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-public'
+make[3]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-public'
+make[3]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-public'
+make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-public'
+make[3]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-public'
+[ 17%] Built target qesutil
+make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-public'
+Consolidate compiler generated dependencies of target qesfirecore
+make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-public'
+[ 57%] Built target qesfirecore
+Consolidate compiler generated dependencies of target qesplumecore
+make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-public'
+[ 69%] Built target qeswindscore
+[ 97%] Built target qesplumecore
+make[3]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-public'
+Consolidate compiler generated dependencies of target qesFire
+make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-public'
+[100%] Built target qesFire
 make[2]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-public'
 make[1]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-public'
 make: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-public'
@@ -200,7 +209,7 @@ CMake Warning at CMakeLists.txt:425 (MESSAGE):
 -- Configuring done
 -- Generating done
 -- Build files have been written to: /uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu
-+ make -C build-cpu -j16 qesWinds
++ make -C build-cpu -j16 qesWinds qesFire
 make: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
 make[1]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
 make[2]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
@@ -208,7 +217,7 @@ make[3]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-
 make[3]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
 Consolidate compiler generated dependencies of target qesutil
 make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
-[ 25%] Built target qesutil
+[ 26%] Built target qesutil
 Consolidate compiler generated dependencies of target qeswindscore
 make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
 [ 96%] Built target qeswindscore
@@ -216,6 +225,28 @@ make[3]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-
 Consolidate compiler generated dependencies of target qesWinds
 make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
 [100%] Built target qesWinds
+make[2]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
+make[1]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
+make[1]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
+make[2]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
+make[3]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
+make[3]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
+make[3]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
+make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
+make[3]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
+[ 16%] Built target qesutil
+make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
+Consolidate compiler generated dependencies of target qesfirecore
+make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
+Consolidate compiler generated dependencies of target qesplumecore
+make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
+[ 63%] Built target qesfirecore
+[ 71%] Built target qeswindscore
+[ 97%] Built target qesplumecore
+make[3]: Entering directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
+Consolidate compiler generated dependencies of target qesFire
+make[3]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
+[100%] Built target qesFire
 make[2]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
 make[1]: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'
 make: Leaving directory '/uufs/chpc.utah.edu/common/home/u1417379/QES/build-cpu'

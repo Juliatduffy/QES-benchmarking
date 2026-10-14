@@ -127,7 +127,10 @@ int main(int argc, char *argv[])
   // //////////////////////////////////////////
   // Set the QES-Winds Solver
   SolverFactory solverFactory;
-  Solver *solver = solverFactory.create(arguments.solveType, WGD->domain, WID->simParams->tolerance);
+  Solver *solver = solverFactory.create(arguments.solveType, WGD->domain, WID->simParams->tolerance, arguments.windOptimization);
+  if (arguments.firePotential != "" && arguments.firePotential != "parallel") {
+    QESout::error("Unknown firePotential: "+ arguments.firePotential);
+  }
 
   /**
    * Time variables to track fire time and sensor timesteps
@@ -245,7 +248,11 @@ int main(int argc, char *argv[])
         /**
          * Calculate fire-induced winds from burning cells
          */
-        fire->potential(WGD);
+        if (arguments.firePotential == "parallel") {
+          fire->potentialParallel(WGD);
+        } else {
+          fire->potential(WGD);
+        }
       }
       std::cout << "-------------------------------------------------------------------" << std::endl;
       /**

@@ -1,10 +1,10 @@
 # How the timing scripts work
 
 ## Quick start (always run from `~/QES`)
-- `sbatch build.sh`: compile both QES-Public (the unchanged original code) and QES-CPU (my version with the optimizations). Run it after any code change.
+- `sbatch build.sh`: compile both QES-Public (the unchanged original code) and QES-CPU (the copy with the optimizations). Run it after any code change.
 - `sbatch run.sh`: run the unchanged QES-Public code on both test cases and save its output. This is the reference answer every optimization is checked against.
-- `sbatch wind_compare.sh blocks`: time QES-Public against my `blocks` wind solver on both test cases, then check that `blocks` gives exactly the same wind field.
-- `sbatch fire_compare.sh -f blocks`: time the fire model, QES-Public against my parallel fire code plus the `blocks` wind solver, then check that every fire output is the same.
+- `sbatch wind_compare.sh blocks`: time QES-Public against the `blocks` wind solver in QES-CPU on both test cases, then check that `blocks` gives exactly the same wind field.
+- `sbatch fire_compare.sh -f blocks`: time the fire model, QES-Public against QES-CPU's parallel fire code plus the `blocks` wind solver, then check that every fire output is the same.
 - **Safest way after a code change:** build, and only start the comparison if the build worked:
   ```bash
   B=$(sbatch --parsable build.sh | cut -d';' -f1)
@@ -26,7 +26,7 @@
   - **`fire_tiny.xml`:** 3 s, 2 steps. Used for a quick correctness check.
 - **The programs:**
   - `build-public/qesWinds/qesWinds` and `build-public/qesFire/qesFire`: QES-Public, the original, never modified (the baseline)
-  - `build-cpu/qesWinds/qesWinds` and `build-cpu/qesFire/qesFire`: QES-CPU, my copy, containing all my optimized versions
+  - `build-cpu/qesWinds/qesWinds` and `build-cpu/qesFire/qesFire`: QES-CPU, the working copy, containing all the optimized versions
 
 ## `build.sh`: compile both programs
 - Loads the compiler and libraries QES needs (the gcc 11.2, netcdf, gdal and boost modules from `QES-Public/CHPC/loadmodules_QES.sh`).
@@ -52,12 +52,12 @@
 - Uses the long QOS (`coe-students-grn`, 30-minute limit). Its output goes to `Testing/logs/run.out`.
 
 ## `wind_compare.sh <optimization>`: timing
-The name you give (e.g. `blocks`) chooses which of my solver versions runs. The script does OKC first (1, 16 and 64 threads, 10 trials), then SLC (16 and 64 threads, 3 trials, because each SLC run is slow). For each thread count:
+The name you give (e.g. `blocks`) chooses which QES-CPU solver version runs. The script does OKC first (1, 16 and 64 threads, 10 trials), then SLC (16 and 64 threads, 3 trials, because each SLC run is slow). For each thread count:
 1. **Warm-up (not timed):**
    - Each program runs once, so files are cached and the node is warmed up before timing starts.
-   - My version's warm-up also saves its wind field to `Testing/runs/cpu/<optimization>/<case>_<N>threads/`, for the correctness check.
+   - The optimized version's warm-up also saves its wind field to `Testing/runs/cpu/<optimization>/<case>_<N>threads/`, for the correctness check.
 2. **Timed trials:**
-   - Each trial runs QES-Public once, then my version once.
+   - Each trial runs QES-Public once, then the optimized version once.
    - The two alternate, so both see the same node conditions. Otherwise, a slow start to the job would make whichever version runs first look slower.
 3. **The time:**
    - QES measures its own solver time, which leaves out reading the input and writing files.
@@ -65,16 +65,16 @@ The name you give (e.g. `blocks`) chooses which of my solver versions runs. The 
    - `collect_results` runs the program once and uses `awk` to pull out two numbers: that time and the residual.
 4. **Report:**
    - Min, Max and Avg time for each version, with the math done by `bc`.
-   - Speedup = QES-Public's average ÷ my version's average. Above 1.00 means mine is faster.
+   - Speedup = QES-Public's average ÷ the optimized version's average. Above 1.00 means the optimized version is faster.
    - Whether the two residuals match: a quick sanity check that both did the same math.
 
 ## `wind_compare.sh`: correctness
-- After each case's timing, `nccmp` compares my version's saved wind field with QES-Public's golden file for the same case and thread count.
+- After each case's timing, `nccmp` compares the optimized version's saved wind field with QES-Public's golden file for the same case and thread count.
 - It checks every `u`, `v` and `w` value bit for bit: about 1.2 million each for OKC, 49 million for SLC.
-- `IDENTICAL` means my version computed exactly the same answer as the original.
+- `IDENTICAL` means the optimized version computed exactly the same answer as the original.
 - `DIFFERENT` prints a table: how many values differ (Count), and the smallest and largest difference (Min, Max).
 - The residual alone isn't enough: two different answers can print the same residual. `nccmp` is the real test.
-- My SLC output files are deleted right after checking (4.6 GB each); the OKC ones are kept.
+- The optimized version's SLC output files are deleted right after checking (4.6 GB each); the OKC ones are kept.
 - Loading `nccmp` swaps one of QES's libraries, so the script reloads QES's modules before starting the next case.
 
 ## `wind_compare.sh`: output and run time
@@ -89,7 +89,7 @@ The name you give (e.g. `blocks`) chooses which of my solver versions runs. The 
 
 ## `fire_compare.sh [-f] <optimization> [short|tiny]`: fire timing and correctness
 - **Arguments:**
-  - **`-f`** (optional): use my parallel fire code (`QES-CPU/src/fire/PotentialParallel.cpp`) instead of the original serial one.
+  - **`-f`** (optional): use QES-CPU's parallel fire code (`QES-CPU/src/fire/PotentialParallel.cpp`) instead of the original serial one.
   - **`<optimization>`:** the wind solver version to use, the same names as `wind_compare.sh`.
   - **`short`** (default) or **`tiny`:** which input to use.
 - **Examples:**
@@ -98,7 +98,7 @@ The name you give (e.g. `blocks`) chooses which of my solver versions runs. The 
   - `sbatch fire_compare.sh blocks`: original fire code + `blocks`. This shows that a faster wind solver alone barely helps (Amdahl's law), because the fire code takes ~96% of the time.
 - **What a fire run does:** each fire time step computes the fire-induced winds (the "potential"), runs a full wind solve, then moves the fire front.
 - **Trials:**
-  - At 16 and 64 threads, QES-Public's qesFire and mine run alternately: 3 trials for `short`, 1 for `tiny`.
+  - At 16 and 64 threads, QES-Public's qesFire and QES-CPU's run alternately: 3 trials for `short`, 1 for `tiny`.
   - There's no warm-up run, because each run takes minutes.
   - One QES-Public `fire_short` run takes about 5 minutes.
 - **The times** (from QES's own `elapsed time` lines, summed over all fire steps, without setup or file writing):
@@ -115,7 +115,7 @@ The name you give (e.g. `blocks`) chooses which of my solver versions runs. The 
 - **Wind solver:** QES-CPU's `qesWinds` and `qesFire` have an extra flag, `-c <name>` (long form `--windOptimization <name>`). QES-Public doesn't have it.
   - `QES-CPU/src/winds/SolverFactory.cpp` reads the name and creates the matching solver class.
   - **No `-c`:** the original solver, the same code as QES-Public.
-  - **`-c bugfix`, `checkerboard`, `fuse`, `collapse`, `oneregion`, `blocks`, `numa`:** my versions. Each one is `Solver_CPU_RB_<name>`.
+  - **`-c bugfix`, `checkerboard`, `fuse`, `collapse`, `oneregion`, `blocks`, `combined`:** the optimized versions. Each one is `Solver_CPU_RB_<name>`.
   - **Unknown name:** QES stops with `Unknown windOptimization '<name>'` and lists the valid names.
 - **Fire code:** QES-CPU's `qesFire` also has `-f parallel` (long form `--firePotential parallel`), which calls `Fire::potentialParallel` instead of the original. An unknown name is an error.
 - **How the scripts use them:**

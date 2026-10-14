@@ -1,0 +1,50 @@
+QES-Public vs bugfix
+Node grn060, job 2169572, Tue Oct 13 18:46:09 MDT 2026
+
+===== okc: /uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/winds_OklahomaCity.xml =====
+
+Solver time in seconds, 10 alternating trials of each:
+1 thread(s):
+  QES-Public:  Min: 3.7131  Max: 4.6341  Avg: 3.8983
+  bugfix:  Min: 3.7959  Max: 4.8175  Avg: 3.9980
+  Speedup (avg): 0.98x
+  Residual: QES-Public 0.032714844, bugfix 0.032714844 (match)
+
+Solver time in seconds, 10 alternating trials of each:
+16 thread(s):
+  QES-Public:  Min: 0.3757  Max: 0.3828  Avg: 0.3786
+  bugfix:  Min: 0.3885  Max: 0.4032  Avg: 0.3959
+  Speedup (avg): 0.96x
+  Residual: QES-Public 0.032714844, bugfix 0.032714844 (match)
+
+Solver time in seconds, 10 alternating trials of each:
+64 thread(s):
+  QES-Public:  Min: 0.4898  Max: 0.4996  Avg: 0.4946
+  bugfix:  Min: 0.4907  Max: 0.5004  Avg: 0.4967
+  Speedup (avg): 1.00x
+  Residual: QES-Public 0.032714844, bugfix 0.032714844 (match)
+
+Correctness: bugfix's u, v, w compared with QES-Public's, every value:
+  1 thread(s): IDENTICAL
+  16 thread(s): IDENTICAL
+  64 thread(s): IDENTICAL
+
+===== slc: /uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/winds_SaltLakeCity.xml =====
+
+Solver time in seconds, 3 alternating trials of each:
+16 thread(s):
+  QES-Public:  Min: 17.2102  Max: 17.4099  Avg: 17.2780
+  bugfix:  Min: 17.1611  Max: 17.2924  Avg: 17.2326
+  Speedup (avg): 1.00x
+  Residual: QES-Public 0.121520996, bugfix 0.121520996 (match)
+
+Solver time in seconds, 3 alternating trials of each:
+64 thread(s):
+  QES-Public:  Min: 10.0503  Max: 10.1733  Avg: 10.1231
+  bugfix:  Min: 9.9854  Max: 10.1574  Avg: 10.0579
+  Speedup (avg): 1.01x
+  Residual: QES-Public 0.121520996, bugfix 0.121520996 (match)
+
+Correctness: bugfix's u, v, w compared with QES-Public's, every value:
+  16 thread(s): IDENTICAL
+  64 thread(s): IDENTICAL

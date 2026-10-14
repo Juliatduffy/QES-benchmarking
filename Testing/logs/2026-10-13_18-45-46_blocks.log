@@ -1,0 +1,41 @@
+QES-Public vs blocks
+Node grn058, job 2169570, Tue Oct 13 18:45:46 MDT 2026
+
+===== okc: /uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/winds_OklahomaCity.xml =====
+
+Solver time in seconds, 10 alternating trials of each:
+1 thread(s):
+  QES-Public:  Min: 3.7162  Max: 3.7390  Avg: 3.7269
+  blocks:  Min: 4.1514  Max: 4.1595  Avg: 4.1547
+  Speedup (avg): 0.90x
+  Residual: QES-Public 0.032714844, blocks 0.032714844 (match)
+
+Solver time in seconds, 10 alternating trials of each:
+16 thread(s):
+  QES-Public:  Min: 0.3782  Max: 0.3821  Avg: 0.3800
+  blocks:  Min: 0.4270  Max: 0.4498  Avg: 0.4322
+  Speedup (avg): 0.88x
+  Residual: QES-Public 0.032714844, blocks 0.032714844 (match)
+
+Solver time in seconds, 10 alternating trials of each:
+64 thread(s):
+  QES-Public:  Min: 0.4887  Max: 0.4946  Avg: 0.4923
+  blocks:  Min: 0.2659  Max: 0.2692  Avg: 0.2677
+  Speedup (avg): 1.84x
+  Residual: QES-Public 0.032714844, blocks 0.032714844 (match)
+
+Correctness: blocks's u, v, w compared with QES-Public's, every value:
+  1 thread(s): IDENTICAL
+  16 thread(s): IDENTICAL
+  64 thread(s): IDENTICAL
+
+===== slc: /uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/winds_SaltLakeCity.xml =====
+
+Solver time in seconds, 3 alternating trials of each:
+16 thread(s):
+  QES-Public:  Min: 17.0884  Max: 17.3412  Avg: 17.2212
+  blocks:  Min: 17.1891  Max: 17.2891  Avg: 17.2294
+  Speedup (avg): 1.00x
+  Residual: QES-Public 0.121520996, blocks 0.121520996 (match)
+  64 thread(s): IDENTICAL
+/uufs/granite/sys/var/slurm/slurmd.spool/grn058//job2169570/slurm_script: line 102: echo: write error: Disk quota exceeded

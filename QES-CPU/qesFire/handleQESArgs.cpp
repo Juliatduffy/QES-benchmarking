@@ -69,6 +69,8 @@ QESArgs::QESArgs()
   reg("doParticleDataOutput", "should debug Lagrangian data be output", ArgumentParsing::NONE, 'l');
   reg("fireout", "Turns on the netcdf fire output", ArgumentParsing::NONE, 'b');
   // command line to turn off fire-induced winds
+  reg("windOptimization", "wind solver optimization to use", ArgumentParsing::STRING, 'c');
+  reg("firePotential", "use parallel fire potential", ArgumentParsing::STRING, 'f');
   reg("fireWindsOff", "Turns off the fire-induced winds in the fire model", ArgumentParsing::NONE, 'i');
 }
 
@@ -93,6 +95,8 @@ void QESArgs::processArguments(int argc, char *argv[])
 
   solveWind = !isSet("windsolveroff");
   isSet("solvetype", solveType);
+  isSet("windOptimization", windOptimization);
+  isSet("firePotential", firePotential);
 #ifndef HAS_CUDA
   // if CUDA is not supported, force the solveType to be CPU no matter
   solveType = CPU_Type;
@@ -206,6 +210,8 @@ void QESArgs::processArguments(int argc, char *argv[])
   std::cout << "Turbulence model:\t " << (compTurb ? "ON" : "OFF") << std::endl;
   std::cout << "Plume model:\t\t " << (compPlume ? "ON" : "OFF") << std::endl;
   std::cout << "Fire model:\t\t ON" << std::endl;
+  std::cout << "Wind optimization:\t " << (windOptimization == "" ? "original" : windOptimization) << std::endl;
+  std::cout << "Fire potential:\t\t " << (firePotential == "" ? "serial" : firePotential) << std::endl;
   std::cout << "Fire induced winds: \t " << (!fireWindsFlag ? "ON" : "OFF") << std::endl;
   std::cout << "Verbose:\t\t " << (verbose ? "ON" : "OFF") << std::endl;
 

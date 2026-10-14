@@ -1,0 +1,50 @@
+QES-Public vs checkerboard
+Node grn054, job 2169573, Tue Oct 13 18:46:15 MDT 2026
+
+===== okc: /uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/winds_OklahomaCity.xml =====
+
+Solver time in seconds, 10 alternating trials of each:
+1 thread(s):
+  QES-Public:  Min: 3.7186  Max: 4.6705  Avg: 3.9569
+  checkerboard:  Min: 3.1577  Max: 4.0065  Avg: 3.3334
+  Speedup (avg): 1.19x
+  Residual: QES-Public 0.032714844, checkerboard 0.032714844 (match)
+
+Solver time in seconds, 10 alternating trials of each:
+16 thread(s):
+  QES-Public:  Min: 0.3782  Max: 0.4089  Avg: 0.3888
+  checkerboard:  Min: 0.3295  Max: 0.3558  Avg: 0.3402
+  Speedup (avg): 1.14x
+  Residual: QES-Public 0.032714844, checkerboard 0.032714844 (match)
+
+Solver time in seconds, 10 alternating trials of each:
+64 thread(s):
+  QES-Public:  Min: 0.4790  Max: 0.4951  Avg: 0.4863
+  checkerboard:  Min: 0.4873  Max: 0.4982  Avg: 0.4927
+  Speedup (avg): 0.99x
+  Residual: QES-Public 0.032714844, checkerboard 0.032714844 (match)
+
+Correctness: checkerboard's u, v, w compared with QES-Public's, every value:
+  1 thread(s): IDENTICAL
+  16 thread(s): IDENTICAL
+  64 thread(s): IDENTICAL
+
+===== slc: /uufs/chpc.utah.edu/common/home/u1417379/QES/QES-Public/tests/runTestsFiles/winds_SaltLakeCity.xml =====
+
+Solver time in seconds, 3 alternating trials of each:
+16 thread(s):
+  QES-Public:  Min: 17.2415  Max: 17.5204  Avg: 17.4257
+  checkerboard:  Min: 16.3593  Max: 16.6925  Avg: 16.4773
+  Speedup (avg): 1.06x
+  Residual: QES-Public 0.121520996, checkerboard 0.121520996 (match)
+
+Solver time in seconds, 3 alternating trials of each:
+64 thread(s):
+  QES-Public:  Min: 10.0339  Max: 10.2513  Avg: 10.1165
+  checkerboard:  Min: 9.8128  Max: 9.9739  Avg: 9.9019
+  Speedup (avg): 1.02x
+  Residual: QES-Public 0.121520996, checkerboard 0.121520996 (match)
+
+Correctness: checkerboard's u, v, w compared with QES-Public's, every value:
+  16 thread(s): IDENTICAL
+  64 thread(s): IDENTICAL
