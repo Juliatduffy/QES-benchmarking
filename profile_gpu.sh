@@ -13,27 +13,18 @@
 
 # run QES 3x per input file, each with a different profiling tool 
 # 1. timing test to see which files consume most runtime
-# 2. nsys to see which kernals take the longest
+# 2. ncu timing every kernel launch to see which kernels take the longest (wind inputs only)
 # 3. ncu to see where each kernel is stuck
-
-# format table
-nsys_table() {
-  sed 's/(.*//; s/"//g' "$1" | awk -F, '$1 ~ /^[0-9.]+$/ {printf "%6.1f %9.1f %6d  %s\n", $1, $2/1e6, $3, $NF}'
-}
 
 MACHINE=$1 # chpc or toby's pc
 if [ "$MACHINE" = chpc ]; then
   source $HOME/QES/QES-Public/CHPC/loadmodules_QES.sh
   ARCH=80
   WORK=/scratch/general/vast/$USER/gpu_profile
-  KERN_REPORT=gpukernsum               
-  COPY_REPORT=gpumemtimesum
 elif [ "$MACHINE" = pc ]; then
   ARCH=89
   EXTRA_CMAKE=""
   WORK=$HOME/gpu_profile
-  KERN_REPORT=cuda_gpu_kern_sum        
-  COPY_REPORT=cuda_gpu_mem_time_sum
 else
   echo "usage: profile_gpu.sh chpc|pc"
   exit 1
@@ -89,14 +80,13 @@ for CASE_NAME in okc slc fire ffii; do
   echo "stage times: seconds, count, stage"
   awk '/^\[/ {stage = $1" "$2" "$3} /elapsed time/ {total[stage] += $(NF-1); count[stage]++} END {for (s in total) printf "%9.3f %5d  %s\n", total[s], count[s], s}' $WORK/${CASE_NAME}_qes.txt | sort -rn
 
-  # 2. GPU time per kernel and per copy 
-  nsys profile -t cuda -f true -o $WORK/$CASE_NAME $CMD > /dev/null 2>&1
-  rm -f $WORK/$CASE_NAME.sqlite   # so nsys stats never reads an old run's data
-  nsys stats -r $KERN_REPORT,$COPY_REPORT -f csv -o $WORK/$CASE_NAME $WORK/$CASE_NAME.nsys-rep > /dev/null 2>&1
-  echo "GPU kernels (nsys): % of kernel time, total ms, launches, kernel"
-  nsys_table $WORK/${CASE_NAME}_$KERN_REPORT.csv
-  echo "copies (nsys): % of copy time, total ms, count, kind"
-  nsys_table $WORK/${CASE_NAME}_$COPY_REPORT.csv
+  # 2. GPU time per kernel: ncu times every launch (nsys sees no kernels under WSL)
+  #    wind inputs only: the fire runs launch hundreds of thousands of kernels, too slow under ncu
+  if [ "$CASE_NAME" = okc ] || [ "$CASE_NAME" = slc ]; then
+    ncu --metrics gpu__time_duration.sum --clock-control none -f -o $WORK/${CASE_NAME}_time $CMD > /dev/null 2>&1
+    echo "GPU kernels (ncu): % of kernel time, total ms, launches, kernel"
+    ncu -i $WORK/${CASE_NAME}_time.ncu-rep | awk '/Context [0-9]/ {kernel = $1; sub(/\(.*/, "", kernel)} /gpu__time_duration.sum/ {t = $NF; gsub(/,/, "", t); u = $(NF-1); if (u ~ /^(ns|nsecond)$/) t /= 1e6; if (u ~ /^(us|usecond)$/) t /= 1e3; if (u ~ /^(s|second)$/) t *= 1e3; ms[kernel] += t; n[kernel]++; all += t} END {for (k in ms) printf "%6.1f %9.1f %6d  %s\n", 100*ms[k]/all, ms[k], n[k], k}' | sort -rn
+  fi
 
   # 3. memory vs compute, averaged per kernel
   ncu --section SpeedOfLight $NCU_PICK -f -o $WORK/$CASE_NAME $CMD > /dev/null 2>&1
@@ -104,5 +94,5 @@ for CASE_NAME in okc slc fire ffii; do
   ncu -i $WORK/$CASE_NAME.ncu-rep | awk '/Context [0-9]/ {kernel = $1; sub(/\(.*/, "", kernel)} /DRAM Throughput/ {dram[kernel] += $NF; n[kernel]++} /Compute \(SM\) Throughput/ {sm[kernel] += $NF} END {for (k in n) printf "%6.1f %6.1f %6d  %s\n", dram[k]/n[k], sm[k]/n[k], n[k], k}' | sort -rn
 done
 
-# delete the big files keep <case>_qes.txt and the csv files 
-rm -f $WORK/out/*.nc $WORK/*.nsys-rep $WORK/*.sqlite $WORK/*.ncu-rep
+# delete the big files, keep <case>_qes.txt
+rm -f $WORK/out/*.nc $WORK/*.ncu-rep
