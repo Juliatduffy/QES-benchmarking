@@ -64,11 +64,14 @@ IF ($CACHE{HAS_CUDA_SUPPORT})
           # replace use of it with the GlobalMemory solver.
           #    Solver_GPU_DynamicParallelism.cu
           Solver_GPU_GlobalMemory.cu
+          Solver_GPU_FitFloat.cu
           Solver_GPU_SharedMemory.cu
           WINDSGeneralData.cu
           TURBGeneralData.cu
           WindProfilerBarnGPU.cu)
   ADD_LIBRARY(qeswindsgpu ${qesWindGPUSources})
+  # FitFloat study: the host-side packing uses OpenMP
+  SET_SOURCE_FILES_PROPERTIES(Solver_GPU_FitFloat.cu PROPERTIES COMPILE_OPTIONS "-Xcompiler=-fopenmp")
   TARGET_INCLUDE_DIRECTORIES(qeswindsgpu PRIVATE {CUDAToolkit_INCLUDE_DIRS})
   set_target_properties(qeswindsgpu PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 ENDIF ($CACHE{HAS_CUDA_SUPPORT})

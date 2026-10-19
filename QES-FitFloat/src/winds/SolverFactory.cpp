@@ -32,7 +32,7 @@
 
 #include "SolverFactory.h"
 
-Solver *SolverFactory::create(const int &solveType, const qes::Domain &domain, const float &tolerance)
+Solver *SolverFactory::create(const int &solveType, const qes::Domain &domain, const float &tolerance, const std::string &fitFloat)
 {
   Solver *solver = nullptr;
   if (solveType == CPU_Type) {
@@ -50,7 +50,13 @@ Solver *SolverFactory::create(const int &solveType, const qes::Domain &domain, c
     std::cout << "The Global Memory GPU solver will be used in place of the Dynamic Parallelism GPU Solver for the time being." << std::endl;
     solver = new Solver_GPU_GlobalMemory(domain, tolerance);
   } else if (solveType == Global_M) {
-    solver = new Solver_GPU_GlobalMemory(domain, tolerance);
+    if (fitFloat.empty()) {
+      solver = new Solver_GPU_GlobalMemory(domain, tolerance);
+    } else if (fitFloat == "ff-ctl" || fitFloat == "ff-en16" || fitFloat == "ff-en4" || fitFloat == "ff-r16" || fitFloat == "ff-en16r16") {
+      solver = new Solver_GPU_FitFloat(domain, tolerance, fitFloat);
+    } else {
+      QESout::error("Unknown FitFloat variant '" + fitFloat + "' (valid: ff-ctl, ff-en16, ff-en4, ff-r16, ff-en16r16)");
+    }
   } else if (solveType == Shared_M) {
     solver = new Solver_GPU_SharedMemory(domain, tolerance);
 #endif
