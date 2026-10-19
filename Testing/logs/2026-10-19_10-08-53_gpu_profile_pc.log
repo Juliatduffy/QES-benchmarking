@@ -1,0 +1,92 @@
+QES-Public GPU profile (-s 3)
+machine: pc   job: none   date: 2026-10-19 10:08
+GPU: NVIDIA GeForce RTX 4070 SUPER
+
+=== okc ===
+whole run: 0.494 s
+time by file: seconds, % of run, count, where, file (what)
+    0.296   59.8%     -  CPU      untimed: startup, reading input, writing output
+    0.133   27.0%     1  GPU      Solver_GPU_GlobalMemory.cu (wind solve)
+    0.035    7.1%     1  CPU      WINDSGeneralData.cpp (buildings from shapefile)
+    0.017    3.4%     1  CPU      WINDSGeneralData.cpp (solid walls)
+    0.011    2.2%     1  CPU      ESRIShapefile.cpp (read shapefile)
+    0.002    0.4%     1  CPU      WINDSGeneralData.cpp (wind profile)
+    0.000    0.1%     1  CPU      WINDSGeneralData.cpp (building parameterizations)
+GPU kernels (ncu): % of kernel time, total ms, launches, kernel
+  64.5      86.9   1000  SOR_RB_Global
+  26.6      35.8    500  calculateErrorGlobal2
+   4.9       6.6    500  saveLambdaGlobal
+   3.1       4.2      1  finalVelocityGlobal
+   0.6       0.9    500  applyNeumannBCGlobal
+   0.3       0.4      1  divergenceGlobal
+memory vs compute (ncu): DRAM %, SM %, launches measured, kernel
+  88.5   36.6      4  SOR_RB_Global
+  69.6   14.4      2  saveLambdaGlobal
+  38.5    5.4      1  calculateErrorGlobal2
+  14.2   83.7      1  divergenceGlobal
+   6.5    1.5      2  applyNeumannBCGlobal
+
+=== slc ===
+whole run: 9.560 s
+time by file: seconds, % of run, count, where, file (what)
+    5.381   56.3%     1  GPU      Solver_GPU_GlobalMemory.cu (wind solve)
+    2.258   23.6%     -  CPU      untimed: startup, reading input, writing output
+    1.465   15.3%     1  CPU      WINDSGeneralData.cpp (solid walls)
+    0.376    3.9%     1  CPU      WINDSGeneralData.cpp (building parameterizations)
+    0.073    0.8%     1  CPU      WINDSGeneralData.cpp (wind profile)
+    0.005    0.1%     1  CPU      WINDSGeneralData.cpp (buildings from shapefile)
+    0.002    0.0%     1  CPU      ESRIShapefile.cpp (read shapefile)
+GPU kernels (ncu): % of kernel time, total ms, launches, kernel
+  80.4    3727.4   1000  SOR_RB_Global
+   9.5     438.9    500  calculateErrorGlobal2
+   8.8     409.2    500  saveLambdaGlobal
+   0.8      37.2      1  finalVelocityGlobal
+   0.4      18.0      1  divergenceGlobal
+   0.1       3.1    500  applyNeumannBCGlobal
+memory vs compute (ncu): DRAM %, SM %, launches measured, kernel
+  95.8   13.3      1  calculateErrorGlobal2
+  94.7   35.0      4  SOR_RB_Global
+  91.0    9.8      2  saveLambdaGlobal
+  54.4   11.3      2  applyNeumannBCGlobal
+  15.8   85.0      1  divergenceGlobal
+
+=== fire ===
+whole run: 28.545 s
+time by file: seconds, % of run, count, where, file (what)
+   17.636   61.8%    49  GPU      Solver_GPU_GlobalMemory.cu (wind solve)
+    8.353   29.3%    48  GPU+CPU  PotentialGlobal.cu (plume winds)
+    1.574    5.5%     -  CPU      untimed: startup, reading input, writing output
+    0.786    2.8%    96  CPU      LevelSetNB.cpp (spread rate + heat)
+    0.062    0.2%    48  CPU      Move.cpp (move the fire front)
+    0.055    0.2%    49  CPU      WINDSGeneralData.cpp (building parameterizations)
+    0.048    0.2%     1  CPU      WINDSGeneralData.cpp (solid walls)
+    0.026    0.1%     1  GPU      LSinitGlob.cu (level set setup)
+    0.005    0.0%     1  CPU      WINDSGeneralData.cpp (wind profile)
+memory vs compute (ncu): DRAM %, SM %, launches measured, kernel
+  92.8   12.9      1  calculateErrorGlobal2
+  92.6   36.0      3  SOR_RB_Global
+  76.0   15.8      2  saveLambdaGlobal
+  35.8    7.3      1  applyNeumannBCGlobal
+  15.7   84.5      2  divergenceGlobal
+   7.3   84.3      1  finalVelocityGlobal
+   6.4   63.2      4  PotGlob
+
+=== ffii ===
+whole run: 33.844 s
+time by file: seconds, % of run, count, where, file (what)
+   16.982   50.2%   212  GPU      Solver_GPU_GlobalMemory.cu (wind solve)
+   13.239   39.1%   211  GPU+CPU  PotentialGlobal.cu (plume winds)
+    2.471    7.3%   422  CPU      LevelSetNB.cpp (spread rate + heat)
+    1.083    3.2%     -  CPU      untimed: startup, reading input, writing output
+    0.039    0.1%   212  CPU      WINDSGeneralData.cpp (building parameterizations)
+    0.019    0.1%   211  CPU      Move.cpp (move the fire front)
+    0.007    0.0%     1  CPU      WINDSGeneralData.cpp (solid walls)
+    0.003    0.0%     1  GPU      LSinitGlob.cu (level set setup)
+    0.001    0.0%     1  CPU      WINDSGeneralData.cpp (wind profile)
+memory vs compute (ncu): DRAM %, SM %, launches measured, kernel
+  76.6   31.5      4  SOR_RB_Global
+  57.5   12.0      2  saveLambdaGlobal
+  13.4   78.7      1  divergenceGlobal
+  10.9    1.9      1  calculateErrorGlobal2
+   5.3    1.2      2  applyNeumannBCGlobal
+   2.0   43.8      4  PotGlob

@@ -1,0 +1,4 @@
+QES-Public GPU profile (-s 3)
+machine: pc   job: none   date: 2026-10-19 08:45
+GPU: NVIDIA GeForce RTX 4070 SUPER
+build failed, see /home/juliatduffy/gpu_profile/build.txt

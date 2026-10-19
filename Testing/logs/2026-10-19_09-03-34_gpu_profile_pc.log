@@ -1,0 +1,79 @@
+QES-Public GPU profile (-s 3)
+machine: pc   job: none   date: 2026-10-19 09:03
+GPU: NVIDIA GeForce RTX 4070 SUPER
+
+=== okc ===
+whole run: 0.548 s
+stage times: seconds, count, stage
+    0.157     1  [Solver] Residual after
+    0.036     1  [QES-WINDS] Sorting buildings
+    0.017     1  [QES-WINDS] Defining solid
+    0.011     1  [ESRIShapefile] Loading completed.
+    0.002     1  [QES-WINDS] Applying Wind
+    0.000     1  [QES-WINDS] Applying parameterizations...
+GPU kernels (ncu): % of kernel time, total ms, launches, kernel
+  63.8      86.5   1000  SOR_RB_Global
+  27.5      37.3    500  calculateErrorGlobal2
+   4.8       6.5    500  saveLambdaGlobal
+   2.9       4.0      1  finalVelocityGlobal
+   0.6       0.8    500  applyNeumannBCGlobal
+   0.3       0.5      1  divergenceGlobal
+memory vs compute (ncu): DRAM %, SM %, launches measured, kernel
+  87.6   36.3      4  SOR_RB_Global
+  68.6   14.5      2  saveLambdaGlobal
+  37.0    4.2      1  calculateErrorGlobal2
+  14.5   83.7      1  divergenceGlobal
+   6.5    1.5      2  applyNeumannBCGlobal
+
+=== slc ===
+whole run: 9.599 s
+stage times: seconds, count, stage
+    5.409     1  [Solver] Residual after
+    1.489     1  [QES-WINDS] Defining solid
+    0.372     1  [QES-WINDS] Applying rooftop
+    0.073     1  [QES-WINDS] Applying Wind
+    0.005     1  [QES-WINDS] Sorting buildings
+    0.001     1  [ESRIShapefile] Loading completed.
+GPU kernels (ncu): % of kernel time, total ms, launches, kernel
+  80.5    3725.5   1000  SOR_RB_Global
+   9.4     436.0    500  calculateErrorGlobal2
+   8.8     409.4    500  saveLambdaGlobal
+   0.8      37.2      1  finalVelocityGlobal
+   0.4      18.0      1  divergenceGlobal
+   0.1       3.1    500  applyNeumannBCGlobal
+memory vs compute (ncu): DRAM %, SM %, launches measured, kernel
+  95.8   13.3      1  calculateErrorGlobal2
+  94.6   35.0      4  SOR_RB_Global
+  91.0   10.0      2  saveLambdaGlobal
+  54.3   11.5      2  applyNeumannBCGlobal
+  15.8   85.0      1  divergenceGlobal
+
+=== fire ===
+whole run: 28.570 s
+stage times: seconds, count, stage
+   27.060    48  [QES-Fire] Current time
+   17.679    49  [Solver] Residual after
+    8.415    48  [QES-Fire] GPU POTENTIAL
+    0.776    96  [QES-Fire] Computing level
+    0.068    48  [QES-Fire] dt =
+    0.058    49  [QES-WINDS] Applying parameterizations...
+    0.048     1  [QES-WINDS] Defining solid
+    0.026     1  [QES-Fire] LS init
+    0.005     1  [QES-WINDS] Applying Wind
+memory vs compute (ncu): DRAM %, SM %, launches measured, kernel
+   6.3   63.1      4  PotGlob
+
+=== ffii ===
+whole run: 33.749 s
+stage times: seconds, count, stage
+   33.348   211  [QES-Fire] Current time
+   17.430   212  [Solver] Residual after
+   13.305   211  [QES-Fire] GPU POTENTIAL
+    2.488   422  [QES-Fire] Computing level
+    0.040   212  [QES-WINDS] Applying parameterizations...
+    0.020   211  [QES-Fire] dt =
+    0.007     1  [QES-WINDS] Defining solid
+    0.004     1  [QES-Fire] LS init
+    0.001     1  [QES-WINDS] Applying Wind
+memory vs compute (ncu): DRAM %, SM %, launches measured, kernel
+   2.1   43.6      4  PotGlob
