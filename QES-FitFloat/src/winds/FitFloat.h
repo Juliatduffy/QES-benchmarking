@@ -560,10 +560,12 @@ class FitFloatArray
 
       backing_size = (size_in_bytes + sizeof(U) - 1) / sizeof(U) + 1;
 
-      cudaMallocManaged(&data, sizeof(U) * backing_size);
-      for (size_t idx = 0; idx < backing_size; idx++) {
-        data[idx] = 0;
-      }
+      // QES change (2026-10-19): plain device memory instead of cudaMallocManaged + a host zero-fill.
+      // Under WSL2 the GPU has no concurrent managed access, so managed arrays are never prefetched
+      // to the GPU (suspected cause of the 19x slower 32-bit control on the RTX 4070 SUPER).
+      // Fill it with cudaMemcpy(..., cudaMemcpyHostToDevice) or from a kernel.
+      cudaMalloc(&data, sizeof(U) * backing_size);
+      cudaMemset(data, 0, sizeof(U) * backing_size);
     }
 
     FitFloatArray(FitFloatArray& original) // copy constructor

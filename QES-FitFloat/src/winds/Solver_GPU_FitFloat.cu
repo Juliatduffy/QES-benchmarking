@@ -195,12 +195,23 @@ Solver_GPU_FitFloat::Solver_GPU_FitFloat(qes::Domain domain_in, const float &tol
   cudaSetDevice(0);
 }
 
+// Decodes every packed value on the GPU and counts the ones that differ (bitwise) from what the
+// CPU packer says they decode to. Must be 0, otherwise the GPU sees different coefficients.
+template<class C>
+__global__ void checkDecodeFF(C packed, const float *expected, long n, unsigned long long *mismatches)
+{
+  long id = (long)blockDim.x * blockIdx.x + threadIdx.x;
+  if (id < n && __float_as_uint((float)packed[id]) != __float_as_uint(expected[id])) {
+    atomicAdd(mismatches, 1ULL);
+  }
+}
+
 // Packs one coefficient array into a device FitFloat array with FitFloat's host packer.
 // Adds to `changed` (values that differ after packing), `out_of_range` (nonzero values that
-// became 0 or inf) and keeps the largest relative change in `max_rel`.
+// became 0 or inf), `gpu_mismatch` (GPU decode != CPU decode) and keeps the largest relative change in `max_rel`.
 // Blocks of 32 values start on a 32-bit word boundary, so threads never write the same word.
 template<unsigned int E, unsigned int M>
-static FitFloatArray<float, E, M> *pack(const std::vector<float> &src, long &changed, long &out_of_range, double &max_rel)
+static FitFloatArray<float, E, M> *pack(const std::vector<float> &src, long &changed, long &out_of_range, double &max_rel, long &gpu_mismatch)
 {
   const size_t n = src.size();
   HostFitFloatArray<float, E, M> h(n);
@@ -229,14 +240,32 @@ static FitFloatArray<float, E, M> *pack(const std::vector<float> &src, long &cha
   out_of_range += oor;
   max_rel = std::max(max_rel, mr);
 
+  // copy the packed words to the GPU (plain device memory, see FitFloatArray's constructor)
   FitFloatArray<float, E, M> *dst = new FitFloatArray<float, E, M>(n);
-  cudaMemcpy(dst->data_pointer(), h.data_pointer(), sizeof(unsigned int) * h.actual_size(), cudaMemcpyHostToHost);
-  int dev = 0, managedAccess = 0;
-  cudaGetDevice(&dev);
-  cudaDeviceGetAttribute(&managedAccess, cudaDevAttrConcurrentManagedAccess, dev);
-  if (managedAccess) {
-    cudaMemPrefetchAsync(dst->data_pointer(), sizeof(unsigned int) * dst->actual_size(), dev);
+  cudaMemcpy(dst->data_pointer(), h.data_pointer(), sizeof(unsigned int) * h.actual_size(), cudaMemcpyHostToDevice);
+
+  // decode everything on the GPU and compare with the CPU decode
+  std::vector<float> expected(n);
+#pragma omp parallel for
+  for (long i = 0; i < (long)n; i++) {
+    expected[i] = h[i];
   }
+  float *d_expected;
+  unsigned long long *d_mismatches, mismatches = 0;
+  cudaMalloc((void **)&d_expected, n * sizeof(float));
+  cudaMalloc((void **)&d_mismatches, sizeof(unsigned long long));
+  cudaMemcpy(d_expected, expected.data(), n * sizeof(float), cudaMemcpyHostToDevice);
+  cudaMemset(d_mismatches, 0, sizeof(unsigned long long));
+  checkDecodeFF<<<(n + BLOCKSIZE - 1) / BLOCKSIZE, BLOCKSIZE>>>(*dst, d_expected, (long)n, d_mismatches);
+  cudaMemcpy(&mismatches, d_mismatches, sizeof(unsigned long long), cudaMemcpyDeviceToHost);
+  cudaError_t err = cudaGetLastError();
+  if (err != cudaSuccess) {
+    std::cerr << "[FitFloat]\t packing or GPU decode check failed: " << cudaGetErrorString(err) << std::endl;
+    exit(EXIT_FAILURE);
+  }
+  cudaFree(d_expected);
+  cudaFree(d_mismatches);
+  gpu_mismatch += (long)mismatches;
   return dst;
 }
 
@@ -357,16 +386,17 @@ void Solver_GPU_FitFloat::solve(WINDSGeneralData *WGD, const int &itermax)
     if (coef_bits > 0) {
       auto pack_start = std::chrono::high_resolution_clock::now();
       const std::vector<float> *src[6] = { &WGD->e, &WGD->f, &WGD->g, &WGD->h, &WGD->m, &WGD->n };
-      long changed = 0, out_of_range = 0;
+      long changed = 0, out_of_range = 0, gpu_mismatch = 0;
       double max_rel = 0.0;
       for (int a = 0; a < 6; a++) {
-        if (coef_bits == 32) ff32[a] = pack<8, 23>(*src[a], changed, out_of_range, max_rel);
-        if (coef_bits == 16) ff16[a] = pack<8, 7>(*src[a], changed, out_of_range, max_rel);
-        if (coef_bits == 4) ff4[a] = pack<3, 0>(*src[a], changed, out_of_range, max_rel);
+        if (coef_bits == 32) ff32[a] = pack<8, 23>(*src[a], changed, out_of_range, max_rel, gpu_mismatch);
+        if (coef_bits == 16) ff16[a] = pack<8, 7>(*src[a], changed, out_of_range, max_rel, gpu_mismatch);
+        if (coef_bits == 4) ff4[a] = pack<3, 0>(*src[a], changed, out_of_range, max_rel, gpu_mismatch);
       }
       std::chrono::duration<float> pack_elapsed = std::chrono::high_resolution_clock::now() - pack_start;
       std::cout << "[FitFloat]\t e..n in " << coef_bits << " bits: " << changed << " of " << 6 * src[0]->size()
                 << " values changed, max relative change " << max_rel << ", " << out_of_range << " out of range" << std::endl;
+      std::cout << "[FitFloat]\t GPU decode check: " << gpu_mismatch << " values decode differently on the GPU than on the CPU (must be 0)" << std::endl;
       if (out_of_range > 0) {
         std::cout << "[FitFloat]\t e..n out of range for " << coef_bits << " bits -> NOT packed, float e..n used instead" << std::endl;
         for (int a = 0; a < 6; a++) {
