@@ -14,3 +14,9 @@ git clone -b fitfloat https://github.com/Juliatduffy/QES-benchmarking.git ~/QES
 
 # the two fire files, straight from CHPC (asks for your password + Duo)
 scp u1417379@granite.chpc.utah.edu:QES/QES-Public/data/FireFiles/{HeatPot.nc,FFII.nc} ~/QES/QES-Public/data/FireFiles/
+
+#set up vm
+cd ~
+curl -Lk 'https://code.visualstudio.com/sha/download?build=stable&os=cli-alpine-x64' --output vscode_cli.tar.gz
+tar -xf vscode_cli.tar.gz
+./code tunnel
