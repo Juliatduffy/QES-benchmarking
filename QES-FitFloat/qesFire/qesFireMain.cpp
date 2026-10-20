@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
   // //////////////////////////////////////////
   // Set the QES-Winds Solver
   SolverFactory solverFactory;
-  Solver *solver = solverFactory.create(arguments.solveType, WGD->domain, WID->simParams->tolerance);
+  Solver *solver = solverFactory.create(arguments.solveType, WGD->domain, WID->simParams->tolerance, arguments.fitFloat);
 
   /**
    * Time variables to track fire time and sensor timesteps

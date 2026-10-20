@@ -73,6 +73,7 @@ public:
   // flag to turn on/off different modules
   bool solveWind, compTurb, compPlume, fireWindsFlag;
   int solveType;
+  std::string fitFloat = ""; /**< FitFloat variant of the GPU solver (-c), "" = original */
 
   // QES_WINDS output files:
   bool visuOutput, wkspOutput, terrainOut;

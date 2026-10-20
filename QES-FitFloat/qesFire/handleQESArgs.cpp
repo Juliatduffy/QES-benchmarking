@@ -51,6 +51,7 @@ QESArgs::QESArgs()
 
   reg("windsolveroff", "Turns off the wind solver and wind output", ArgumentParsing::NONE, 'x');
   reg("solvetype", "selects the method for solving the windfield", ArgumentParsing::INT, 's');
+  reg("fitFloat", "FitFloat variant of the GPU solver (with -s 3): ff-ctl, ff-en16, ff-en4, ff-r16, ff-en16r16", ArgumentParsing::STRING, 'c');
 
   reg("qesWindsParamFile", "Specifies the QES Proj file", ArgumentParsing::STRING, 'q');
   reg("qesPlumeParamFile", "Specifies the QES Proj file", ArgumentParsing::STRING, 'p');
@@ -93,6 +94,7 @@ void QESArgs::processArguments(int argc, char *argv[])
 
   solveWind = !isSet("windsolveroff");
   isSet("solvetype", solveType);
+  isSet("fitFloat", fitFloat);
 #ifndef HAS_CUDA
   // if CUDA is not supported, force the solveType to be CPU no matter
   solveType = CPU_Type;
