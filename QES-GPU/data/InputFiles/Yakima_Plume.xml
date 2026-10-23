@@ -1,0 +1,37 @@
+<QESPlumeParameters>
+  <plumeParameters>
+    <CourantNumber> 0.25 </CourantNumber>
+    <simDur> 3600.0 </simDur><!-- this is the amount of time to run the simulation -->
+    <timeStep> 60.0 </timeStep><!-- this is the overall integration timestep -->
+    <invarianceTol> 1e-5 </invarianceTol>     <!-- tolerance in makeRealizeable on the stress tensor -->
+    <C_0> 1 </C_0>
+    <interpolationMethod>triLinear</interpolationMethod> 
+    <updateFrequency_particleLoop> 10000 </updateFrequency_particleLoop> <!-- Only used in debug mode. -->
+    <updateFrequency_timeLoop> 10 </updateFrequency_timeLoop> <!-- frequency to print out information during the time integration loop of the solver -->
+  </plumeParameters>
+  <collectionParameters><!-- collecting output parameters -->
+    <timeAvgStart> 000.0 </timeAvgStart>   <!-- time to start concentration averaging -->
+    <timeAvgFreq> 60.0 </timeAvgFreq>   <!-- time averaging frequency and output frequency -->
+    <boxBoundsX1> 0 </boxBoundsX1>
+    <boxBoundsX2> 70000 </boxBoundsX2>
+    <boxBoundsY1> 0 </boxBoundsY1>
+    <boxBoundsY2> 80000 </boxBoundsY2>
+    <boxBoundsZ1> 0 </boxBoundsZ1>
+    <boxBoundsZ2> 1600 </boxBoundsZ2>
+    <nBoxesX> 700 </nBoxesX>
+    <nBoxesY> 800 </nBoxesY>
+    <nBoxesZ> 320 </nBoxesZ>
+  </collectionParameters>
+  <sourceParameters>
+    <HRRRFile>/uufs/chpc.utah.edu/common/home/stoll-group4/behnam/HRRR_branch/QES-Winds/scratch/Sep_2020_smoke.nc</HRRRFile>
+    <inputFields>MASSDEN_8maboveground</inputFields>
+  </sourceParameters>
+  <boundaryConditions>
+    <xBCtype>exiting</xBCtype>
+    <yBCtype>exiting</yBCtype>
+    <zBCtype>exiting</zBCtype>
+    <wallReflection>stairstepReflection</wallReflection>  <!-- type of wall reflection: doNothing; setInactive; stairstepReflection -->
+    <doDepositions>false</doDepositions>
+  </boundaryConditions>
+
+</QESPlumeParameters>
