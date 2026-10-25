@@ -15,6 +15,7 @@ NTRIALS_OKC=10
 NTRIALS_SLC=5
 NTRIALS_FIRE=5
 NTRIALS_FIRE_QUICK=3
+NTRIALS_FIRE_LONG=5
 
 qes_env() {
     source "${QES_ROOT}/QES-Public/CHPC/loadmodules_QES.sh" # silence with > /dev/null 2>&1
