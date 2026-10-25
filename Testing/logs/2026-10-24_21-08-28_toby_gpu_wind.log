@@ -28,3 +28,5 @@ Correctness (gpu-optimized output vs gpu-original output): IDENTICAL
   gpu-original     wind solver    6.322
   gpu-optimized    wind solver    6.282
   Speedup (wind solver): 1.01x
+
+Correctness (gpu-optimized output vs gpu-original output): IDENTICAL

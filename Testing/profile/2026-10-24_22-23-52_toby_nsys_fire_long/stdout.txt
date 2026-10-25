@@ -1,0 +1,1170 @@
+###################################################################
+#                                                                 #
+#                        Welcome to QES                           #
+#                                                                 #
+###################################################################
+Version: v2.3.1
+* CUDA support available!
+* OpenMP is available!
+------------------------------------------------------------------
+[CUDA]	 Detected 1 CUDA Capable device(s)
+	 Device 0: NVIDIA GeForce RTX 4070 SUPER
+	 | CUDA Driver Version / Runtime Version: 12.6 / 12.6
+	 | CUDA Capability Major/Minor version number: 8.9
+	 | Total amount of global memory: 12281 MBytes (12877955072 bytes)
+	 | GPU Max Clock rate:  2520 MHz (2.52 GHz)
+	 | PCI: BusID=1, DeviceID=0, DomainID=0
+###################################################################
+Summary of QES options: 
+----------------------------
+qesWindsParamFile: /home/juliatduffy/QES/Testing/inputs/fire_long.xml
+----------------------------
+Wind Solver:		 ON	 [Global memory solver (GPU)]
+Turbulence model:	 OFF
+Plume model:		 OFF
+Fire model:		 ON
+Fire induced winds: 	 ON
+Verbose:		 OFF
+----------------------------
+Output file basename:        /home/juliatduffy/QES/Testing/profile/2026-10-24_22-23-52_toby_nsys_fire_long/run
+Winds visualization output:  ON
+Winds workspace output:      OFF
+Winds terrain mesh output:   OFF
+Turbulence output:           OFF
+Plume output:                OFF
+Plume particle output:       OFF
+Fire output:                 ON
+###################################################################
+-------------------------------------------------------------------
+[QES-WINDS]	 Initialization of wind model...
+[QES-WINDS]	 Allocating Memory...[QES-WINDS]	 Allocating Memory... [DONE]
+[QES-WINDS]	 Sensors have been loaded (total sensors = 1).
+[QES-WINDS]	 Defining solid walls...[QES-WINDS]	 Defining solid walls... [DONE]
+		 elapsed time: 0.0521571 s
+-------------------------------------------------------------------
+[QES-Fire]	 Initialization of fire model...
+[QES-Fire]	 Burn initialized
+[QES-Fire] LS init GPU elapsed time:	0.0267984 s
+[QES-Fire]	 Slope Calculated
+[QES-Fire]	 Fuel set constant = 106
+[NetCDFOutput] 	 create new file: /home/juliatduffy/QES/Testing/profile/2026-10-24_22-23-52_toby_nsys_fire_long/run_fireOutput.nc
+-------------------------------------------------------------------
+[Solver]	 Initializing Global Memory Solver (GPU) ...
+----------------------------------------
+New Sensor Data
+index = 0
+----------------------------------------
+[QES-WINDS]	 Applying Wind Profile...
+		 elapsed time: 0.00469403 s
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00122654 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 1 itertations: 0.000000000
+		 elapsed time: 0.0446759 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire simulation stating from 2020-01-01T00:00:00 to 2020-01-01T00:01:40.
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00296055 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.093069 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.0011525 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000011444
+		 elapsed time: 0.403037 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00322684 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.44571[ms^-1]
+[QES-Fire]	 dt = 2.01925 s
+		 elapsed time:	0.00129141 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:02.019000
+		 elapsed time: 0.506856 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00315373 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.0857846 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00120512 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000012398
+		 elapsed time: 0.389932 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00310396 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.445949[ms^-1]
+[QES-Fire]	 dt = 2.01817 s
+		 elapsed time:	0.00127936 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:04.037000
+		 elapsed time: 0.487043 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00314917 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.0867778 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00120933 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000013351
+		 elapsed time: 0.394543 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00312795 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.445949[ms^-1]
+[QES-Fire]	 dt = 2.01817 s
+		 elapsed time:	0.00115198 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:06.055000
+		 elapsed time: 0.492089 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00302879 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.0862038 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00117412 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000017166
+		 elapsed time: 0.389682 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00309943 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.445949[ms^-1]
+[QES-Fire]	 dt = 2.01817 s
+		 elapsed time:	0.00133918 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:08.073000
+		 elapsed time: 0.486656 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00348868 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.0940195 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00114477 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000015259
+		 elapsed time: 0.396961 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00355406 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.446496[ms^-1]
+[QES-Fire]	 dt = 2.0157 s
+		 elapsed time:	0.00123189 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:10.089000
+		 elapsed time: 0.502509 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00376918 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.100224 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00113828 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000017166
+		 elapsed time: 0.393589 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00384116 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.45653[ms^-1]
+[QES-Fire]	 dt = 1.97139 s
+		 elapsed time:	0.00148222 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:12.060000
+		 elapsed time: 0.506224 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00385609 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.100989 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00113663 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000020981
+		 elapsed time: 0.392714 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00377659 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.456353[ms^-1]
+[QES-Fire]	 dt = 1.97216 s
+		 elapsed time:	0.00133352 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:14.032000
+		 elapsed time: 0.505977 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00441318 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.105461 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.0014437 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000022888
+		 elapsed time: 0.392275 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00408181 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.456439[ms^-1]
+[QES-Fire]	 dt = 1.97179 s
+		 elapsed time:	0.00151599 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:16.004000
+		 elapsed time: 0.511297 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00447311 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.110394 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00111789 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000024796
+		 elapsed time: 0.387826 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00456682 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.454656[ms^-1]
+[QES-Fire]	 dt = 1.97952 s
+		 elapsed time:	0.0011737 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:17.984000
+		 elapsed time: 0.5117 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00455004 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.111252 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00114415 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000017166
+		 elapsed time: 0.391861 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00457341 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.454121[ms^-1]
+[QES-Fire]	 dt = 1.98185 s
+		 elapsed time:	0.00125217 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:19.966000
+		 elapsed time: 0.516939 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00458268 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.113258 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00112119 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000020981
+		 elapsed time: 0.390769 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00459236 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.454151[ms^-1]
+[QES-Fire]	 dt = 1.98172 s
+		 elapsed time:	0.0012359 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:21.948000
+		 elapsed time: 0.517719 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00497573 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.118166 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00139469 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000019073
+		 elapsed time: 0.397198 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00539916 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.454245[ms^-1]
+[QES-Fire]	 dt = 1.98131 s
+		 elapsed time:	0.00143969 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:23.929000
+		 elapsed time: 0.530728 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00514996 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.119864 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00113622 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000022888
+		 elapsed time: 0.394868 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00568214 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.453645[ms^-1]
+[QES-Fire]	 dt = 1.98393 s
+		 elapsed time:	0.00149169 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:25.913000
+		 elapsed time: 0.530459 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00541492 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.128493 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00121345 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000022888
+		 elapsed time: 0.402534 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00561417 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.453305[ms^-1]
+[QES-Fire]	 dt = 1.98542 s
+		 elapsed time:	0.00125722 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:27.898000
+		 elapsed time: 0.546667 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00542944 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.129963 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00113735 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000020981
+		 elapsed time: 0.391439 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00541626 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.453228[ms^-1]
+[QES-Fire]	 dt = 1.98576 s
+		 elapsed time:	0.00130531 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:29.884000
+		 elapsed time: 0.536903 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00568646 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.134945 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00135906 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000022888
+		 elapsed time: 0.389141 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0057673 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.457197[ms^-1]
+[QES-Fire]	 dt = 1.96852 s
+		 elapsed time:	0.00128749 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:31.853000
+		 elapsed time: 0.540485 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00601423 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.141776 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00123024 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000026703
+		 elapsed time: 0.391383 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00601257 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.460879[ms^-1]
+[QES-Fire]	 dt = 1.95279 s
+		 elapsed time:	0.00124078 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:33.806000
+		 elapsed time: 0.549789 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0062036 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.142077 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00117086 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000024796
+		 elapsed time: 0.391757 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0061692 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.460785[ms^-1]
+[QES-Fire]	 dt = 1.95319 s
+		 elapsed time:	0.00133387 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:35.759000
+		 elapsed time: 0.550873 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00633891 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.147078 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00124511 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000022888
+		 elapsed time: 0.397981 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00638453 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.460698[ms^-1]
+[QES-Fire]	 dt = 1.95356 s
+		 elapsed time:	0.0013278 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:37.713000
+		 elapsed time: 0.562589 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0066844 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.150919 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00119835 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000026703
+		 elapsed time: 0.382228 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00659996 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.459984[ms^-1]
+[QES-Fire]	 dt = 1.95659 s
+		 elapsed time:	0.00133346 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:39.670000
+		 elapsed time: 0.551214 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0068365 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.155984 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00121442 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000024796
+		 elapsed time: 0.390248 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00692413 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.458908[ms^-1]
+[QES-Fire]	 dt = 1.96118 s
+		 elapsed time:	0.00140338 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:41.631000
+		 elapsed time: 0.564964 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00735108 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.171665 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00122503 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000028610
+		 elapsed time: 0.396631 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00730618 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.459385[ms^-1]
+[QES-Fire]	 dt = 1.95914 s
+		 elapsed time:	0.00136755 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:43.590000
+		 elapsed time: 0.587771 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00761388 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.177433 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.0011757 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000024796
+		 elapsed time: 0.401232 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00743295 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.459569[ms^-1]
+[QES-Fire]	 dt = 1.95836 s
+		 elapsed time:	0.00136549 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:45.548000
+		 elapsed time: 0.598483 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00817552 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.194927 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00116406 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000034332
+		 elapsed time: 0.385721 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00810632 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.446236[ms^-1]
+[QES-Fire]	 dt = 2.01687 s
+		 elapsed time:	0.00143222 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:47.565000
+		 elapsed time: 0.60177 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00829178 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.191633 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00121359 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000034332
+		 elapsed time: 0.380784 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0089389 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.416408[ms^-1]
+[QES-Fire]	 dt = 2.16134 s
+		 elapsed time:	0.00146764 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:49.726000
+		 elapsed time: 0.594622 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00857508 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.19652 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00119537 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000038147
+		 elapsed time: 0.384571 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0086485 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.416021[ms^-1]
+[QES-Fire]	 dt = 2.16335 s
+		 elapsed time:	0.00138083 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:51.889000
+		 elapsed time: 0.603242 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00882644 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.201868 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00119578 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000034332
+		 elapsed time: 0.382236 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00881048 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.41538[ms^-1]
+[QES-Fire]	 dt = 2.16669 s
+		 elapsed time:	0.00139288 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:54.056000
+		 elapsed time: 0.606591 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0090738 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.206031 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00116211 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000041962
+		 elapsed time: 0.375794 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00915752 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.413856[ms^-1]
+[QES-Fire]	 dt = 2.17467 s
+		 elapsed time:	0.00140235 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:56.231000
+		 elapsed time: 0.604974 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00931137 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.21036 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00116396 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000041962
+		 elapsed time: 0.384066 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00939303 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.413821[ms^-1]
+[QES-Fire]	 dt = 2.17486 s
+		 elapsed time:	0.00141069 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:58.406000
+		 elapsed time: 0.617902 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00956799 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.215769 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00118517 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000038147
+		 elapsed time: 0.385388 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00982203 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.415599[ms^-1]
+[QES-Fire]	 dt = 2.16555 s
+		 elapsed time:	0.00137764 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:01:00.572000
+		 elapsed time: 0.625588 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00975355 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.219375 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00119495 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000038147
+		 elapsed time: 0.386472 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00968486 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.41597[ms^-1]
+[QES-Fire]	 dt = 2.16362 s
+		 elapsed time:	0.00137022 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:01:02.736000
+		 elapsed time: 0.630125 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00999462 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.227741 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.0011724 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000049591
+		 elapsed time: 0.383031 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.010152 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.414305[ms^-1]
+[QES-Fire]	 dt = 2.17231 s
+		 elapsed time:	0.00137012 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:01:04.908000
+		 elapsed time: 0.635639 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0103787 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.233466 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00120072 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000041962
+		 elapsed time: 0.386399 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0102351 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.414701[ms^-1]
+[QES-Fire]	 dt = 2.17024 s
+		 elapsed time:	0.00132079 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:01:07.078000
+		 elapsed time: 0.645294 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0105327 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.237631 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.0011515 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000038147
+		 elapsed time: 0.38423 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0106955 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.414312[ms^-1]
+[QES-Fire]	 dt = 2.17228 s
+		 elapsed time:	0.00134458 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:01:09.250000
+		 elapsed time: 0.647845 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0107397 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.239384 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00121205 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000041962
+		 elapsed time: 0.388509 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0112533 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.414091[ms^-1]
+[QES-Fire]	 dt = 2.17343 s
+		 elapsed time:	0.00140657 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:01:11.423000
+		 elapsed time: 0.65482 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0111746 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.247334 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00120165 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000041962
+		 elapsed time: 0.379506 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0118629 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.411813[ms^-1]
+[QES-Fire]	 dt = 2.18546 s
+		 elapsed time:	0.00140647 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:01:13.608000
+		 elapsed time: 0.654888 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.011406 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.252061 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00112328 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000045776
+		 elapsed time: 0.386144 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0112222 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.411555[ms^-1]
+[QES-Fire]	 dt = 2.18683 s
+		 elapsed time:	0.00135014 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:01:15.795000
+		 elapsed time: 0.665706 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0114576 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.269354 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00112967 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000041962
+		 elapsed time: 0.400322 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0115068 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.411195[ms^-1]
+[QES-Fire]	 dt = 2.18874 s
+		 elapsed time:	0.00129618 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:01:17.984000
+		 elapsed time: 0.697248 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0116849 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.274596 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00110341 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000049591
+		 elapsed time: 0.39969 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0117904 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.410832[ms^-1]
+[QES-Fire]	 dt = 2.19068 s
+		 elapsed time:	0.00124634 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:01:20.175000
+		 elapsed time: 0.702259 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0121716 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.282227 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00113667 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000053406
+		 elapsed time: 0.390611 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0137779 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.407797[ms^-1]
+[QES-Fire]	 dt = 2.20698 s
+		 elapsed time:	0.00157958 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:01:22.382000
+		 elapsed time: 0.703695 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0134843 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.297654 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00111216 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000057220
+		 elapsed time: 0.396529 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0129748 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.388315[ms^-1]
+[QES-Fire]	 dt = 2.31771 s
+		 elapsed time:	0.00200467 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:01:24.700000
+		 elapsed time: 0.726042 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0134582 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.294215 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00114419 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000064850
+		 elapsed time: 0.391869 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0131692 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.389301[ms^-1]
+[QES-Fire]	 dt = 2.31184 s
+		 elapsed time:	0.00132439 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:01:27.012000
+		 elapsed time: 0.717306 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0136296 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.311949 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.001155 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000057220
+		 elapsed time: 0.395225 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0134169 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.390299[ms^-1]
+[QES-Fire]	 dt = 2.30593 s
+		 elapsed time:	0.00126971 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:01:29.318000
+		 elapsed time: 0.738825 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0137259 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.315655 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00110331 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000057220
+		 elapsed time: 0.386128 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0140303 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.381785[ms^-1]
+[QES-Fire]	 dt = 2.35735 s
+		 elapsed time:	0.00128454 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:01:31.675000
+		 elapsed time: 0.734174 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0143002 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.328007 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00114378 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000057220
+		 elapsed time: 0.400785 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0146305 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.380766[ms^-1]
+[QES-Fire]	 dt = 2.36365 s
+		 elapsed time:	0.00128835 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:01:34.039000
+		 elapsed time: 0.762309 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0151177 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.327358 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.0010926 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000057220
+		 elapsed time: 0.403969 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0143986 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.379865[ms^-1]
+[QES-Fire]	 dt = 2.36926 s
+		 elapsed time:	0.00131347 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:01:36.408000
+		 elapsed time: 0.7656 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0149314 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.344551 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00118023 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000057220
+		 elapsed time: 0.390589 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0148357 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.379144[ms^-1]
+[QES-Fire]	 dt = 2.37377 s
+		 elapsed time:	0.00131007 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:01:38.782000
+		 elapsed time: 0.769546 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0151536 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.35259 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00112164 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000064850
+		 elapsed time: 0.394791 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0151599 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.379149[ms^-1]
+[QES-Fire]	 dt = 2.37374 s
+		 elapsed time:	0.00142869 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:01:41.156000
+		 elapsed time: 0.782409 s
+Simulation finished
+[NetCDFOutput] 	 closing file: /home/juliatduffy/QES/Testing/profile/2026-10-24_22-23-52_toby_nsys_fire_long/run_fireOutput.nc
+Collecting data...
+Generating '/tmp/nsys-report-0c46.qdstrm'
+[1/6] [0%                          ] report.nsys-rep[1/6] [0%                          ] report.nsys-rep[1/6] [0%                          ] report.nsys-rep[1/6] [11%                         ] report.nsys-rep[1/6] [9%                          ] report.nsys-rep[1/6] [8%                          ] report.nsys-rep[1/6] [7%                          ] report.nsys-rep[1/6] [=15%                        ] report.nsys-rep[1/6] [14%                         ] report.nsys-rep[1/6] [13%                         ] report.nsys-rep[1/6] [=17%                        ] report.nsys-rep[1/6] [=16%                        ] report.nsys-rep[1/6] [14%                         ] report.nsys-rep[1/6] [13%                         ] report.nsys-rep[1/6] [12%                         ] report.nsys-rep[1/6] [11%                         ] report.nsys-rep[1/6] [10%                         ] report.nsys-rep[1/6] [9%                          ] report.nsys-rep[1/6] [8%                          ] report.nsys-rep[1/6] [7%                          ] report.nsys-rep[1/6] [10%                         ] report.nsys-rep[1/6] [13%                         ] report.nsys-rep[1/6] [=16%                        ] report.nsys-rep[1/6] [==19%                       ] report.nsys-rep[1/6] [===22%                      ] report.nsys-rep[1/6] [====25%                     ] report.nsys-rep[1/6] [====28%                     ] report.nsys-rep[1/6] [=====31%                    ] report.nsys-rep[1/6] [======34%                   ] report.nsys-rep[1/6] [======35%                   ] report.nsys-rep[1/6] [=======38%                  ] report.nsys-rep[1/6] [=======39%                  ] report.nsys-rep[1/6] [========42%                 ] report.nsys-rep[1/6] [=========43%                ] report.nsys-rep[1/6] [=========46%                ] report.nsys-rep[1/6] [==========49%               ] report.nsys-rep[1/6] [===========52%              ] report.nsys-rep[1/6] [============55%             ] report.nsys-rep[1/6] [=============58%            ] report.nsys-rep[1/6] [==============61%           ] report.nsys-rep[1/6] [==============64%           ] report.nsys-rep[1/6] [===============67%          ] report.nsys-rep[1/6] [================70%         ] report.nsys-rep[1/6] [=================73%        ] report.nsys-rep[1/6] [==================76%       ] report.nsys-rep[1/6] [========================100%] report.nsys-rep[1/6] [========================100%] report.nsys-rep
+[2/6] [0%                          ] report.sqlite[2/6] [1%                          ] report.sqlite[2/6] [2%                          ] report.sqlite[2/6] [3%                          ] report.sqlite[2/6] [4%                          ] report.sqlite[2/6] [5%                          ] report.sqlite[2/6] [6%                          ] report.sqlite[2/6] [7%                          ] report.sqlite[2/6] [8%                          ] report.sqlite[2/6] [9%                          ] report.sqlite[2/6] [10%                         ] report.sqlite[2/6] [11%                         ] report.sqlite[2/6] [12%                         ] report.sqlite[2/6] [13%                         ] report.sqlite[2/6] [14%                         ] report.sqlite[2/6] [=15%                        ] report.sqlite[2/6] [=16%                        ] report.sqlite[2/6] [=17%                        ] report.sqlite[2/6] [==18%                       ] report.sqlite[2/6] [==19%                       ] report.sqlite[2/6] [==20%                       ] report.sqlite[2/6] [==21%                       ] report.sqlite[2/6] [===22%                      ] report.sqlite[2/6] [===23%                      ] report.sqlite[2/6] [===24%                      ] report.sqlite[2/6] [====25%                     ] report.sqlite[2/6] [====26%                     ] report.sqlite[2/6] [====27%                     ] report.sqlite[2/6] [====28%                     ] report.sqlite[2/6] [=====29%                    ] report.sqlite[2/6] [=====30%                    ] report.sqlite[2/6] [=====31%                    ] report.sqlite[2/6] [=====32%                    ] report.sqlite[2/6] [======33%                   ] report.sqlite[2/6] [======34%                   ] report.sqlite[2/6] [======35%                   ] report.sqlite[2/6] [=======36%                  ] report.sqlite[2/6] [=======37%                  ] report.sqlite[2/6] [=======38%                  ] report.sqlite[2/6] [=======39%                  ] report.sqlite[2/6] [========40%                 ] report.sqlite[2/6] [========41%                 ] report.sqlite[2/6] [========42%                 ] report.sqlite[2/6] [=========43%                ] report.sqlite[2/6] [=========44%                ] report.sqlite[2/6] [=========45%                ] report.sqlite[2/6] [=========46%                ] report.sqlite[2/6] [==========47%               ] report.sqlite[2/6] [==========48%               ] report.sqlite[2/6] [==========49%               ] report.sqlite[2/6] [===========50%              ] report.sqlite[2/6] [===========51%              ] report.sqlite[2/6] [===========52%              ] report.sqlite[2/6] [===========53%              ] report.sqlite[2/6] [============54%             ] report.sqlite[2/6] [============55%             ] report.sqlite[2/6] [============56%             ] report.sqlite[2/6] [============57%             ] report.sqlite[2/6] [=============58%            ] report.sqlite[2/6] [=============59%            ] report.sqlite[2/6] [=============60%            ] report.sqlite[2/6] [==============61%           ] report.sqlite[2/6] [==============62%           ] report.sqlite[2/6] [==============63%           ] report.sqlite[2/6] [==============64%           ] report.sqlite[2/6] [===============65%          ] report.sqlite[2/6] [===============66%          ] report.sqlite[2/6] [===============67%          ] report.sqlite[2/6] [================68%         ] report.sqlite[2/6] [================69%         ] report.sqlite[2/6] [================70%         ] report.sqlite[2/6] [================71%         ] report.sqlite[2/6] [=================72%        ] report.sqlite[2/6] [=================73%        ] report.sqlite[2/6] [=================74%        ] report.sqlite[2/6] [==================75%       ] report.sqlite[2/6] [==================76%       ] report.sqlite[2/6] [==================77%       ] report.sqlite[2/6] [==================78%       ] report.sqlite[2/6] [===================79%      ] report.sqlite[2/6] [===================80%      ] report.sqlite[2/6] [===================81%      ] report.sqlite[2/6] [===================82%      ] report.sqlite[2/6] [====================83%     ] report.sqlite[2/6] [====================84%     ] report.sqlite[2/6] [====================85%     ] report.sqlite[2/6] [=====================86%    ] report.sqlite[2/6] [=====================87%    ] report.sqlite[2/6] [=====================88%    ] report.sqlite[2/6] [=====================89%    ] report.sqlite[2/6] [======================90%   ] report.sqlite[2/6] [======================91%   ] report.sqlite[2/6] [======================92%   ] report.sqlite[2/6] [=======================93%  ] report.sqlite[2/6] [=======================94%  ] report.sqlite[2/6] [=======================95%  ] report.sqlite[2/6] [=======================96%  ] report.sqlite[2/6] [========================97% ] report.sqlite[2/6] [========================98% ] report.sqlite[2/6] [========================99% ] report.sqlite[2/6] [========================100%] report.sqlite[2/6] [========================100%] report.sqlite
+[3/6] Executing 'cuda_api_sum' stats report
+
+ Time (%)  Total Time (ns)  Num Calls  Avg (ns)   Med (ns)  Min (ns)  Max (ns)   StdDev (ns)           Name         
+ --------  ---------------  ---------  ---------  --------  --------  ---------  -----------  ----------------------
+     97.5      26917877102      25267  1065337.3  668532.0     24818  328289087    8157917.9  cudaMemcpy            
+      1.1        301252478     158421     1901.6    1544.0       927    1122845       4645.2  cudaLaunchKernel      
+      0.7        204867693       1072   191107.9  180623.5      1029     964768     154831.7  cudaMalloc            
+      0.5        148663715       1023   145321.3  150343.0      1338     542779      99092.8  cudaFree              
+      0.1         37004151      24050     1538.6    1236.0       823    1024232       6986.9  cudaMemset            
+      0.0              721          1      721.0     721.0       721        721          0.0  cuModuleGetLoadingMode
+
+[4/6] Executing 'cuda_gpu_kern_sum' stats report
+
+ Time (%)  Total Time (ns)  Instances   Avg (ns)    Med (ns)   Min (ns)  Max (ns)  StdDev (ns)                                                  Name                                                
+ --------  ---------------  ---------  ----------  ----------  --------  --------  -----------  ----------------------------------------------------------------------------------------------------
+     52.9      12429460261      48002    258936.3    259299.0    169100    650966      31213.6  SOR_RB_Global(float *, int, int, int, float, float, float, float *, float *, float *, float *, floa…
+     34.7       8143342842      38317    212525.6    198271.0     64948    897312      62433.8  PotGlob(int, int, int, int, float, float, int, int, float *, float *, float *, float *, float, floa…
+      8.9       2097452382      24001     87390.2     81919.0     52229    455757      19279.9  calculateErrorGlobal2(float *, float *, float *, int)                                               
+      2.3        530831120      24001     22117.0     22045.0     21912    276333       1849.2  saveLambdaGlobal(float *, float *, int)                                                             
+      0.5        122642386         49   2502905.8   2424945.0   2421817   3348782     225665.2  finalVelocityGlobal(float *, float *, float *, float *, int *, float *, float *, float *, int, int,…
+      0.3         76692856      24001      3195.4      3163.0      2537     26955        339.2  applyNeumannBCGlobal(float *, int, int)                                                             
+      0.3         61137750         49   1247709.2   1236230.0   1232130   1673913      65003.5  divergenceGlobal(float *, float *, float *, float *, float *, float *, float *, float *, float *, f…
+      0.1         23922400          1  23922400.0  23922400.0  23922400  23922400          0.0  LSGlob(int, int, float *)                                                                           
+
+[5/6] Executing 'cuda_gpu_mem_time_sum' stats report
+
+ Time (%)  Total Time (ns)  Count  Avg (ns)   Med (ns)   Min (ns)  Max (ns)  StdDev (ns)           Operation          
+ --------  ---------------  -----  ---------  ---------  --------  --------  -----------  ----------------------------
+     71.6       1351086615    974  1387152.6  1711722.5       626   2714461     802575.9  [CUDA memcpy Host-to-Device]
+     27.9        527300671  24293    21705.9      395.0       362   3402328     195036.5  [CUDA memcpy Device-to-Host]
+      0.5          9593321  24050      398.9      297.0       263     10578        448.3  [CUDA memset]               
+
+[6/6] Executing 'cuda_gpu_mem_size_sum' stats report
+
+ Total (MB)  Count  Avg (MB)  Med (MB)  Min (MB)  Max (MB)  StdDev (MB)           Operation          
+ ----------  -----  --------  --------  --------  --------  -----------  ----------------------------
+  10012.439    974    10.280    13.440     0.000    14.150        5.755  [CUDA memcpy Host-to-Device]
+   4016.218  24293     0.165     0.000     0.000    14.150        1.502  [CUDA memcpy Device-to-Host]
+    658.656  24050     0.027     0.000     0.000    13.440        0.606  [CUDA memset]               
+
+Generated:
+    /home/juliatduffy/QES/Testing/profile/2026-10-24_22-23-52_toby_nsys_fire_long/report.nsys-rep
+    /home/juliatduffy/QES/Testing/profile/2026-10-24_22-23-52_toby_nsys_fire_long/report.sqlite

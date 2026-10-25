@@ -78,7 +78,7 @@ pick_binary() {
 # Run one program once and keep everything it printed for the correctness check
 run_once() {
   cd "$RUN_DIR"
-  if ! RUN_OUTPUT=$("$BINARY" -q "$CASE_FILE" -o "$OUTPUT_BASENAME" $RUN_FLAGS 2>&1)
+  if ! RUN_OUTPUT=$($PROFILER "$BINARY" -q "$CASE_FILE" -o "$OUTPUT_BASENAME" $RUN_FLAGS 2>&1)
   then
     echo "$RUN_OUTPUT"
     echo "ERROR: $BINARY failed on $CASE_FILE"

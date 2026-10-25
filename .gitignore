@@ -8,3 +8,6 @@ bench/bin/
 bench/tools/ncdiff_fields
 *.nc
 .vscode/
+*.sqlite
+*.nsys-rep
+*.ncu-rep
