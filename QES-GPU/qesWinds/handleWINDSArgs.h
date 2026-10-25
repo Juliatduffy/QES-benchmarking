@@ -74,6 +74,7 @@ public:
   /** Flag to turn on/off different modules */
   bool solveWind, compTurb;
   int solveType;
+  std::string windOptimization = ""; // which GPU solver optimization to use 
   bool visuOutput, wkspOutput, turbOutput, terrainOut;
   ///@}
 

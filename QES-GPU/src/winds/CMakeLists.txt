@@ -64,6 +64,8 @@ IF ($CACHE{HAS_CUDA_SUPPORT})
           # replace use of it with the GlobalMemory solver.
           #    Solver_GPU_DynamicParallelism.cu
           Solver_GPU_GlobalMemory.cu
+          Solver_GPU_GlobalMemory_fuse.cu
+          Solver_GPU_GlobalMemory_compressed.cu
           Solver_GPU_SharedMemory.cu
           WINDSGeneralData.cu
           TURBGeneralData.cu

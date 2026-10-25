@@ -40,6 +40,8 @@
 // replace use of it with the GlobalMemory solver.
 // #include "winds/Solver_GPU_DynamicParallelism.h"
 #include "Solver_GPU_GlobalMemory.h"
+#include "Solver_GPU_GlobalMemory_fuse.h"
+#include "Solver_GPU_GlobalMemory_compressed.h"
 #include "Solver_GPU_SharedMemory.h"
 #endif
 
@@ -54,5 +56,5 @@ enum solverTypes : int { CPU_Type = 1,
 class SolverFactory
 {
 public:
-  static Solver *create(const int &, const qes::Domain &, const float &);
+  static Solver *create(const int &, const qes::Domain &, const float &, std::string = "");
 };

@@ -50,6 +50,7 @@ WINDSArgs::WINDSArgs()
 
   reg("windsolveroff", "Turns off the wind solver and wind output", ArgumentParsing::NONE, 'x');
   reg("solvetype", "selects the method for solving the windfield", ArgumentParsing::INT, 's');
+  reg("windOptimization", "wind solver optimization to use (GPU: original, fuse, compressed)", ArgumentParsing::STRING, 'c');
 
   reg("qesWindsParamFile", "Specifies input xml settings file", ArgumentParsing::STRING, 'q');
 
@@ -82,6 +83,7 @@ void WINDSArgs::processArguments(int argc, char *argv[])
 
   solveWind = !isSet("windsolveroff");
   isSet("solvetype", solveType);
+  isSet("windOptimization", windOptimization);
 #ifndef HAS_CUDA
   // if CUDA is not supported, force the solveType to be CPU no matter
   solveType = CPU_Type;
@@ -160,6 +162,7 @@ void WINDSArgs::processArguments(int argc, char *argv[])
   }
   std::cout << "Turbulence model:\t " << (compTurb ? "ON" : "OFF") << std::endl;
   std::cout << "Verbose:\t\t " << (verbose ? "ON" : "OFF") << std::endl;
+  std::cout << "Wind optimization:\t " << (windOptimization == "" ? "original" : windOptimization) << std::endl;
 
   // output files:
   if (!netCDFFileBasename.empty()) {
