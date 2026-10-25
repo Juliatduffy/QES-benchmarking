@@ -1,0 +1,185 @@
+###################################################################
+#                                                                 #
+#                        Welcome to QES                           #
+#                                                                 #
+###################################################################
+Version: v2.3.1
+* CUDA support available!
+* OpenMP is available!
+------------------------------------------------------------------
+==PROF== Connected to process 183338 (/home/juliatduffy/QES/build/gpu-original/qesFire/qesFire)
+[CUDA]	 Detected 1 CUDA Capable device(s)
+	 Device 0: NVIDIA GeForce RTX 4070 SUPER
+	 | CUDA Driver Version / Runtime Version: 12.6 / 12.6
+	 | CUDA Capability Major/Minor version number: 8.9
+	 | Total amount of global memory: 12281 MBytes (12877955072 bytes)
+	 | GPU Max Clock rate:  2520 MHz (2.52 GHz)
+	 | PCI: BusID=1, DeviceID=0, DomainID=0
+###################################################################
+Summary of QES options: 
+----------------------------
+qesWindsParamFile: /home/juliatduffy/QES/Testing/inputs/fire_short.xml
+----------------------------
+Wind Solver:		 ON	 [Global memory solver (GPU)]
+Turbulence model:	 OFF
+Plume model:		 OFF
+Fire model:		 ON
+Fire induced winds: 	 ON
+Verbose:		 OFF
+----------------------------
+Output file basename:        /home/juliatduffy/QES/Testing/profile/2026-10-24_22-30-35_toby_ncu_fire_short/run
+Winds visualization output:  ON
+Winds workspace output:      OFF
+Winds terrain mesh output:   OFF
+Turbulence output:           OFF
+Plume output:                OFF
+Plume particle output:       OFF
+Fire output:                 ON
+###################################################################
+-------------------------------------------------------------------
+[QES-WINDS]	 Initialization of wind model...
+[QES-WINDS]	 Allocating Memory...[QES-WINDS]	 Allocating Memory... [DONE]
+[QES-WINDS]	 Sensors have been loaded (total sensors = 1).
+[QES-WINDS]	 Defining solid walls...[QES-WINDS]	 Defining solid walls... [DONE]
+		 elapsed time: 0.049465 s
+-------------------------------------------------------------------
+[QES-Fire]	 Initialization of fire model...
+[QES-Fire]	 Burn initialized
+[QES-Fire] LS init GPU elapsed time:	0.0298344 s
+[QES-Fire]	 Slope Calculated
+[QES-Fire]	 Fuel set constant = 106
+[NetCDFOutput] 	 create new file: /home/juliatduffy/QES/Testing/profile/2026-10-24_22-30-35_toby_ncu_fire_short/run_fireOutput.nc
+-------------------------------------------------------------------
+[Solver]	 Initializing Global Memory Solver (GPU) ...
+----------------------------------------
+New Sensor Data
+index = 0
+----------------------------------------
+[QES-WINDS]	 Applying Wind Profile...
+		 elapsed time: 0.00465335 s
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00121265 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 1 itertations: 0.000000000
+		 elapsed time: 0.0450344 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire simulation stating from 2020-01-01T00:00:00 to 2020-01-01T00:00:10.
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00311466 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.0841611 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00111217 s
+[Solver] Running Global Memory Solver (GPU) ...
+==PROF== Profiling "SOR_RB_Global": 0%....50%....100% - 17 passes
+==PROF== Profiling "SOR_RB_Global": 0%....50%....100% - 17 passes
+==PROF== Profiling "SOR_RB_Global": 0%....50%....100% - 17 passes
+==PROF== Profiling "SOR_RB_Global": 0%....50%....100% - 17 passes
+==PROF== Profiling "SOR_RB_Global": 0%....50%....100% - 17 passes
+[Solver]	 Residual after 500 itertations: 0.000011444
+		 elapsed time: 1.4286 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.0032942 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.44571[ms^-1]
+[QES-Fire]	 dt = 2.01925 s
+		 elapsed time:	0.00123654 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:02.019000
+		 elapsed time: 1.52368 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00332972 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.0770992 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00111227 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000012398
+		 elapsed time: 0.413428 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00334177 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.445949[ms^-1]
+[QES-Fire]	 dt = 2.01817 s
+		 elapsed time:	0.00132682 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:04.037000
+		 elapsed time: 0.501832 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00320731 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.0787066 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00113256 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000013351
+		 elapsed time: 0.404406 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00334259 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.445949[ms^-1]
+[QES-Fire]	 dt = 2.01817 s
+		 elapsed time:	0.00136739 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:06.055000
+		 elapsed time: 0.494294 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00320392 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.0787146 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00114759 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000017166
+		 elapsed time: 0.407532 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00324829 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.445949[ms^-1]
+[QES-Fire]	 dt = 2.01817 s
+		 elapsed time:	0.00141814 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:08.073000
+		 elapsed time: 0.497385 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00368737 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.0850157 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00111094 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000015259
+		 elapsed time: 0.411636 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00432443 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.446496[ms^-1]
+[QES-Fire]	 dt = 2.0157 s
+		 elapsed time:	0.00125167 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:10.089000
+		 elapsed time: 0.509277 s
+Simulation finished
+[NetCDFOutput] 	 closing file: /home/juliatduffy/QES/Testing/profile/2026-10-24_22-30-35_toby_ncu_fire_short/run_fireOutput.nc
+==PROF== Disconnected from process 183338
+==PROF== Report: /home/juliatduffy/QES/Testing/profile/2026-10-24_22-30-35_toby_ncu_fire_short/report.ncu-rep

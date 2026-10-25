@@ -1,0 +1,116 @@
+###################################################################
+#                                                                 #
+#                        Welcome to QES                           #
+#                                                                 #
+###################################################################
+Version: v2.3.1
+* CUDA support available!
+* OpenMP is available!
+------------------------------------------------------------------
+[CUDA]	 Detected 1 CUDA Capable device(s)
+	 Device 0: NVIDIA GeForce RTX 4070 SUPER
+	 | CUDA Driver Version / Runtime Version: 12.6 / 12.6
+	 | CUDA Capability Major/Minor version number: 8.9
+	 | Total amount of global memory: 12281 MBytes (12877955072 bytes)
+	 | GPU Max Clock rate:  2520 MHz (2.52 GHz)
+	 | PCI: BusID=1, DeviceID=0, DomainID=0
+###################################################################
+Summary of QES options: 
+----------------------------
+qesWindsParamFile: /home/juliatduffy/QES/Testing/inputs/fire_tiny.xml
+----------------------------
+Wind Solver:		 ON	 [Global memory solver (GPU)]
+Turbulence model:	 OFF
+Plume model:		 OFF
+Fire model:		 ON
+Fire induced winds: 	 ON
+Verbose:		 OFF
+----------------------------
+Output file basename:        /home/juliatduffy/QES/Testing/profile/2026-10-24_23-03-17_toby_nsys_fire_tiny/run
+Winds visualization output:  ON
+Winds workspace output:      OFF
+Winds terrain mesh output:   OFF
+Turbulence output:           OFF
+Plume output:                OFF
+Plume particle output:       OFF
+Fire output:                 ON
+###################################################################
+-------------------------------------------------------------------
+[QES-WINDS]	 Initialization of wind model...
+[QES-WINDS]	 Allocating Memory...[QES-WINDS]	 Allocating Memory... [DONE]
+[QES-WINDS]	 Sensors have been loaded (total sensors = 1).
+[QES-WINDS]	 Defining solid walls...[QES-WINDS]	 Defining solid walls... [DONE]
+		 elapsed time: 0.0517686 s
+-------------------------------------------------------------------
+[QES-Fire]	 Initialization of fire model...
+[QES-Fire]	 Burn initialized
+[QES-Fire] LS init GPU elapsed time:	0.0280772 s
+[QES-Fire]	 Slope Calculated
+[QES-Fire]	 Fuel set constant = 106
+[NetCDFOutput] 	 create new file: /home/juliatduffy/QES/Testing/profile/2026-10-24_23-03-17_toby_nsys_fire_tiny/run_fireOutput.nc
+-------------------------------------------------------------------
+[Solver]	 Initializing Global Memory Solver (GPU) ...
+----------------------------------------
+New Sensor Data
+index = 0
+----------------------------------------
+[QES-WINDS]	 Applying Wind Profile...
+		 elapsed time: 0.00484347 s
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00121576 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 1 itertations: 0.000000000
+		 elapsed time: 0.0410403 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire simulation stating from 2020-01-01T00:00:00 to 2020-01-01T00:00:03.
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00302529 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.0888297 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00115692 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000011444
+		 elapsed time: 0.40585 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00309176 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.44571[ms^-1]
+[QES-Fire]	 dt = 2.01925 s
+		 elapsed time:	0.001288 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:02.019000
+		 elapsed time: 0.505335 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00308877 s
+[QES-Fire]	 GPU POTENTIAL
+		 elapsed time: 0.0843375 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Applying parameterizations...
+		 elapsed time: 0.00113559 s
+[Solver] Running Global Memory Solver (GPU) ...
+[Solver]	 Residual after 500 itertations: 0.000012398
+		 elapsed time: 0.390709 s
+-------------------------------------------------------------------
+[QES-Fire]	 Computing level set... 
+		 elapsed time: 0.00309639 s
+[QES-Fire]	 Advancing level set...
+[QES-Fire]	 max ROS = 0.445949[ms^-1]
+[QES-Fire]	 dt = 2.01817 s
+		 elapsed time:	0.00115146 s
+-------------------------------------------------------------------
+[QES-Fire]	 Fire step completed.
+[QES-Fire]	 Current time = 2020-01-01T00:00:04.037000
+		 elapsed time: 0.485635 s
+Simulation finished
+[NetCDFOutput] 	 closing file: /home/juliatduffy/QES/Testing/profile/2026-10-24_23-03-17_toby_nsys_fire_tiny/run_fireOutput.nc
+Collecting data...
+Generating '/tmp/nsys-report-7799.qdstrm'
+[1/1] [0%                          ] report.nsys-rep[1/1] [0%                          ] report.nsys-rep[1/1] [6%                          ] report.nsys-rep[1/1] [7%                          ] report.nsys-rep[1/1] [8%                          ] report.nsys-rep[1/1] [=================72%        ] report.nsys-rep[1/1] [=================73%        ] report.nsys-rep[1/1] [==================78%       ] report.nsys-rep[1/1] [========================100%] report.nsys-rep[1/1] [========================100%] report.nsys-rep
+Generated:
+    /home/juliatduffy/QES/Testing/profile/2026-10-24_23-03-17_toby_nsys_fire_tiny/report.nsys-rep
