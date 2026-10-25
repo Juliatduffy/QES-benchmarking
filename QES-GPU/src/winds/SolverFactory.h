@@ -42,6 +42,7 @@
 #include "Solver_GPU_GlobalMemory.h"
 #include "Solver_GPU_GlobalMemory_fuse.h"
 #include "Solver_GPU_GlobalMemory_compressed.h"
+#include "Solver_GPU_GlobalMemory_bugfix.h"
 #include "Solver_GPU_SharedMemory.h"
 #endif
 

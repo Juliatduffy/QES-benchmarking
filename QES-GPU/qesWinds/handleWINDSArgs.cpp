@@ -50,7 +50,7 @@ WINDSArgs::WINDSArgs()
 
   reg("windsolveroff", "Turns off the wind solver and wind output", ArgumentParsing::NONE, 'x');
   reg("solvetype", "selects the method for solving the windfield", ArgumentParsing::INT, 's');
-  reg("windOptimization", "wind solver optimization to use (GPU: original, fuse, compressed)", ArgumentParsing::STRING, 'c');
+  reg("windOptimization", "wind solver optimization to use (GPU: original, fuse, compressed, bugfix)", ArgumentParsing::STRING, 'c');
 
   reg("qesWindsParamFile", "Specifies input xml settings file", ArgumentParsing::STRING, 'q');
 

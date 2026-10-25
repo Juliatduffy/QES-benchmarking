@@ -31,6 +31,7 @@ OPT=$2              # optimization name passed to the optimized program with -c,
 CASES=$3            # optional: which cases to run, e.g. "okc" or "okc slc"
 KIND="cpu"
 KEEP_OUTPUTS="no"   # "yes" keeps the .nc files in Testing/runs after the check
+TOLERANCE=""        # no tolerance for error
 DEFAULT_FIRE_CASES="short"   # same case as the archived CHPC logs; long is too slow for the original CPU code
 
 if [ -z "$MODEL" ] || [ -z "$OPT" ]

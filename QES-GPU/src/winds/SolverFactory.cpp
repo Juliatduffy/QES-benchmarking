@@ -62,8 +62,11 @@ Solver *SolverFactory::create(const int &solveType, const qes::Domain &domain, c
       solver = new Solver_GPU_GlobalMemory_fuse(domain, tolerance);
     } else if (windOptimization == "compressed") {
       solver = new Solver_GPU_GlobalMemory_compressed(domain, tolerance);
+    } else if (windOptimization == "bugfix") {
+      // original solver with its bugs
+      solver = new Solver_GPU_GlobalMemory_bugfix(domain, tolerance);
     } else {
-      QESout::error("Unknown windOptimization '" + windOptimization + "' (valid: original, fuse, compressed)");
+      QESout::error("Unknown windOptimization '" + windOptimization + "' (valid: original, fuse, compressed, bugfix)");
     }
   } else if (solveType == Shared_M) {
     solver = new Solver_GPU_SharedMemory(domain, tolerance);

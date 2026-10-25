@@ -38,6 +38,7 @@
  */
 
 #include "Solver_GPU_GlobalMemory_fuse.h"
+#include <cub/cub.cuh>
 
 using namespace std::chrono;
 using namespace std;
@@ -92,17 +93,19 @@ __global__ void divergenceGlobal_fuse(float *d_u0, float *d_v0, float *d_w0, flo
 // SOR RedBlack Kernel.
 //
 //
-__global__ void SOR_RB_Global_fuse(float *d_lambda, int nx, int ny, int nz, float omega, float A, float B, float *d_e, float *d_f, float *d_g, float *d_h, float *d_m, float *d_n, float *d_R, int offset)
+__global__ void SOR_RB_Global_fuse(float *d_lambda, int nx, int ny, int nz, float omega, float A, float B, float *d_e, float *d_f, float *d_g, float *d_h, float *d_m, float *d_n, float *d_R, int offset, float *d_error)
 {
   int id = blockDim.x * blockIdx.x + threadIdx.x;
   int k = id / ((nx - 1) * (ny - 1));
   int j = (id - k * (nx - 1) * (ny - 1)) / (nx - 1);
   int i = id - k * (nx - 1) * (ny - 1) - j * (nx - 1);
+  float error = 0.0f; 
 
   if ((i > 0) && (i < nx - 2) && (j > 0) && (j < ny - 2) && (k < nz - 2) && (k > 0)
       && ((i + j + k) % 2) == offset) {
     // SOR formulation
-    d_lambda[id] = (omega / (d_e[id] + d_f[id] + d_g[id] + d_h[id] + d_m[id] + d_n[id]))
+    // d_lambda[id] = (omega / (d_e[id] + d_f[id] + d_g[id] + d_h[id] + d_m[id] + d_n[id]))
+    float new_lambda = (omega / (d_e[id] + d_f[id] + d_g[id] + d_h[id] + d_m[id] + d_n[id]))
                      * (d_e[id] * d_lambda[id + 1]
                         + d_f[id] * d_lambda[id - 1]
                         + d_g[id] * d_lambda[id + (nx - 1)]
@@ -111,7 +114,16 @@ __global__ void SOR_RB_Global_fuse(float *d_lambda, int nx, int ny, int nz, floa
                         + d_n[id] * d_lambda[id - (nx - 1) * (ny - 1)]
                         - d_R[id])
                    + (1.0 - omega) * d_lambda[id];
+    error = fabs(new_lambda - d_lambda[id]); 
+    d_lambda[id] = new_lambda;
   }
+  typedef cub::BlockReduce<float, BLOCKSIZE> BlockReduce;  
+  __shared__ typename BlockReduce::TempStorage temp_storage;
+  float block_max = BlockReduce(temp_storage).Reduce(error, cub::Max());
+  if (threadIdx.x == 0) {
+      atomicMax((int *)d_error, __float_as_int(block_max));
+  }
+
 }
 
 
@@ -129,7 +141,8 @@ __global__ void applyNeumannBCGlobal_fuse(float *d_lambda, int nx, int ny)
   // Neumann boundary condition (lambda (@k=0) = lambda (@k=1))
   int id = blockDim.x * blockIdx.x + threadIdx.x;
 
-  if (id < nx * ny) {
+  // bugfix 2
+  if (id < (nx - 1) * (ny - 1)) {
     d_lambda[id] = d_lambda[id + 1 * (nx - 1) * (ny - 1)];
   }
 }
@@ -184,7 +197,6 @@ __global__ void finalVelocityGlobal_fuse(float *d_lambda, float *d_u, float *d_v
                           * d_dz_array[k]
                           * (d_lambda[icell_cent] - d_lambda[icell_cent - (nx - 1) * (ny - 1)]);
   }
-
   if ((i >= 0) && (i < nx - 1)
       && (j >= 0) && (j < ny - 1)
       && (k < nz - 1) && (k >= 1)
@@ -258,7 +270,7 @@ void Solver_GPU_GlobalMemory_fuse::solve(WINDSGeneralData *WGD, const int &iterm
 
   cudaMalloc((void **)&d_R, numcell_cent * sizeof(float));
   cudaMalloc((void **)&d_lambda, numcell_cent * sizeof(float));
-  cudaMalloc((void **)&d_lambda_old, numcell_cent * sizeof(float));
+  // cudaMalloc((void **)&d_lambda_old, numcell_cent * sizeof(float));
 
   cudaMalloc((void **)&d_u, numcell_face * sizeof(float));
   cudaMalloc((void **)&d_v, numcell_face * sizeof(float));
@@ -272,7 +284,7 @@ void Solver_GPU_GlobalMemory_fuse::solve(WINDSGeneralData *WGD, const int &iterm
   cudaMemcpy(d_w, WGD->w0.data(), numcell_face * sizeof(float), cudaMemcpyHostToDevice);
 
   cudaMemset(d_R, 0.0, numcell_cent * sizeof(float));
-  cudaMemcpy(d_lambda_old, lambda_old.data(), numcell_cent * sizeof(float), cudaMemcpyHostToDevice);
+  // cudaMemcpy(d_lambda_old, lambda_old.data(), numcell_cent * sizeof(float), cudaMemcpyHostToDevice);
   cudaMemcpy(d_lambda, lambda.data(), numcell_cent * sizeof(float), cudaMemcpyHostToDevice);
 
   cudaMemcpy(d_e, WGD->e.data(), numcell_cent * sizeof(float), cudaMemcpyHostToDevice);
@@ -306,24 +318,29 @@ void Solver_GPU_GlobalMemory_fuse::solve(WINDSGeneralData *WGD, const int &iterm
   // Main solver loop
   while ((iter < itermax) && (max_error > tol)) {
     // Save previous iteration values for error calculation
-    saveLambdaGlobal_fuse<<<numberOfBlocks, numberOfThreadsPerBlock>>>(d_lambda, d_lambda_old, numcell_cent);
-    cudaCheck(cudaGetLastError());
+    // saveLambdaGlobal_fuse<<<numberOfBlocks, numberOfThreadsPerBlock>>>(d_lambda, d_lambda_old, numcell_cent);
+    // cudaCheck(cudaGetLastError());
 
+    // reset error on GPU
+    cudaMemset(d_error, 0, sizeof(float));  
+    
     // Red nodes pass
-    SOR_RB_Global_fuse<<<numberOfBlocks, numberOfThreadsPerBlock>>>(d_lambda, nx, ny, nz, omega, A, B, d_e, d_f, d_g, d_h, d_m, d_n, d_R, 0);
+    SOR_RB_Global_fuse<<<numberOfBlocks, numberOfThreadsPerBlock>>>(d_lambda, nx, ny, nz, omega, A, B, d_e, d_f, d_g, d_h, d_m, d_n, d_R, 0, d_error);
     cudaCheck(cudaGetLastError());
 
     // Black nodes pass
-    SOR_RB_Global_fuse<<<numberOfBlocks, numberOfThreadsPerBlock>>>(d_lambda, nx, ny, nz, omega, A, B, d_e, d_f, d_g, d_h, d_m, d_n, d_R, 1);
+    SOR_RB_Global_fuse<<<numberOfBlocks, numberOfThreadsPerBlock>>>(d_lambda, nx, ny, nz, omega, A, B, d_e, d_f, d_g, d_h, d_m, d_n, d_R, 1, d_error);
     cudaCheck(cudaGetLastError());
 
     dim3 numberOfBlocks2(ceil(domain.numHorizontalCellCentered() / (float)(BLOCKSIZE)), 1, 1);
     // Invoke kernel to apply Neumann boundary condition (lambda (@k=0) = lambda (@k=1))
     applyNeumannBCGlobal_fuse<<<numberOfBlocks2, numberOfThreadsPerBlock>>>(d_lambda, nx, ny);
 
-    // Calculation of error
-    cudaMemset(d_error, 0, sizeof(float));
-    calculateErrorGlobal2_fuse<<<numberOfBlocks, numberOfThreadsPerBlock>>>(d_lambda, d_lambda_old, d_error, numcell_cent);
+    // // Calculation of error
+    // cudaMemset(d_error, 0, sizeof(float));
+    // calculateErrorGlobal2_fuse<<<numberOfBlocks, numberOfThreadsPerBlock>>>(d_lambda, d_lambda_old, d_error, numcell_cent);
+    
+    // get largest error onto cpu for the while loop condition
     cudaMemcpy(&max_error, d_error, 1 * sizeof(float), cudaMemcpyDeviceToHost);
 
     // incrementation of iteration counter
@@ -341,7 +358,8 @@ void Solver_GPU_GlobalMemory_fuse::solve(WINDSGeneralData *WGD, const int &iterm
 
   cudaFree(d_R);
   cudaFree(d_lambda);
-  cudaFree(d_lambda_old);
+  // cudaFree(d_lambda_old);
+  cudaFree(d_error);
 
   cudaFree(d_e);
   cudaFree(d_f);

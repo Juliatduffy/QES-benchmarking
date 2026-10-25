@@ -129,7 +129,8 @@ __global__ void applyNeumannBCGlobal_compressed(float *d_lambda, int nx, int ny)
   // Neumann boundary condition (lambda (@k=0) = lambda (@k=1))
   int id = blockDim.x * blockIdx.x + threadIdx.x;
 
-  if (id < nx * ny) {
+  // bug fix 2, see bugfixes.md, there should be (nx-1)*(ny-1) cells per layer
+  if (id < (nx - 1) * (ny - 1)) {
     d_lambda[id] = d_lambda[id + 1 * (nx - 1) * (ny - 1)];
   }
 }
@@ -184,7 +185,6 @@ __global__ void finalVelocityGlobal_compressed(float *d_lambda, float *d_u, floa
                           * d_dz_array[k]
                           * (d_lambda[icell_cent] - d_lambda[icell_cent - (nx - 1) * (ny - 1)]);
   }
-
   if ((i >= 0) && (i < nx - 1)
       && (j >= 0) && (j < ny - 1)
       && (k < nz - 1) && (k >= 1)

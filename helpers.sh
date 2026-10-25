@@ -135,12 +135,36 @@ compare_outputs() {
     OPT_FILE="${OPT_OUT}_fireOutput.nc"
     NCCMP_VARS=""
   fi
+  # every value in output .nc is the same bit for bit
   if nccmp -d -S -f -q $NCCMP_VARS "$BASE_FILE" "$OPT_FILE"
   then
     COMPARE_RESULT="IDENTICAL"
-  else
-    COMPARE_RESULT="DIFFERENT"
+    return
   fi
+
+  # not identical but if a tolerance is set, results are close enough
+  if [ -n "$TOLERANCE" ]
+  then
+    if nccmp -d -f -q $TOLERANCE $NCCMP_VARS "$BASE_FILE" "$OPT_FILE" > /dev/null
+    then
+      COMPARE_RESULT="CORRECT WITH ERROR TOLERANCE ($TOLERANCE)"
+      return
+    fi
+  fi
+
+  COMPARE_RESULT="DIFFERENT"
+}
+
+# Make sure the three timings from parse_times are not negative to avoid clock reset bug
+check_times() {
+  TIMES_OK="yes"
+  for T in "$TIME_FIRE" "$TIME_POT" "$TIME_SOL"
+  do
+    if [ "$(echo "$T < 0" | bc -l)" = "1" ]
+    then
+      TIMES_OK="no"
+    fi
+  done
 }
 
 # Run the baseline program once, write its output files to BASE_OUT
@@ -155,6 +179,27 @@ run_baseline() {
 run_optimized() {
   BINARY="$OPTIMIZED_BIN"
   RUN_FLAGS="$OPTIMIZED_FLAGS $OUTPUT_FLAGS"
+  OUTPUT_BASENAME="$OPT_OUT"
+  run_once
+}
+
+# The original GPU code has race conditions. "-c bugfix" is the original 
+# with those races fixed.
+run_correctness_runs() {
+  # fire is checked with fire-induced winds ON (the coupled model is the point): the
+  # out-of-bounds read in PotGlob that used to make coupled runs irreproducible is fixed
+  CHECK_EXTRA_FLAGS=""
+
+  # baseline run
+  BUILD_NAME="$CHECK_BUILD"
+  pick_binary
+  RUN_FLAGS="$CHECK_FLAGS $CHECK_EXTRA_FLAGS $OUTPUT_FLAGS"
+  OUTPUT_BASENAME="$BASE_OUT"
+  run_once
+
+  # optimized run
+  BINARY="$OPTIMIZED_BIN"
+  RUN_FLAGS="$OPTIMIZED_FLAGS $CHECK_EXTRA_FLAGS $OUTPUT_FLAGS"
   OUTPUT_BASENAME="$OPT_OUT"
   run_once
 }
@@ -195,20 +240,52 @@ run_comparison() {
     OPT_SUM_POT=0
     OPT_SUM_SOL=0
 
-    # alternate baseline / optimized so both see the same machine conditions
-    for TRIAL in $(seq 1 "$NTRIALS")
+    # alternate baseline / optimized so both see the same machine conditions.
+    TRIAL=1
+    RETRIES=0
+    while [ "$TRIAL" -le "$NTRIALS" ]
     do
       run_baseline
       parse_times
-      BASE_SUM_FIRE=$(echo "$BASE_SUM_FIRE + $TIME_FIRE" | bc -l)
-      BASE_SUM_POT=$(echo "$BASE_SUM_POT + $TIME_POT" | bc -l)
-      BASE_SUM_SOL=$(echo "$BASE_SUM_SOL + $TIME_SOL" | bc -l)
+      check_times
+      if [ "$TIMES_OK" = "no" ]
+      then
+        echo "WARNING: negative elapsed time in baseline trial $TRIAL, repeating the trial"
+        RETRIES=$((RETRIES + 1))
+        if [ "$RETRIES" -gt 5 ]
+        then
+          echo "ERROR: too many clock jumps, giving up"
+          exit 1
+        fi
+        continue
+      fi
+      BASE_T_FIRE="$TIME_FIRE"
+      BASE_T_POT="$TIME_POT"
+      BASE_T_SOL="$TIME_SOL"
 
       run_optimized
       parse_times
+      check_times
+      if [ "$TIMES_OK" = "no" ]
+      then
+        echo "WARNING: negative elapsed time in optimized trial $TRIAL, repeating the trial"
+        RETRIES=$((RETRIES + 1))
+        if [ "$RETRIES" -gt 5 ]
+        then
+          echo "ERROR: too many clock jumps, giving up"
+          exit 1
+        fi
+        continue
+      fi
+
+      # both runs of this trial were fine: add them to the sums
+      BASE_SUM_FIRE=$(echo "$BASE_SUM_FIRE + $BASE_T_FIRE" | bc -l)
+      BASE_SUM_POT=$(echo "$BASE_SUM_POT + $BASE_T_POT" | bc -l)
+      BASE_SUM_SOL=$(echo "$BASE_SUM_SOL + $BASE_T_SOL" | bc -l)
       OPT_SUM_FIRE=$(echo "$OPT_SUM_FIRE + $TIME_FIRE" | bc -l)
       OPT_SUM_POT=$(echo "$OPT_SUM_POT + $TIME_POT" | bc -l)
       OPT_SUM_SOL=$(echo "$OPT_SUM_SOL + $TIME_SOL" | bc -l)
+      TRIAL=$((TRIAL + 1))
     done
 
     echo
@@ -228,9 +305,17 @@ run_comparison() {
   done
 
   # correctness check
+  if [ -n "$CHECK_FLAGS" ]
+  then
+    # gpu_compare.sh: compare against the bugfix reference instead of the timing baseline
+    run_correctness_runs
+    CHECK_LABEL="$OPTIMIZED_BUILD $OPTIMIZED_FLAGS output vs $CHECK_BUILD $CHECK_FLAGS output"
+  else
+    CHECK_LABEL="$OPTIMIZED_BUILD output vs $BASELINE_BUILD output"
+  fi
   compare_outputs
   echo
-  echo "Correctness ($OPTIMIZED_BUILD output vs $BASELINE_BUILD output): $COMPARE_RESULT"
+  echo "Correctness ($CHECK_LABEL): $COMPARE_RESULT"
 
   if [ "$KEEP_OUTPUTS" = "no" ]
   then
