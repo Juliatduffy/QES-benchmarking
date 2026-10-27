@@ -1,0 +1,17 @@
+Machine: toby
+Host name: DESKTOP-VJ703QM
+Date: Mon Oct 26 20:07:32 MDT 2026
+
+Case: long
+
+8 threads, average of 5 alternating trials (seconds):
+  gpu-original     fire loop    27.07   potential     8.24   wind solver    17.89
+  gpu-optimized    fire loop    18.96   potential     8.27   wind solver     9.74
+  Speedup (fire loop): 1.43x
+
+14 threads, average of 5 alternating trials (seconds):
+  gpu-original     fire loop    27.03   potential     8.26   wind solver    17.83
+  gpu-optimized    fire loop    18.96   potential     8.30   wind solver     9.71
+  Speedup (fire loop): 1.43x
+
+Correctness (gpu-optimized -s 3 -c dict output vs gpu-optimized -s 3 -c bugfix output): IDENTICAL

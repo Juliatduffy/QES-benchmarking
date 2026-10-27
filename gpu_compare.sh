@@ -3,7 +3,7 @@
 # global-memory GPU wind solver (-s 3), then checks that their output files are identical.
 # Usage:
 #   bash gpu_compare.sh <wind|fire> <optimization> [cases]
-#   optimization can be original, fuse or compressed 
+#   optimization can be original, fuse, compressed, fuse_compress or dict
 # Examples:
 #   bash gpu_compare.sh wind fuse 
 #   bash gpu_compare.sh fire compressed  

@@ -1,0 +1,91 @@
+###################################################################
+#                                                                 #
+#                        Welcome to QES                           #
+#                                                                 #
+###################################################################
+Version: v2.3.1
+* CUDA support available!
+* OpenMP is available!
+------------------------------------------------------------------
+==PROF== Connected to process 370034 (/home/juliatduffy/QES/build/gpu-original/qesWinds/qesWinds)
+[CUDA]	 Detected 1 CUDA Capable device(s)
+	 Device 0: NVIDIA GeForce RTX 4070 SUPER
+	 | CUDA Driver Version / Runtime Version: 12.6 / 12.6
+	 | CUDA Capability Major/Minor version number: 8.9
+	 | Total amount of global memory: 12281 MBytes (12877955072 bytes)
+	 | GPU Max Clock rate:  2520 MHz (2.52 GHz)
+	 | PCI: BusID=1, DeviceID=0, DomainID=0
+###################################################################
+Summary of QES-WINDS options: 
+----------------------------
+qesWindsParamFile: /home/juliatduffy/QES/QES-Public/tests/runTestsFiles/winds_SaltLakeCity.xml
+----------------------------
+Wind Solver:		 ON	 [Global memory solver (GPU)]
+Turbulence model:	 OFF
+Verbose:		 OFF
+----------------------------
+Output file basename:        /home/juliatduffy/QES/Testing/profile/2026-10-25_16-20-01_toby_ncu_wind_slc_original/run
+Winds visualization output:  ON
+Winds workspace output:      ON
+Winds terrain mesh output:   OFF
+Turbulence output:           OFF
+###################################################################
+[!! WARNING !!]	 No timestamp -> using system UTC time (2026-10-25T22:20:02)
+[!! WARNING !!]	 Optix not supported -> set method to serial (methodLocalMixing = 1)
+-------------------------------------------------------------------
+[ESRIShapefile]	 Initialization of shapefile reader...
+Reading ESRIShapefile: /home/juliatduffy/QES/QES-Public/tests/runTestsFiles/SaltLakeCity/slc_cut.shp
+SHP File Driver: ESRI Shapefile/ESRI Shapefile
+Summary of Vector Data:
+----------------------------
+- Number of Layers: 1
+- Layer Name: slc_cut
+- Number of Features: 165
+- Number of Fields: 1
+- Field Names: MEANHEIGHT
+----------------------------
+Bounds of SHP: Min=(424565, 4.51235e+06), Max=(425499, 4.51352e+06)
+Domain Size: 935 X 1171
+[ESRIShapefile]	 Loading completed.
+		 elapsed time: 0.0032219 s
+-------------------------------------------------------------------
+[QES-WINDS]	 Initialization of wind model...
+[QES-WINDS]	 Allocating Memory...[QES-WINDS]	 Allocating Memory... [DONE]
+[QES-WINDS]	 Sensors have been loaded (total sensors = 1).
+[QES-WINDS]	 Creating buildings from shapefile...[QES-WINDS]	 Creating buildings from shapefile... [DONE]
+[QES-WINDS]	 Sorting buildings by height...[QES-WINDS]	 Sorting buildings by height... [DONE]
+		 elapsed time: 0.0051566 s
+[QES-WINDS]	 Defining solid walls...[QES-WINDS]	 Defining solid walls... [DONE]
+		 elapsed time: 1.47928 s
+[NetCDFOutput] 	 create new file: /home/juliatduffy/QES/Testing/profile/2026-10-25_16-20-01_toby_ncu_wind_slc_original/run_windsOut.nc
+[QES-WINDS] 	 Getting output fields for visualisation file
+[NetCDFOutput] 	 create new file: /home/juliatduffy/QES/Testing/profile/2026-10-25_16-20-01_toby_ncu_wind_slc_original/run_windsWk.nc
+[QES-WINDS] 	 Setting fields of workspace file
+m_utmx:   0
+-------------------------------------------------------------------
+[Solver]	 Initializing Global Memory Solver (GPU) ...
+-------------------------------------------------------------------
+[QES-WINDS]	 Wind field at 2026-10-25T22:20:02 (1/1).
+100% [||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||]
+----------------------------
+[QES-WINDS]	 Applying Wind Profile...
+		 elapsed time: 0.0734603 s
+[QES-WINDS]	 Applying parameterizations...
+[QES-WINDS]	 Applying upwind cavity parameterization...
+[QES-WINDS]	 Applying wake behind building parameterization...
+[QES-WINDS]	 Applying street canyon parameterization...
+[QES-WINDS]	 Applying rooftop parameterization...
+		 elapsed time: 0.385502 s
+[Solver] Running Global Memory Solver (GPU) ...
+==PROF== Profiling "SOR_RB_Global": 0%....50%....100% - 17 passes
+==PROF== Profiling "SOR_RB_Global": 0%....50%....100% - 17 passes
+==PROF== Profiling "SOR_RB_Global": 0%....50%....100% - 17 passes
+==PROF== Profiling "SOR_RB_Global": 0%....50%....100% - 17 passes
+==PROF== Profiling "SOR_RB_Global": 0%....50%....100% - 17 passes
+[Solver]	 Residual after 500 itertations: 0.121551514
+		 elapsed time: 8.34135 s
+[NetCDFOutput] 	 closing file: /home/juliatduffy/QES/Testing/profile/2026-10-25_16-20-01_toby_ncu_wind_slc_original/run_windsOut.nc
+[NetCDFOutput] 	 closing file: /home/juliatduffy/QES/Testing/profile/2026-10-25_16-20-01_toby_ncu_wind_slc_original/run_windsWk.nc
+QES-Winds Exiting.
+==PROF== Disconnected from process 370034
+==PROF== Report: /home/juliatduffy/QES/Testing/profile/2026-10-25_16-20-01_toby_ncu_wind_slc_original/report.ncu-rep

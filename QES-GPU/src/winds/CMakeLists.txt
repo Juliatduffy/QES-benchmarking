@@ -66,6 +66,8 @@ IF ($CACHE{HAS_CUDA_SUPPORT})
           Solver_GPU_GlobalMemory.cu
           Solver_GPU_GlobalMemory_fuse.cu
           Solver_GPU_GlobalMemory_compressed.cu
+          Solver_GPU_GlobalMemory_fuse_compress.cu
+          Solver_GPU_GlobalMemory_dict.cu
           Solver_GPU_GlobalMemory_bugfix.cu
           Solver_GPU_SharedMemory.cu
           WINDSGeneralData.cu

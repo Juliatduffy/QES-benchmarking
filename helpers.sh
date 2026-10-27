@@ -208,6 +208,8 @@ run_correctness_runs() {
 # check that their outputs are identical for the correctness check
 run_comparison() {
   pick_case
+  echo ""
+  echo "Case: $CASE_NAME"
   if [ "$MODEL" = "wind" ]
   then
     OUTPUT_FLAGS="-w" 

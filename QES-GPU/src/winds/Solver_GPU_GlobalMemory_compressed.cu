@@ -115,6 +115,88 @@ __global__ void SOR_RB_Global_compressed(float *d_lambda, int nx, int ny, int nz
 }
 
 
+
+// Every coefficient e..n is either 0 (closed face) or exactly scale[dir][k]
+// (openess of the face divided by the grid factor, see Wall::solverCoefficients), unless
+// the cell is a cut cell with fractional openness. This kernel stores one bit
+// per direction in d_mask and counts every value that is neither 0 nor the
+// table entry in d_mismatch. A nonzero count means the solve must use the
+// original float kernel.
+// Bits: 1 = e, 2 = f, 4 = g, 8 = h, 16 = m, 32 = n.
+__global__ void packMaskGlobal_compressed(const float *d_e, const float *d_f, const float *d_g, const float *d_h, const float *d_m, const float *d_n, const float *d_scale, unsigned char *d_mask, unsigned int *d_mismatch, int nx, int ny, int nz, long numcell_cent)
+{
+  long id = blockDim.x * blockIdx.x + threadIdx.x;
+  if (id >= numcell_cent) return;
+
+  int k = id / ((nx - 1) * (ny - 1));
+  int nk = nz - 1;// rows per direction in the scale table
+  unsigned char bits = 0;
+  float v;
+
+  v = d_e[id];
+  if (v == d_scale[0 * nk + k]) bits |= 1;
+  else if (v != 0.0f) atomicAdd(d_mismatch, 1u);
+
+  v = d_f[id];
+  if (v == d_scale[1 * nk + k]) bits |= 2;
+  else if (v != 0.0f) atomicAdd(d_mismatch, 1u);
+
+  v = d_g[id];
+  if (v == d_scale[2 * nk + k]) bits |= 4;
+  else if (v != 0.0f) atomicAdd(d_mismatch, 1u);
+
+  v = d_h[id];
+  if (v == d_scale[3 * nk + k]) bits |= 8;
+  else if (v != 0.0f) atomicAdd(d_mismatch, 1u);
+
+  v = d_m[id];
+  if (v == d_scale[4 * nk + k]) bits |= 16;
+  else if (v != 0.0f) atomicAdd(d_mismatch, 1u);
+
+  v = d_n[id];
+  if (v == d_scale[5 * nk + k]) bits |= 32;
+  else if (v != 0.0f) atomicAdd(d_mismatch, 1u);
+
+  d_mask[id] = bits;
+}
+
+
+// SOR RedBlack Kernel, mask version.
+// Same index math and same formula as SOR_RB_Global_compressed. The six
+// coefficient loads (24 B per cell) are replaced by one byte load and six
+// selects from the per-layer scale table, which stays in cache.
+__global__ void SOR_RB_Mask_compressed(float *d_lambda, int nx, int ny, int nz, float omega, float A, float B, const unsigned char *__restrict__ d_mask, const float *__restrict__ d_scale, float *d_R, int offset)
+{
+  int id = blockDim.x * blockIdx.x + threadIdx.x;
+  int k = id / ((nx - 1) * (ny - 1));
+  int j = (id - k * (nx - 1) * (ny - 1)) / (nx - 1);
+  int i = id - k * (nx - 1) * (ny - 1) - j * (nx - 1);
+
+  if ((i > 0) && (i < nx - 2) && (j > 0) && (j < ny - 2) && (k < nz - 2) && (k > 0)
+      && ((i + j + k) % 2) == offset) {
+    int nk = nz - 1;
+    unsigned char bits = d_mask[id];
+    float e = (bits & 1) ? d_scale[0 * nk + k] : 0.0f;
+    float f = (bits & 2) ? d_scale[1 * nk + k] : 0.0f;
+    float g = (bits & 4) ? d_scale[2 * nk + k] : 0.0f;
+    float h = (bits & 8) ? d_scale[3 * nk + k] : 0.0f;
+    float m = (bits & 16) ? d_scale[4 * nk + k] : 0.0f;
+    float n = (bits & 32) ? d_scale[5 * nk + k] : 0.0f;
+
+    // SOR formulation 
+    d_lambda[id] = (omega / (e + f + g + h + m + n))
+                     * (e * d_lambda[id + 1]
+                        + f * d_lambda[id - 1]
+                        + g * d_lambda[id + (nx - 1)]
+                        + h * d_lambda[id - (nx - 1)]
+                        + m * d_lambda[id + (nx - 1) * (ny - 1)]
+                        + n * d_lambda[id - (nx - 1) * (ny - 1)]
+                        - d_R[id])
+                   + (1.0 - omega) * d_lambda[id];
+  }
+}
+
+
 __global__ void saveLambdaGlobal_compressed(float *d_lambda, float *d_lambda_old, int d_size)
 {
   int id = blockDim.x * blockIdx.x + threadIdx.x;
@@ -247,7 +329,27 @@ void Solver_GPU_GlobalMemory_compressed::solve(WINDSGeneralData *WGD, const int 
   float *d_dz_array;
   float *d_error;
 
+  // Coefficient mask: per-layer scale table, one byte per cell, mismatch counter.
+  float *d_scale;
+  unsigned char *d_mask;
+  unsigned int *d_mismatch;
+
   auto start = std::chrono::high_resolution_clock::now();// Start recording execution time
+
+  // Scale table scale[dir * nk + k] = 1 / grid factor, exactly as Wall::solverCoefficients
+  // divides the coefficients. Wall.cpp only divides k = 1 .. nz-3, so rows 0 and nz-2 stay 1.0.
+  // dx, dy, dz come from the same getDomainSize() tuple Wall.cpp uses (dy there is really dx).
+  int nk = nz - 1;
+  std::vector<float> scale(6 * nk, 1.0f);
+  const std::vector<float> &dza = WGD->domain.dz_array;
+  for (int k = 1; k < nz - 2; k++) {
+    scale[0 * nk + k] = 1.0f / (dx * dx);// e
+    scale[1 * nk + k] = 1.0f / (dx * dx);// f
+    scale[2 * nk + k] = 1.0f / (dy * dy);// g
+    scale[3 * nk + k] = 1.0f / (dy * dy);// h
+    scale[4 * nk + k] = 1.0f / (dza[k] * 0.5f * (dza[k] + dza[k + 1]));// m
+    scale[5 * nk + k] = 1.0f / (dza[k] * 0.5f * (dza[k] + dza[k - 1]));// n
+  }
 
   cudaMalloc((void **)&d_e, numcell_cent * sizeof(float));
   cudaMalloc((void **)&d_f, numcell_cent * sizeof(float));
@@ -266,6 +368,10 @@ void Solver_GPU_GlobalMemory_compressed::solve(WINDSGeneralData *WGD, const int 
 
   cudaMalloc((void **)&d_dz_array, (nz - 1) * sizeof(float));
   cudaMalloc((void **)&d_icellflag, numcell_cent * sizeof(int));
+
+  cudaMalloc((void **)&d_scale, 6 * nk * sizeof(float));
+  cudaMalloc((void **)&d_mask, numcell_cent * sizeof(unsigned char));
+  cudaMalloc((void **)&d_mismatch, sizeof(unsigned int));
 
   cudaMemcpy(d_u, WGD->u0.data(), numcell_face * sizeof(float), cudaMemcpyHostToDevice);
   cudaMemcpy(d_v, WGD->v0.data(), numcell_face * sizeof(float), cudaMemcpyHostToDevice);
@@ -288,6 +394,17 @@ void Solver_GPU_GlobalMemory_compressed::solve(WINDSGeneralData *WGD, const int 
   dim3 numberOfThreadsPerBlock(BLOCKSIZE, 1, 1);
   dim3 numberOfBlocks(ceil(domain.numCellCentered() / (float)(BLOCKSIZE)), 1, 1);
 
+  // Pack the six coefficient arrays into the mask and count values the mask cannot represent.
+  cudaMemcpy(d_scale, scale.data(), 6 * nk * sizeof(float), cudaMemcpyHostToDevice);
+  cudaMemset(d_mismatch, 0, sizeof(unsigned int));
+  packMaskGlobal_compressed<<<numberOfBlocks, numberOfThreadsPerBlock>>>(d_e, d_f, d_g, d_h, d_m, d_n, d_scale, d_mask, d_mismatch, nx, ny, nz, numcell_cent);
+  cudaCheck(cudaGetLastError());
+  unsigned int mismatches = 0;
+  cudaMemcpy(&mismatches, d_mismatch, sizeof(unsigned int), cudaMemcpyDeviceToHost);
+  bool use_mask = (mismatches == 0);
+  std::cout << "[Solver]\t coefficient mask: " << mismatches << " mismatches -> "
+            << (use_mask ? "using SOR_RB_Mask" : "falling back to SOR_RB_Global") << std::endl;
+
   // Invoke divergence kernel
   divergenceGlobal_compressed<<<numberOfBlocks, numberOfThreadsPerBlock>>>(d_u, d_v, d_w, d_R, d_e, d_f, d_g, d_h, d_m, d_n, alpha1, nx, ny, nz, dx, dy, d_dz_array);
 
@@ -309,13 +426,23 @@ void Solver_GPU_GlobalMemory_compressed::solve(WINDSGeneralData *WGD, const int 
     saveLambdaGlobal_compressed<<<numberOfBlocks, numberOfThreadsPerBlock>>>(d_lambda, d_lambda_old, numcell_cent);
     cudaCheck(cudaGetLastError());
 
-    // Red nodes pass
-    SOR_RB_Global_compressed<<<numberOfBlocks, numberOfThreadsPerBlock>>>(d_lambda, nx, ny, nz, omega, A, B, d_e, d_f, d_g, d_h, d_m, d_n, d_R, 0);
-    cudaCheck(cudaGetLastError());
+    if (use_mask) {
+      // Red nodes pass
+      SOR_RB_Mask_compressed<<<numberOfBlocks, numberOfThreadsPerBlock>>>(d_lambda, nx, ny, nz, omega, A, B, d_mask, d_scale, d_R, 0);
+      cudaCheck(cudaGetLastError());
 
-    // Black nodes pass
-    SOR_RB_Global_compressed<<<numberOfBlocks, numberOfThreadsPerBlock>>>(d_lambda, nx, ny, nz, omega, A, B, d_e, d_f, d_g, d_h, d_m, d_n, d_R, 1);
-    cudaCheck(cudaGetLastError());
+      // Black nodes pass
+      SOR_RB_Mask_compressed<<<numberOfBlocks, numberOfThreadsPerBlock>>>(d_lambda, nx, ny, nz, omega, A, B, d_mask, d_scale, d_R, 1);
+      cudaCheck(cudaGetLastError());
+    } else {
+      // Red nodes pass
+      SOR_RB_Global_compressed<<<numberOfBlocks, numberOfThreadsPerBlock>>>(d_lambda, nx, ny, nz, omega, A, B, d_e, d_f, d_g, d_h, d_m, d_n, d_R, 0);
+      cudaCheck(cudaGetLastError());
+
+      // Black nodes pass
+      SOR_RB_Global_compressed<<<numberOfBlocks, numberOfThreadsPerBlock>>>(d_lambda, nx, ny, nz, omega, A, B, d_e, d_f, d_g, d_h, d_m, d_n, d_R, 1);
+      cudaCheck(cudaGetLastError());
+    }
 
     dim3 numberOfBlocks2(ceil(domain.numHorizontalCellCentered() / (float)(BLOCKSIZE)), 1, 1);
     // Invoke kernel to apply Neumann boundary condition (lambda (@k=0) = lambda (@k=1))
@@ -356,6 +483,11 @@ void Solver_GPU_GlobalMemory_compressed::solve(WINDSGeneralData *WGD, const int 
 
   cudaFree(d_dz_array);
   cudaFree(d_icellflag);
+
+  cudaFree(d_scale);
+  cudaFree(d_mask);
+  cudaFree(d_mismatch);
+  cudaFree(d_error);
 
   auto finish = std::chrono::high_resolution_clock::now();// Finish recording execution time
 
