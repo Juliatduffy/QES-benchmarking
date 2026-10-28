@@ -28,3 +28,21 @@ IF ($CACHE{HAS_OPTIX_SUPPORT})
 ENDIF()
 
 link_external_libraries(qesPlume)
+
+# FitFloat study: benchmark driver for the GPU particle model (src/plume/CUDA), see qesPlumeGPU.cpp
+IF ($CACHE{HAS_CUDA_SUPPORT})
+  ADD_EXECUTABLE(qesPlumeGPU qesPlumeGPU.cpp)
+  target_include_directories(qesPlumeGPU PRIVATE ${PROJECT_SOURCE_DIR}/src/plume)   # Partition.h includes "Particle.h"
+  SET_TARGET_PROPERTIES(qesPlumeGPU PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+  target_link_libraries(qesPlumeGPU PRIVATE qesplumegpu)
+  target_link_libraries(qesPlumeGPU PRIVATE qesplumecore)
+  target_link_libraries(qesPlumeGPU PRIVATE qeswindsgpu)
+  target_link_libraries(qesPlumeGPU PRIVATE qeswindscore)
+  target_link_libraries(qesPlumeGPU PRIVATE qesutilgpu)
+  target_link_libraries(qesPlumeGPU PRIVATE qesutil)
+  target_link_libraries(qesPlumeGPU PRIVATE CUDA::cudart CUDA::curand)
+  IF ($CACHE{HAS_OPTIX_SUPPORT})
+    target_link_libraries(qesPlumeGPU PRIVATE qesOptix)
+  ENDIF()
+  link_external_libraries(qesPlumeGPU)
+ENDIF()

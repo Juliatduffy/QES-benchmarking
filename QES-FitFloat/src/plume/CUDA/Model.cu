@@ -277,6 +277,42 @@ void Model::getNewParticle(const int &num_new_particle,
 }
 
 
+// FitFloat study: identical to getNewParticle() above, with the packed fields
+void Model::getNewParticle(const int &num_new_particle,
+                           particle_array d_particle,
+                           const QESgrid &qes_grid,
+                           RandomGenerator *random,
+                           InterpolationFF *interpolation,
+                           Partition *partition)
+{
+  int blockSize = 256;
+  int numBlocks = (num_new_particle + blockSize - 1) / blockSize;
+
+  particle_array d_new_particle;
+  partition->allocate_device_particle_list(d_new_particle, num_new_particle);
+
+  cudaMemset(d_new_particle.state, ACTIVE, num_new_particle * sizeof(ParticleState));
+  std::vector<uint32_t> new_ID(num_new_particle);
+  id_gen->get(new_ID);
+  cudaMemcpy(d_new_particle.ID, new_ID.data(), num_new_particle * sizeof(uint32_t), cudaMemcpyHostToDevice);
+  std::vector<vec3> new_pos(num_new_particle, { 20.0, 50.0, 70.0 });
+  cudaMemcpy(d_new_particle.pos, new_pos.data(), num_new_particle * sizeof(vec3), cudaMemcpyHostToDevice);
+
+  interpolation->getNew(d_new_particle, qes_grid, num_new_particle);
+
+  random->create("new_particle", 3 * num_new_particle);
+  random->generate("new_particle", 0.0, 1.0);
+
+  set_new_particle<<<numBlocks, blockSize>>>(num_new_particle, d_new_particle, random->get("new_particle"));
+
+  partition->insert(num_new_particle, d_new_particle, d_particle);
+
+  random->destroy("new_particle");
+  partition->free_device_particle_list(d_new_particle);
+  cudaDeviceSynchronize();
+}
+
+
 void Model::advectParticle(particle_array d_particle,
                            const int &num_particle,
                            const BC_Params &bc_param,

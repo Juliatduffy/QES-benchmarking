@@ -39,6 +39,7 @@
 
 #include "plume/CUDA/QES_data.h"
 #include "plume/CUDA/Interpolation.h"
+#include "plume/CUDA/Interpolation_FitFloat.h"
 #include "plume/CUDA/Partition.h"
 #include "plume/CUDA/RandomGenerator.h"
 
@@ -74,6 +75,13 @@ public:
                       Interpolation *interpolation,
                       Partition *partition);
 
+  // FitFloat study: same as above with the packed fields (Interpolation_FitFloat.h)
+  void getNewParticle(const int &num_new_particle,
+                      particle_array d_particle,
+                      const QESgrid &qes_grid,
+                      RandomGenerator *random,
+                      InterpolationFF *interpolation,
+                      Partition *partition);
   void advectParticle(particle_array d_particle,
                       const int &num_new_particle,
                       const BC_Params &bc_param,

@@ -56,9 +56,12 @@ IF ($CACHE{HAS_CUDA_SUPPORT})
     CUDA/RandomGenerator.cpp
     CUDA/Interpolation.cu
     CUDA/Model.cu
-    CUDA/Concentration.cu)
+    CUDA/Concentration.cu
+    CUDA/Interpolation_FitFloat.cu)
   
   ADD_LIBRARY(qesplumegpu ${qesPlumeGPUSources})
+  # FitFloat study: the host-side packing uses OpenMP
+  SET_SOURCE_FILES_PROPERTIES(CUDA/Interpolation_FitFloat.cu PROPERTIES COMPILE_OPTIONS "-Xcompiler=-fopenmp")
   TARGET_INCLUDE_DIRECTORIES(qesplumegpu PRIVATE {CUDAToolkit_INCLUDE_DIRS})
   SET_TARGET_PROPERTIES(qesplumegpu PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 ENDIF ($CACHE{HAS_CUDA_SUPPORT})
