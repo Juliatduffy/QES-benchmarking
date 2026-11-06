@@ -1,0 +1,48 @@
+Machine: toby
+Host name: DESKTOP-VJ703QM
+Date: Fri Nov  6 11:38:41 MST 2026
+
+Case: okc
+
+8 CPU threads, average of 10 alternating trials (seconds):
+  gpu-original     wind solver    0.140
+  gpu-optimized    wind solver    0.071
+  Speedup (wind solver): 1.98x
+
+Correctness (compressed): IDENTICAL
+
+Case: slc
+
+8 CPU threads, average of 5 alternating trials (seconds):
+  gpu-original     wind solver    5.257
+  gpu-optimized    wind solver    2.133
+  Speedup (wind solver): 2.46x
+
+Correctness (compressed): IDENTICAL
+
+Case: hill
+
+8 CPU threads, average of 10 alternating trials (seconds):
+  gpu-original     wind solver    0.924
+  gpu-optimized    wind solver    0.359
+  Speedup (wind solver): 2.58x
+
+Correctness (compressed): IDENTICAL
+
+Case: rxcadre
+
+8 CPU threads, average of 5 alternating trials (seconds):
+  gpu-original     wind solver    6.062
+  gpu-optimized    wind solver    2.570
+  Speedup (wind solver): 2.36x
+
+Correctness (compressed): IDENTICAL
+
+Case: hillfine
+
+8 CPU threads, average of 5 alternating trials (seconds):
+  gpu-original     wind solver    5.107
+  gpu-optimized    wind solver    4.234
+  Speedup (wind solver): 1.21x
+
+Correctness (compressed): IDENTICAL

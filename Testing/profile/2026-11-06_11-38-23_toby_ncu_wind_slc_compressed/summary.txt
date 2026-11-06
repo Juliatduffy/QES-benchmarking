@@ -1,0 +1,52 @@
+[248993] qesWinds@127.0.0.1
+  SOR_RB_Global_compressed (386641, 1, 1)x(128, 1, 1), Device 0, CC 8.9, Invocations 5
+    Section: GPU Speed Of Light Throughput
+    ----------------------- ----------- ---------- ---------- ----------
+    Metric Name             Metric Unit    Minimum    Maximum    Average
+    ----------------------- ----------- ---------- ---------- ----------
+    DRAM Frequency                  Ghz      10.24      10.24      10.24
+    SM Frequency                    Ghz       1.98       1.98       1.98
+    Elapsed Cycles                cycle 3108452.00 3110644.00 3109594.00
+    Memory Throughput                 %      86.03      86.16      86.09
+    DRAM Throughput                   %      86.03      86.16      86.09
+    Duration                         ms       1.57       1.57       1.57
+    L1/TEX Cache Throughput           %      43.79      43.82      43.80
+    L2 Cache Throughput               %      35.64      35.68      35.66
+    SM Active Cycles              cycle 3106047.07 3108160.09 3107138.28
+    Compute (SM) Throughput           %      83.31      83.37      83.34
+    ----------------------- ----------- ---------- ---------- ----------
+
+    Section: Memory Workload Analysis
+    --------------------------- ----------- ------- ------- -------
+    Metric Name                 Metric Unit Minimum Maximum Average
+    --------------------------- ----------- ------- ------- -------
+    Memory Throughput               Gbyte/s  422.92  423.53  423.23
+    Mem Busy                              %   35.64   35.68   35.66
+    Max Bandwidth                         %   86.03   86.16   86.09
+    L1/TEX Hit Rate                       %   44.55   44.57   44.56
+    L2 Compression Success Rate           %    0.00    0.00    0.00
+    L2 Compression Ratio                       0.00    0.00    0.00
+    L2 Hit Rate                           %   66.96   67.03   67.00
+    Mem Pipes Busy                        %   43.75   43.78   43.77
+    --------------------------- ----------- ------- ------- -------
+
+    Section: Occupancy
+    ------------------------------- ----------- ------- ------- -------
+    Metric Name                     Metric Unit Minimum Maximum Average
+    ------------------------------- ----------- ------- ------- -------
+    Block Limit SM                        block   24.00   24.00   24.00
+    Block Limit Registers                 block   12.00   12.00   12.00
+    Block Limit Shared Mem                block   32.00   32.00   32.00
+    Block Limit Warps                     block   12.00   12.00   12.00
+    Theoretical Active Warps per SM        warp   48.00   48.00   48.00
+    Theoretical Occupancy                     %  100.00  100.00  100.00
+    Achieved Occupancy                        %   91.67   91.79   91.74
+    Achieved Active Warps Per SM           warp   44.00   44.06   44.03
+    ------------------------------- ----------- ------- ------- -------
+
+  Note: The shown averages are calculated as the arithmetic mean of the metric values after the evaluation of the    
+  metrics for each individual kernel launch.                                                                         
+  If aggregating across varying launch configurations (like shared memory, cache config settings), the arithmetic    
+  mean can be misleading and looking at the individual results is recommended instead.                               
+  This output mode is backwards compatible to the per-kernel summary output of nvprof                                
+

@@ -61,6 +61,10 @@ using std::to_string;
 
 #define BLOCKSIZE 1024
 
+// SOR kernels only: smaller blocks so several fit on each SM (max 1536 threads),
+// giving the GPU enough warps to hide memory latency once the kernel reads few bytes
+#define SOR_BLOCKSIZE 128
+
 // every cell has 6 coefficients, one per wall: e, f, g, h, m, n
 #define COEFFICIENTS_PER_CELL 6
 // a uint16_t holds the numbers 0 ... 65535
@@ -407,6 +411,10 @@ void Solver_GPU_GlobalMemory_compressed::solve(WINDSGeneralData *WGD, const int 
   dim3 numberOfThreadsPerBlock(BLOCKSIZE, 1, 1);
   dim3 numberOfBlocks(ceil(domain.numCellCentered() / (float)(BLOCKSIZE)), 1, 1);
 
+  // SOR launch size: 128-thread blocks, block count rounded up with integer math
+  dim3 sorThreads(SOR_BLOCKSIZE, 1, 1);
+  dim3 sorBlocks((numcell_cent + SOR_BLOCKSIZE - 1) / SOR_BLOCKSIZE, 1, 1);
+
   // Invoke divergence kernel
   divergenceGlobal_compressed<<<numberOfBlocks, numberOfThreadsPerBlock>>>(d_u, d_v, d_w, d_R, d_e, d_f, d_g, d_h, d_m, d_n, alpha1, nx, ny, nz, dx, dy, d_dz_array);
 
@@ -426,14 +434,14 @@ void Solver_GPU_GlobalMemory_compressed::solve(WINDSGeneralData *WGD, const int 
     cudaMemset(d_error, 0, sizeof(float));  
     
     if (dictionary_fits) {
-      SOR_RB_Global_compressed<<<numberOfBlocks, numberOfThreadsPerBlock>>>(d_lambda, nx, ny, nz, omega, A, B, d_cell_codes, d_coefficient_table, d_R, 0, d_error);
+      SOR_RB_Global_compressed<<<sorBlocks, sorThreads>>>(d_lambda, nx, ny, nz, omega, A, B, d_cell_codes, d_coefficient_table, d_R, 0, d_error);
       cudaCheck(cudaGetLastError());
-      SOR_RB_Global_compressed<<<numberOfBlocks, numberOfThreadsPerBlock>>>(d_lambda, nx, ny, nz, omega, A, B, d_cell_codes, d_coefficient_table, d_R, 1, d_error);
+      SOR_RB_Global_compressed<<<sorBlocks, sorThreads>>>(d_lambda, nx, ny, nz, omega, A, B, d_cell_codes, d_coefficient_table, d_R, 1, d_error);
       cudaCheck(cudaGetLastError());
     } else {
-      SOR_RB_Float_compressed<<<numberOfBlocks, numberOfThreadsPerBlock>>>(d_lambda, nx, ny, nz, omega, A, B, d_e, d_f, d_g, d_h, d_m, d_n, d_R, 0, d_error);
+      SOR_RB_Float_compressed<<<sorBlocks, sorThreads>>>(d_lambda, nx, ny, nz, omega, A, B, d_e, d_f, d_g, d_h, d_m, d_n, d_R, 0, d_error);
       cudaCheck(cudaGetLastError());
-      SOR_RB_Float_compressed<<<numberOfBlocks, numberOfThreadsPerBlock>>>(d_lambda, nx, ny, nz, omega, A, B, d_e, d_f, d_g, d_h, d_m, d_n, d_R, 1, d_error);
+      SOR_RB_Float_compressed<<<sorBlocks, sorThreads>>>(d_lambda, nx, ny, nz, omega, A, B, d_e, d_f, d_g, d_h, d_m, d_n, d_R, 1, d_error);
       cudaCheck(cudaGetLastError());
     }
 
