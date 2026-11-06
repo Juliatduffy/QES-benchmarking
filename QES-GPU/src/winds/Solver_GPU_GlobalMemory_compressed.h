@@ -38,6 +38,7 @@
 #include <cstdlib>
 #include <math.h>
 #include <vector>
+#include <cstdint>
 #include <chrono>
 #include <cuda.h>
 #include <cuda_runtime.h>
@@ -78,6 +79,19 @@ protected:
   ///@{
   /** Lagrange multiplier on device (GPU) */
   float *d_lambda, *d_lambda_old;
+  ///@}
+
+  ///@{
+  /**
+   * Here we keep a "dictionary" of coefficient sets.
+   * Each cell has six wall coefficients (e, f, g, h, m, n), but only a few different
+   * combinations exist in a whole city. Each different combination gets a 2B code, plus a small 
+   * table with the six values of each code.
+   */
+  std::vector<uint16_t> cell_codes;     // one code per cell
+  std::vector<float> coefficient_table; // 6 floats per code: the e,f,g,h,m,n that code stands for
+  bool dictionary_built = false;        // e..n never change after setup, so build it only once
+  bool dictionary_fits = false;         // false if the grid has more than MAX_CODES different sets, falllback to old method to prevent error
   ///@}
 
   /**

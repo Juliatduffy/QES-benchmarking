@@ -279,7 +279,7 @@ run_comparison() {
     done
 
     echo
-    echo "$NT threads, average of $NTRIALS alternating trials (seconds):"
+    echo "$NT CPU threads, average of $NTRIALS alternating trials (seconds):"
     if [ "$MODEL" = "wind" ]
     then
       printf "  %-16s wind solver %8.3f\n" "$BASELINE_BUILD"  $(echo "$BASE_SUM_SOL / $NTRIALS" | bc -l)

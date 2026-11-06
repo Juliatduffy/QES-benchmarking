@@ -38,6 +38,14 @@
  */
 
 #include "Solver_GPU_GlobalMemory_compressed.h"
+#include <cooperative_groups.h>
+#include <cooperative_groups/reduce.h>
+namespace cg = cooperative_groups;
+
+#include <map>
+#include <array>  
+#include <cstring>
+#include <cstdint>
 
 using namespace std::chrono;
 using namespace std;
@@ -52,6 +60,11 @@ using std::cout;
 using std::to_string;
 
 #define BLOCKSIZE 1024
+
+// every cell has 6 coefficients, one per wall: e, f, g, h, m, n
+#define COEFFICIENTS_PER_CELL 6
+// a uint16_t holds the numbers 0 ... 65535
+#define MAX_CODES 65536
 #define cudaCheck(x) _cudaCheck(x, #x, __FILE__, __LINE__)
 
 
@@ -89,20 +102,69 @@ __global__ void divergenceGlobal_compressed(float *d_u0, float *d_v0, float *d_w
 }
 
 
-// SOR RedBlack Kernel.
-//
-//
-__global__ void SOR_RB_Global_compressed(float *d_lambda, int nx, int ny, int nz, float omega, float A, float B, float *d_e, float *d_f, float *d_g, float *d_h, float *d_m, float *d_n, float *d_R, int offset)
+// SOR red-black kernel
+// Same as the fuse kernel, but instead of getting the coefficients of each cell from
+// six big float arrays, each cell has a 2-byte code, and the six values for
+// that code are read from a small table that stays in the GPU's cache
+__global__ void SOR_RB_Global_compressed(float *d_lambda, int nx, int ny, int nz, float omega, float A, float B,
+                                         const uint16_t *d_cell_codes, const float *d_coefficient_table,
+                                         float *d_R, int offset, float *d_error)
 {
   int id = blockDim.x * blockIdx.x + threadIdx.x;
   int k = id / ((nx - 1) * (ny - 1));
   int j = (id - k * (nx - 1) * (ny - 1)) / (nx - 1);
   int i = id - k * (nx - 1) * (ny - 1) - j * (nx - 1);
+  float error = 0.0f; 
 
   if ((i > 0) && (i < nx - 2) && (j > 0) && (j < ny - 2) && (k < nz - 2) && (k > 0)
       && ((i + j + k) % 2) == offset) {
-    // SOR formulation
-    d_lambda[id] = (omega / (d_e[id] + d_f[id] + d_g[id] + d_h[id] + d_m[id] + d_n[id]))
+    // Look up this cell's six coefficients
+    // - Get the cell's code
+    // - Get the code's row of the table. 
+    int code = d_cell_codes[id];
+    const float *coefficients = &d_coefficient_table[code * COEFFICIENTS_PER_CELL];
+    float e = coefficients[0];  // east wall   
+    float f = coefficients[1];  // west wall   
+    float g = coefficients[2];  // north wall  
+    float h = coefficients[3];  // south wall  
+    float m = coefficients[4];  // top wall    
+    float n = coefficients[5];  // bottom wall 
+    // Fused SOR update
+    float new_lambda = (omega / (e + f + g + h + m + n))
+                     * (e * d_lambda[id + 1]
+                        + f * d_lambda[id - 1]
+                        + g * d_lambda[id + (nx - 1)]
+                        + h * d_lambda[id - (nx - 1)]
+                        + m * d_lambda[id + (nx - 1) * (ny - 1)]
+                        + n * d_lambda[id - (nx - 1) * (ny - 1)]
+                        - d_R[id])
+                   + (1.0 - omega) * d_lambda[id];
+    error = fabs(new_lambda - d_lambda[id]); 
+    d_lambda[id] = new_lambda;
+  }
+  auto warp = cg::tiled_partition<32>(cg::this_thread_block());
+  float warp_max = cg::reduce(warp, error, cg::greater<float>());
+  if (warp.thread_rank() == 0 && warp_max > *d_error) {
+    atomicMax((int *)d_error, __float_as_int(warp_max));
+  }
+}
+
+
+// Fallback when the grid has more than MAX_CODES different coefficient sets (for large grids with cut cells)
+__global__ void SOR_RB_Float_compressed(float *d_lambda, int nx, int ny, int nz, float omega, float A, float B,
+                                        float *d_e, float *d_f, float *d_g, float *d_h, float *d_m, float *d_n,
+                                        float *d_R, int offset, float *d_error)
+{
+  int id = blockDim.x * blockIdx.x + threadIdx.x;
+  int k = id / ((nx - 1) * (ny - 1));
+  int j = (id - k * (nx - 1) * (ny - 1)) / (nx - 1);
+  int i = id - k * (nx - 1) * (ny - 1) - j * (nx - 1);
+  float error = 0.0f;
+
+  if ((i > 0) && (i < nx - 2) && (j > 0) && (j < ny - 2) && (k < nz - 2) && (k > 0)
+      && ((i + j + k) % 2) == offset) {
+    // Fused SOR update, coefficients straight from the float arrays
+    float new_lambda = (omega / (d_e[id] + d_f[id] + d_g[id] + d_h[id] + d_m[id] + d_n[id]))
                      * (d_e[id] * d_lambda[id + 1]
                         + d_f[id] * d_lambda[id - 1]
                         + d_g[id] * d_lambda[id + (nx - 1)]
@@ -111,45 +173,24 @@ __global__ void SOR_RB_Global_compressed(float *d_lambda, int nx, int ny, int nz
                         + d_n[id] * d_lambda[id - (nx - 1) * (ny - 1)]
                         - d_R[id])
                    + (1.0 - omega) * d_lambda[id];
+    error = fabs(new_lambda - d_lambda[id]);
+    d_lambda[id] = new_lambda;
+  }
+  auto warp = cg::tiled_partition<32>(cg::this_thread_block());
+  float warp_max = cg::reduce(warp, error, cg::greater<float>());
+  if (warp.thread_rank() == 0 && warp_max > *d_error) {
+    atomicMax((int *)d_error, __float_as_int(warp_max));
   }
 }
 
-
-__global__ void saveLambdaGlobal_compressed(float *d_lambda, float *d_lambda_old, int d_size)
-{
-  int id = blockDim.x * blockIdx.x + threadIdx.x;
-
-  if (id < d_size) {
-    d_lambda_old[id] = d_lambda[id];
-  }
-}
 
 __global__ void applyNeumannBCGlobal_compressed(float *d_lambda, int nx, int ny)
 {
   // Neumann boundary condition (lambda (@k=0) = lambda (@k=1))
   int id = blockDim.x * blockIdx.x + threadIdx.x;
 
-  if (id < nx * ny) {
+  if (id < (nx - 1) * (ny - 1)) {
     d_lambda[id] = d_lambda[id + 1 * (nx - 1) * (ny - 1)];
-  }
-}
-
-__global__ void calculateErrorGlobal2_compressed(float *d_lambda, float *d_lambda_old, float *d_value, int d_size)
-{
-  int ii = blockDim.x * blockIdx.x + threadIdx.x;
-  // int numblocks = (d_size / BLOCKSIZE) + 1;
-
-  if (ii < d_size) {
-    float error = fabs(d_lambda[ii] - d_lambda_old[ii]);
-
-    // atomicMAX using atomicCAS
-    int r = __float_as_int(*d_value);
-    while (error > __int_as_float(r)) {
-      int o = r;
-      if ((r = atomicCAS((int *)d_value, o, __float_as_int(error))) == o)
-        break;
-    }
-    error = __int_as_float(r);
   }
 }
 
@@ -184,7 +225,6 @@ __global__ void finalVelocityGlobal_compressed(float *d_lambda, float *d_u, floa
                           * d_dz_array[k]
                           * (d_lambda[icell_cent] - d_lambda[icell_cent - (nx - 1) * (ny - 1)]);
   }
-
   if ((i >= 0) && (i < nx - 1)
       && (j >= 0) && (j < ny - 1)
       && (k < nz - 1) && (k >= 1)
@@ -226,6 +266,63 @@ Solver_GPU_GlobalMemory_compressed::Solver_GPU_GlobalMemory_compressed(qes::Doma
   cudaSetDevice(0);
 }
 
+// float to uint32 conversion that keeps bits the same
+static uint32_t bitsOf(float value)
+{
+  uint32_t bits;
+  std::memcpy(&bits, &value, sizeof(bits));
+  return bits;
+}
+
+// Build the coefficient dictionary on the CPU
+// Every different combination of six coefficients (e,f,g,h,m,n) gets a "code"
+// Returns true if it fits, false if the grid has more than MAX_CODES different sets
+static bool buildCoefficientDictionary(WINDSGeneralData *WGD, long numcell_cent,
+                                       std::vector<uint16_t> &cell_codes,
+                                       std::vector<float> &coefficient_table)
+{
+  // key: the bits of one cell's six coefficients, value: code for that set
+  std::map<std::array<uint32_t, COEFFICIENTS_PER_CELL>, uint16_t> code_of_set;
+
+  cell_codes.resize(numcell_cent);
+  coefficient_table.clear();
+
+  for (long id = 0; id < numcell_cent; id++) {
+    // this cell's six coefficients, and their exact bits (the dictionary key)
+    float coefficients[COEFFICIENTS_PER_CELL] = { WGD->e[id], WGD->f[id], WGD->g[id],
+                                                  WGD->h[id], WGD->m[id], WGD->n[id] };
+    std::array<uint32_t, COEFFICIENTS_PER_CELL> key;
+    for (int wall = 0; wall < COEFFICIENTS_PER_CELL; wall++) {
+      key[wall] = bitsOf(coefficients[wall]);
+    }
+
+    auto entry = code_of_set.find(key);
+    // we have seen this combination before
+    if (entry != code_of_set.end()) {
+      cell_codes[id] = entry->second;
+    } 
+    // new combination, add to dict
+    else {
+      // if this grid doesn't fit in 2-byte codes
+      if (code_of_set.size() == MAX_CODES) {
+        // Throw away the dictionary and run the original kernel instead
+        cell_codes.clear();
+        cell_codes.shrink_to_fit();
+        coefficient_table.clear();
+        coefficient_table.shrink_to_fit();
+        return false;
+      }
+      uint16_t new_code = code_of_set.size();
+      code_of_set[key] = new_code;
+      for (int wall = 0; wall < COEFFICIENTS_PER_CELL; wall++) {
+        coefficient_table.push_back(coefficients[wall]);
+      }
+      cell_codes[id] = new_code;
+    }
+  }
+  return true;// every cell got a code :)
+}
+
 void Solver_GPU_GlobalMemory_compressed::solve(WINDSGeneralData *WGD, const int &itermax)
 {
   auto [nx, ny, nz] = domain.getDomainCellNum();
@@ -233,22 +330,46 @@ void Solver_GPU_GlobalMemory_compressed::solve(WINDSGeneralData *WGD, const int 
   long numcell_face = domain.numFaceCentered();
   long numcell_cent = domain.numCellCentered();
 
-  // int numblocks = (numcell_cent / BLOCKSIZE) + 1;
   R.resize(numcell_cent, 0.0);
 
   std::cout << "[Solver] Running Global Memory Solver (GPU, compressed) ..." << std::endl;
 
-  // std::vector<float> value(numcell_cent, 0.0);
-  // std::vector<float> bvalue(numblocks, 0.0);
-
   float *d_u, *d_v, *d_w;
-  // float *d_value, *d_bvalue;
   int *d_icellflag;
   float *d_dz_array;
   float *d_error;
 
+  // Build the coefficient dictionary once on the CPU before running the wind solve
+  if (!dictionary_built) {
+    auto build_start = std::chrono::high_resolution_clock::now();
+    dictionary_fits = buildCoefficientDictionary(WGD, numcell_cent, cell_codes, coefficient_table);
+    dictionary_built = true;
+    std::chrono::duration<float> build_time = std::chrono::high_resolution_clock::now() - build_start;
+    if (dictionary_fits) {
+      long number_of_codes = coefficient_table.size() / COEFFICIENTS_PER_CELL;
+      std::cout << "[Solver] compressed: " << number_of_codes << " distinct coefficient sets, built in "
+                << build_time.count() << " s" << std::endl;
+    } else {
+      std::cout << "[Solver] compressed: more than " << MAX_CODES << " distinct coefficient sets, "
+                << "using the float coefficients instead (same answer, fuse speed)" << std::endl;
+    }
+  }
+
   auto start = std::chrono::high_resolution_clock::now();// Start recording execution time
 
+  // Copy the codes to the GPU if building the dictionary was successful
+  uint16_t *d_cell_codes = nullptr;
+  float *d_coefficient_table = nullptr;
+  if (dictionary_fits) {
+    long cell_codes_bytes = numcell_cent * sizeof(uint16_t);
+    long table_bytes = coefficient_table.size() * sizeof(float);
+    cudaMalloc((void **)&d_cell_codes, cell_codes_bytes);
+    cudaMalloc((void **)&d_coefficient_table, table_bytes);
+    cudaMemcpy(d_cell_codes, cell_codes.data(), cell_codes_bytes, cudaMemcpyHostToDevice);
+    cudaMemcpy(d_coefficient_table, coefficient_table.data(), table_bytes, cudaMemcpyHostToDevice);
+  }
+
+  // d_e ... d_n are still copied below because the divergence and final velocity kernels still read them
   cudaMalloc((void **)&d_e, numcell_cent * sizeof(float));
   cudaMalloc((void **)&d_f, numcell_cent * sizeof(float));
   cudaMalloc((void **)&d_g, numcell_cent * sizeof(float));
@@ -258,7 +379,6 @@ void Solver_GPU_GlobalMemory_compressed::solve(WINDSGeneralData *WGD, const int 
 
   cudaMalloc((void **)&d_R, numcell_cent * sizeof(float));
   cudaMalloc((void **)&d_lambda, numcell_cent * sizeof(float));
-  cudaMalloc((void **)&d_lambda_old, numcell_cent * sizeof(float));
 
   cudaMalloc((void **)&d_u, numcell_face * sizeof(float));
   cudaMalloc((void **)&d_v, numcell_face * sizeof(float));
@@ -272,7 +392,6 @@ void Solver_GPU_GlobalMemory_compressed::solve(WINDSGeneralData *WGD, const int 
   cudaMemcpy(d_w, WGD->w0.data(), numcell_face * sizeof(float), cudaMemcpyHostToDevice);
 
   cudaMemset(d_R, 0.0, numcell_cent * sizeof(float));
-  cudaMemcpy(d_lambda_old, lambda_old.data(), numcell_cent * sizeof(float), cudaMemcpyHostToDevice);
   cudaMemcpy(d_lambda, lambda.data(), numcell_cent * sizeof(float), cudaMemcpyHostToDevice);
 
   cudaMemcpy(d_e, WGD->e.data(), numcell_cent * sizeof(float), cudaMemcpyHostToDevice);
@@ -297,33 +416,32 @@ void Solver_GPU_GlobalMemory_compressed::solve(WINDSGeneralData *WGD, const int 
   /////////////////////////////////////////////////
 
   int iter = 0;
-  // float error;
-  // std::vector<float> max_error(1, 1.0);
   float max_error = 1.0;
 
   cudaMalloc((void **)&d_error, 1 * sizeof(float));
 
   // Main solver loop
   while ((iter < itermax) && (max_error > tol)) {
-    // Save previous iteration values for error calculation
-    saveLambdaGlobal_compressed<<<numberOfBlocks, numberOfThreadsPerBlock>>>(d_lambda, d_lambda_old, numcell_cent);
-    cudaCheck(cudaGetLastError());
-
-    // Red nodes pass
-    SOR_RB_Global_compressed<<<numberOfBlocks, numberOfThreadsPerBlock>>>(d_lambda, nx, ny, nz, omega, A, B, d_e, d_f, d_g, d_h, d_m, d_n, d_R, 0);
-    cudaCheck(cudaGetLastError());
-
-    // Black nodes pass
-    SOR_RB_Global_compressed<<<numberOfBlocks, numberOfThreadsPerBlock>>>(d_lambda, nx, ny, nz, omega, A, B, d_e, d_f, d_g, d_h, d_m, d_n, d_R, 1);
-    cudaCheck(cudaGetLastError());
+    // reset error on GPU
+    cudaMemset(d_error, 0, sizeof(float));  
+    
+    if (dictionary_fits) {
+      SOR_RB_Global_compressed<<<numberOfBlocks, numberOfThreadsPerBlock>>>(d_lambda, nx, ny, nz, omega, A, B, d_cell_codes, d_coefficient_table, d_R, 0, d_error);
+      cudaCheck(cudaGetLastError());
+      SOR_RB_Global_compressed<<<numberOfBlocks, numberOfThreadsPerBlock>>>(d_lambda, nx, ny, nz, omega, A, B, d_cell_codes, d_coefficient_table, d_R, 1, d_error);
+      cudaCheck(cudaGetLastError());
+    } else {
+      SOR_RB_Float_compressed<<<numberOfBlocks, numberOfThreadsPerBlock>>>(d_lambda, nx, ny, nz, omega, A, B, d_e, d_f, d_g, d_h, d_m, d_n, d_R, 0, d_error);
+      cudaCheck(cudaGetLastError());
+      SOR_RB_Float_compressed<<<numberOfBlocks, numberOfThreadsPerBlock>>>(d_lambda, nx, ny, nz, omega, A, B, d_e, d_f, d_g, d_h, d_m, d_n, d_R, 1, d_error);
+      cudaCheck(cudaGetLastError());
+    }
 
     dim3 numberOfBlocks2(ceil(domain.numHorizontalCellCentered() / (float)(BLOCKSIZE)), 1, 1);
     // Invoke kernel to apply Neumann boundary condition (lambda (@k=0) = lambda (@k=1))
     applyNeumannBCGlobal_compressed<<<numberOfBlocks2, numberOfThreadsPerBlock>>>(d_lambda, nx, ny);
 
-    // Calculation of error
-    cudaMemset(d_error, 0, sizeof(float));
-    calculateErrorGlobal2_compressed<<<numberOfBlocks, numberOfThreadsPerBlock>>>(d_lambda, d_lambda_old, d_error, numcell_cent);
+    // get largest error onto cpu for the while loop condition
     cudaMemcpy(&max_error, d_error, 1 * sizeof(float), cudaMemcpyDeviceToHost);
 
     // incrementation of iteration counter
@@ -341,7 +459,11 @@ void Solver_GPU_GlobalMemory_compressed::solve(WINDSGeneralData *WGD, const int 
 
   cudaFree(d_R);
   cudaFree(d_lambda);
-  cudaFree(d_lambda_old);
+  cudaFree(d_error);
+  if (dictionary_fits) {
+    cudaFree(d_cell_codes);
+    cudaFree(d_coefficient_table);
+  }
 
   cudaFree(d_e);
   cudaFree(d_f);
@@ -361,7 +483,5 @@ void Solver_GPU_GlobalMemory_compressed::solve(WINDSGeneralData *WGD, const int 
 
   std::chrono::duration<float> elapsed = finish - start;
   printf("[Solver]\t Residual after %d itertations: %2.9f\n", iter, max_error);
-  // std::cout << "Error:" << max_error[0] << "\n";
-  // std::cout << "Number of iterations:" << iter << "\n";// Print the number of iterations
   std::cout << "\t\t elapsed time: " << elapsed.count() << " s\n";// Print out elapsed execution time
 }
