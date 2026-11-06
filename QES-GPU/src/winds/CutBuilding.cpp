@@ -141,14 +141,10 @@ void CutBuilding::setCutCellFlags(WINDSGeneralData *WGD, const PolyBuilding *Pol
 
   // The main loop going through all points in polygon and processing cut-cells
   for (auto id = 0u; id < PolyB->polygonVertices.size() - 1; id++) {
-    if (skip_id.size() != 0) {
-      if (id == skip_id[number]) { // after the last skip, number == skip_id.size()
-        if (number < skip_id.size()) { // this reads 4 bytes past the vector
-         if (id == skip_id[number]) {
-            number += 1;
-            continue;
-          }
-        }
+    // check the bound before indexing
+    if (number < skip_id.size()) {
+      if (id == skip_id[number]) {
+        number += 1;
         continue;
       }
     }

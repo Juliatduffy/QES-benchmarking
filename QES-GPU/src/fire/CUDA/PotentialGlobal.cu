@@ -136,6 +136,9 @@ __global__ void PotGlob(
       // lookup indices for G(x) and G'(x) - spans 0.5 to 1.0
       int gMinIdx = floor(pot_G * (x1 - .5) / .5);
       int gMaxIdx = ceil(pot_G * (x1 - .5) / .5);
+      // directly above the fire ceil gives pot_G, one past the end
+      if (gMinIdx > pot_G - 1) gMinIdx = pot_G - 1;
+      if (gMaxIdx > pot_G - 1) gMaxIdx = pot_G - 1;
       // values for G and G'
       float g_x = 0.5 * (d_G[gMinIdx] + d_G[gMaxIdx]);
       float gprime_x = 0.5 * (d_Gprime[gMinIdx] + d_Gprime[gMaxIdx]);
