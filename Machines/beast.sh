@@ -1,5 +1,7 @@
 #!/bin/bash
-CMAKE_EXTRA=""
+# beast has CUDA 12.4 and 13.2; use 12.4 
+CUDA_HOME="/usr/local/cuda-12.4"
+CMAKE_EXTRA="-DCMAKE_CUDA_COMPILER=$CUDA_HOME/bin/nvcc"
 CUDA_ARCH="86"
 THREADS_WIND_OKC="1 14 28"
 THREADS_WIND_SLC="14 28"
@@ -14,4 +16,6 @@ NTRIALS_FIRE_LONG=5
 
 qes_env() {
     export OMP_PLACES=cores OMP_PROC_BIND=close
+    export PATH="$CUDA_HOME/bin:$PATH"
+    export LD_LIBRARY_PATH="$CUDA_HOME/lib64:$LD_LIBRARY_PATH"
 }
