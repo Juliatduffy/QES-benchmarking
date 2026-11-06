@@ -8,6 +8,8 @@ select_machine() {
     MACHINE="chpc"
   elif [ "$(hostname)" = "DESKTOP-VJ703QM" ]; then
     MACHINE="toby"
+  elif [ "$(hostname)" = "beast" ]; then
+    MACHINE="beast"
   else
     echo "ERROR: unknown machine $(hostname); add it to select_machine in helpers.sh"; exit 1
   fi
