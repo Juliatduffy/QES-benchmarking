@@ -36,6 +36,27 @@ pick_case() {
     RUN_DIR="$QES_ROOT"
     THREADS="$THREADS_WIND_SLC"
     NTRIALS="$NTRIALS_SLC"
+  elif [ "$CASE_NAME" = "hill" ]
+  then
+    # Gaussian hill with cut-cell terrain
+    CASE_FILE="$QES_ROOT/Testing/inputs/winds_GaussianHill_cutcell.xml"
+    RUN_DIR="$QES_ROOT"
+    THREADS="$THREADS_WIND_SLC"
+    NTRIALS="$NTRIALS_OKC"
+  elif [ "$CASE_NAME" = "rxcadre" ]
+  then
+    # RxCADRE burn site with cut-cells
+    CASE_FILE="$QES_ROOT/Testing/inputs/winds_RxCADRE_cutcell.xml"
+    RUN_DIR="$QES_ROOT"
+    THREADS="$THREADS_WIND_SLC"
+    NTRIALS="$NTRIALS_SLC"
+  elif [ "$CASE_NAME" = "hillfine" ]
+  then
+    # Gaussian hill with cut-cells: more than 65,536 coefficient sets
+    CASE_FILE="$QES_ROOT/Testing/inputs/winds_GaussianHill_fine_cutcell.xml"
+    RUN_DIR="$QES_ROOT"
+    THREADS="$THREADS_WIND_SLC"
+    NTRIALS="$NTRIALS_SLC"
   elif [ "$CASE_NAME" = "short" ]
   then
     CASE_FILE="$QES_ROOT/Testing/inputs/fire_short.xml"
@@ -55,7 +76,7 @@ pick_case() {
     THREADS="$THREADS_FIRE"
     NTRIALS="$NTRIALS_FIRE_LONG"
   else
-    echo "ERROR: unknown case '$CASE_NAME' (known cases: okc slc short tiny long)"
+    echo "ERROR: unknown case '$CASE_NAME' (known cases: okc slc hill rxcadre hillfine short tiny long)"
     exit 1
   fi
 }
