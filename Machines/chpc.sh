@@ -11,6 +11,7 @@ CUDA_ARCH="80"
 THREADS_WIND_OKC="1 16 64"
 THREADS_WIND_SLC="16 64"
 THREADS_FIRE="16 64"
+THREADS_GPU="16"   # GPU jobs: the solve runs on the GPU, so CPU threads barely matter; one count is enough
 NTRIALS_OKC=10
 NTRIALS_SLC=5
 NTRIALS_FIRE=5

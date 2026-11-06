@@ -130,13 +130,15 @@ compare_outputs() {
     BASE_FILE="${BASE_OUT}_windsWk.nc"
     OPT_FILE="${OPT_OUT}_windsWk.nc"
     NCCMP_VARS="-v u,v,w"
+    PY_VARS="u,v,w"
   else
     BASE_FILE="${BASE_OUT}_fireOutput.nc"
     OPT_FILE="${OPT_OUT}_fireOutput.nc"
     NCCMP_VARS=""
+    PY_VARS=""  
   fi
-  # every value is the same bit for bit
-  if nccmp -d -S -f -q $NCCMP_VARS "$BASE_FILE" "$OPT_FILE"
+  # every value is the same bit for bit 
+  if python3 "$QES_ROOT/Testing/bitcmp.py" "$BASE_FILE" "$OPT_FILE" $PY_VARS
   then
     COMPARE_RESULT="IDENTICAL"
     return
@@ -204,6 +206,10 @@ run_optimized() {
 # check that their outputs are identical for the correctness check
 run_comparison() {
   pick_case
+  if [ "$KIND" = "gpu" ]
+  then
+    THREADS="$THREADS_GPU"   # one CPU thread count for GPU jobs (set in Machines/*.sh)
+  fi
   echo
   echo "Case: $CASE_NAME"
   if [ "$MODEL" = "wind" ]
@@ -292,13 +298,10 @@ run_comparison() {
   if [ -n "$CHECK_FLAGS" ]
   then
     run_correctness_reference
-    CHECK_LABEL="$OPTIMIZED_BUILD $OPTIMIZED_FLAGS output vs $CHECK_BUILD $CHECK_FLAGS output"
-  else
-    CHECK_LABEL="$OPTIMIZED_BUILD output vs $BASELINE_BUILD output"
   fi
   compare_outputs
   echo
-  echo "Correctness ($CHECK_LABEL): $COMPARE_RESULT"
+  echo "Correctness ($OPT): $COMPARE_RESULT"
 
   if [ "$KEEP_OUTPUTS" = "no" ]
   then
