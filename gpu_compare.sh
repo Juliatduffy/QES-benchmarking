@@ -26,7 +26,6 @@
 #SBATCH -o ./Testing/logs/gpu_compare.out
 
 # TODO: check on CHPC which partition / qos has GPUs for account cs6230 and fix the lines above
-# also find a way to evaluate correctess with a certain error tolerance for lossy optimizations
 
 set -e # break on exceptions
 
@@ -39,6 +38,7 @@ OPT=$2              # optimization name passed to the optimized program with -c,
 CASES=$3            # (optional) which cases to run ex: "okc slc"
 KIND="gpu"
 KEEP_OUTPUTS="no"   # option to keep the .nc files in Testing/runs, otherwise they are deleted
+TOLERANCE=""        # allows for lossy correctness
 DEFAULT_FIRE_CASES="long"   # short/tiny finish in 1-3 s on the GPU, too fast to time reliably
 
 if [ -z "$MODEL" ] || [ -z "$OPT" ]
@@ -51,5 +51,8 @@ BASELINE_BUILD="gpu-original"
 BASELINE_FLAGS="-s 3"
 OPTIMIZED_BUILD="gpu-optimized"
 OPTIMIZED_FLAGS="-s 3 -c $OPT"
+# correctness reference - original GPU solver w/ bug fixes
+CHECK_BUILD="gpu-optimized"
+CHECK_FLAGS="-s 3"
 
 run_all_cases

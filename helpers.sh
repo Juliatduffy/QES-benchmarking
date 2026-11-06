@@ -135,12 +135,53 @@ compare_outputs() {
     OPT_FILE="${OPT_OUT}_fireOutput.nc"
     NCCMP_VARS=""
   fi
+  # every value is the same bit for bit
   if nccmp -d -S -f -q $NCCMP_VARS "$BASE_FILE" "$OPT_FILE"
   then
     COMPARE_RESULT="IDENTICAL"
-  else
-    COMPARE_RESULT="DIFFERENT"
+    return
   fi
+
+  # check that all values in output file are within tolerance for error (if set)
+  if [ -n "$TOLERANCE" ]
+  then
+    if nccmp -d -f -q $TOLERANCE $NCCMP_VARS "$BASE_FILE" "$OPT_FILE" > /dev/null
+    then
+      COMPARE_RESULT="CORRECT WITH ERROR TOLERANCE ($TOLERANCE)"
+      return
+    fi
+  fi
+
+  COMPARE_RESULT="DIFFERENT"
+}
+
+# Repeat trial on clock errors
+times_are_ok() {
+  for T in "$TIME_FIRE" "$TIME_POT" "$TIME_SOL"
+  do
+    if [ "$(echo "$T < 0" | bc -l)" = "1" ]
+    then
+      echo "WARNING: negative elapsed time in $1 run of trial $TRIAL, repeating the trial"
+      RETRIES=$((RETRIES + 1))
+      if [ "$RETRIES" -gt 5 ]
+      then
+        echo "ERROR: more than 5 clock jumps, giving up"
+        exit 1
+      fi
+      return 1
+    fi
+  done
+  return 0
+}
+
+# The untouched original GPU code is not repeatable, so gpu_compare.sh sets
+# CHECK_BUILD / CHECK_FLAGS to the original solver with the bug fixes
+run_correctness_reference() {
+  BUILD_NAME="$CHECK_BUILD"
+  pick_binary
+  RUN_FLAGS="$CHECK_FLAGS $OUTPUT_FLAGS"
+  OUTPUT_BASENAME="$BASE_OUT"
+  run_once
 }
 
 # Run the baseline program once, write its output files to BASE_OUT
@@ -163,6 +204,8 @@ run_optimized() {
 # check that their outputs are identical for the correctness check
 run_comparison() {
   pick_case
+  echo
+  echo "Case: $CASE_NAME"
   if [ "$MODEL" = "wind" ]
   then
     OUTPUT_FLAGS="-w" 
@@ -195,20 +238,38 @@ run_comparison() {
     OPT_SUM_POT=0
     OPT_SUM_SOL=0
 
-    # alternate baseline / optimized so both see the same machine conditions
-    for TRIAL in $(seq 1 "$NTRIALS")
+    # alternate baseline / optimized so both see the same machine conditions.
+    # A trial only counts once both of its runs have valid (non-negative) times;
+    # otherwise "continue" repeats it without moving TRIAL forward.
+    TRIAL=1
+    RETRIES=0
+    while [ "$TRIAL" -le "$NTRIALS" ]
     do
       run_baseline
       parse_times
-      BASE_SUM_FIRE=$(echo "$BASE_SUM_FIRE + $TIME_FIRE" | bc -l)
-      BASE_SUM_POT=$(echo "$BASE_SUM_POT + $TIME_POT" | bc -l)
-      BASE_SUM_SOL=$(echo "$BASE_SUM_SOL + $TIME_SOL" | bc -l)
+      if ! times_are_ok baseline
+      then
+        continue
+      fi
+      BASE_T_FIRE="$TIME_FIRE"
+      BASE_T_POT="$TIME_POT"
+      BASE_T_SOL="$TIME_SOL"
 
       run_optimized
       parse_times
+      if ! times_are_ok optimized
+      then
+        continue
+      fi
+
+      # both runs of this trial were fine: add them to the sums
+      BASE_SUM_FIRE=$(echo "$BASE_SUM_FIRE + $BASE_T_FIRE" | bc -l)
+      BASE_SUM_POT=$(echo "$BASE_SUM_POT + $BASE_T_POT" | bc -l)
+      BASE_SUM_SOL=$(echo "$BASE_SUM_SOL + $BASE_T_SOL" | bc -l)
       OPT_SUM_FIRE=$(echo "$OPT_SUM_FIRE + $TIME_FIRE" | bc -l)
       OPT_SUM_POT=$(echo "$OPT_SUM_POT + $TIME_POT" | bc -l)
       OPT_SUM_SOL=$(echo "$OPT_SUM_SOL + $TIME_SOL" | bc -l)
+      TRIAL=$((TRIAL + 1))
     done
 
     echo
@@ -228,9 +289,16 @@ run_comparison() {
   done
 
   # correctness check
+  if [ -n "$CHECK_FLAGS" ]
+  then
+    run_correctness_reference
+    CHECK_LABEL="$OPTIMIZED_BUILD $OPTIMIZED_FLAGS output vs $CHECK_BUILD $CHECK_FLAGS output"
+  else
+    CHECK_LABEL="$OPTIMIZED_BUILD output vs $BASELINE_BUILD output"
+  fi
   compare_outputs
   echo
-  echo "Correctness ($OPTIMIZED_BUILD output vs $BASELINE_BUILD output): $COMPARE_RESULT"
+  echo "Correctness ($CHECK_LABEL): $COMPARE_RESULT"
 
   if [ "$KEEP_OUTPUTS" = "no" ]
   then

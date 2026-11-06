@@ -11,3 +11,4 @@ bench/tools/ncdiff_fields
 *.sqlite
 *.nsys-rep
 *.ncu-rep
+planfortoday.md
