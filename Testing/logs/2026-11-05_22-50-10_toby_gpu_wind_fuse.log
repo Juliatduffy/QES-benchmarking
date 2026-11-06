@@ -1,0 +1,17 @@
+Machine: toby
+Host name: DESKTOP-VJ703QM
+Date: Thu Nov  5 22:50:10 MST 2026
+
+Case: slc
+
+8 threads, average of 5 alternating trials (seconds):
+  gpu-original     wind solver    6.248
+  gpu-optimized    wind solver    5.031
+  Speedup (wind solver): 1.24x
+
+14 threads, average of 5 alternating trials (seconds):
+  gpu-original     wind solver    5.849
+  gpu-optimized    wind solver    4.851
+  Speedup (wind solver): 1.21x
+
+Correctness (gpu-optimized -s 3 -c fuse output vs gpu-optimized -s 3 output): IDENTICAL
