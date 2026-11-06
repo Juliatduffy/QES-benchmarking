@@ -1,0 +1,21 @@
+Machine: beast
+Host name: beast
+Date: Fri Nov  6 12:30:16 PM MST 2026
+
+Case: okc
+
+14 CPU threads, average of 10 alternating trials (seconds):
+  gpu-original     wind solver    0.166
+  gpu-optimized    wind solver    0.082
+  Speedup (wind solver): 2.03x
+
+Correctness (compressed): IDENTICAL
+
+Case: slc
+
+14 CPU threads, average of 5 alternating trials (seconds):
+  gpu-original     wind solver    4.030
+  gpu-optimized    wind solver    2.751
+  Speedup (wind solver): 1.47x
+
+Correctness (compressed): IDENTICAL

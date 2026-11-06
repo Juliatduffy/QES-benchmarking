@@ -1,0 +1,28 @@
+Machine: beast
+Host name: beast
+Date: Fri Nov  6 12:39:10 PM MST 2026
+
+Case: hill
+
+14 CPU threads, average of 10 alternating trials (seconds):
+  gpu-original     wind solver    0.677
+  gpu-optimized    wind solver    0.491
+  Speedup (wind solver): 1.38x
+
+Correctness (compressed): IDENTICAL
+
+Case: rxcadre
+
+14 CPU threads, average of 5 alternating trials (seconds):
+  gpu-original     wind solver    3.953
+  gpu-optimized    wind solver    2.997
+  Speedup (wind solver): 1.32x
+
+Correctness (compressed): IDENTICAL
+
+Case: hillfine
+
+14 CPU threads, average of 5 alternating trials (seconds):
+  gpu-original     wind solver    3.360
+  gpu-optimized    wind solver    2.906
+  Speedup (wind solver): 1.16x
