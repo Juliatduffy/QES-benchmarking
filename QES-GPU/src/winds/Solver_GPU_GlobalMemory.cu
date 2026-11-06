@@ -129,7 +129,7 @@ __global__ void applyNeumannBCGlobal(float *d_lambda, int nx, int ny)
   // Neumann boundary condition (lambda (@k=0) = lambda (@k=1))
   int id = blockDim.x * blockIdx.x + threadIdx.x;
 
-  if (id < nx * ny) {
+  if (id < (nx - 1) * (ny - 1)) {
     d_lambda[id] = d_lambda[id + 1 * (nx - 1) * (ny - 1)];
   }
 }
