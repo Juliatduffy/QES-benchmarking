@@ -58,6 +58,16 @@ class TURBGeneralData;
  *   ff-wt12    both in 12 bits (1+8+3)
  *   ff-w16     winds in 16 bits (1+8+7), turbulence in 32 bits (ctl)
  *   ff-t16     winds in 32 bits (ctl), turbulence in 16 bits (1+8+7)
+ * Alternatives to FitFloat (same kernels where possible; see Interpolation_FitFloat.cu):
+ *   f32        float arrays through the templated kernels (control: must equal the original)
+ *   nonut      float, nuT not interpolated (the GPU particle update never reads it)
+ *   h16        IEEE half, round to nearest (native cvt), with subnormals
+ *   bf16       bfloat16, round to nearest (1+8+7 like ff-wt16, but rounded)
+ *   q16        16-bit linear quantization per field (absolute error bound)
+ *   aos32      the 11 turbulence fields interleaved per cell (float, lossless layout change)
+ *   aos16      aos32 with every field stored as IEEE half
+ *
+ * Every variant prints per-field "[Storage]" statistics of what storage did to the values.
  *
  * FitFloat.h is included only by Interpolation_FitFloat.cu (it defines non-inline functions).
  *

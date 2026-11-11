@@ -44,8 +44,11 @@
 #include <algorithm>
 #include <vector>
 #include <string>
+#include <random>
+#include <cstring>
 
 #include <cuda.h>
+#include <cuda_runtime.h>
 #include <curand.h>
 
 #include "util/ArgumentParsing.h"
@@ -100,9 +103,10 @@ public:
     reg("ny", "domain cells in y (default 102)", ArgumentParsing::INT, 'y');
     reg("nz", "domain cells in z (default 141)", ArgumentParsing::INT, 'z');
     reg("outbasename", "basename of the concentration file <basename>_plumeOut.nc (default: no file)", ArgumentParsing::STRING, 'o');
+    reg("verify", "with -c: interpolate N fixed random positions with the original kernels and with the variant, compare all 14 outputs, then exit", ArgumentParsing::INT, 'V');
   }
   std::string fitFloat, outbasename;
-  int steps = 1500, spinup = 500, newParticles = 10000, bufferLength = 0, nx = 102, ny = 102, nz = 141;
+  int steps = 1500, spinup = 500, newParticles = 10000, bufferLength = 0, nx = 102, ny = 102, nz = 141, verify = 0;
 
   void process(int argc, char *argv[])
   {
@@ -120,6 +124,11 @@ public:
     isSet("nx", nx);
     isSet("ny", ny);
     isSet("nz", nz);
+    isSet("verify", verify);
+    if (verify > 0 && fitFloat.empty()) {
+      std::cerr << "[ERROR]\t -V needs a variant (-c)" << std::endl;
+      exit(EXIT_FAILURE);
+    }
     if (!fitFloat.empty() && !InterpolationFF::isValid(fitFloat)) {
       std::cerr << "[ERROR]\t unknown FitFloat variant '" << fitFloat << "' (valid: " << InterpolationFF::variants() << ")" << std::endl;
       exit(EXIT_FAILURE);
@@ -151,6 +160,77 @@ static void copy_turb_gpu(const TURBGeneralData *TGD, QESTurbData &d)
   for (int f = 0; f < 12; f++) {
     cudaMalloc((void **)dst[f], n * sizeof(float));
     cudaMemcpy(*dst[f], src[f]->data(), n * sizeof(float), cudaMemcpyHostToDevice);
+  }
+}
+
+// Deterministic accuracy check: the same N positions (fixed seed, uniform in the domain) are interpolated with
+// the original kernels (float arrays) and with the variant; every output of the 14 fields is compared.
+// Unlike the concentration comparison this has no Monte-Carlo noise: it measures exactly what storage
+// did to the values each particle sees.
+static void verify_interpolation(int N, InterpolationFF *ff, Interpolation *interpolation, const QESWindsData &dw, const QESTurbData &dt,
+                                 const QESgrid &qes_grid, const BC_Params &bc, Partition *partition, const std::string &variant)
+{
+  particle_array a;
+  partition->allocate_device_particle_list(a, N);
+  cudaMemset(a.state, ACTIVE, N * sizeof(ParticleState));
+  std::mt19937 gen(20261111);
+  std::uniform_real_distribution<float> ux(bc.xStartDomain, bc.xEndDomain), uy(bc.yStartDomain, bc.yEndDomain), uz(bc.zStartDomain, bc.zEndDomain);
+  std::vector<vec3> pos(N);
+  for (int i = 0; i < N; i++) pos[i] = { ux(gen), uy(gen), uz(gen) };
+  cudaMemcpy(a.pos, pos.data(), N * sizeof(vec3), cudaMemcpyHostToDevice);
+
+  auto fetch = [&](std::vector<float> &out) {
+    // 14 outputs per position: u v w | txx txy txz tyy tyz tzz | fdx fdy fdz | CoEps | nuT
+    std::vector<vec3> vm(N), fd(N);
+    std::vector<mat3sym> tau(N);
+    std::vector<float> ce(N), nut(N);
+    cudaMemcpy(vm.data(), a.velMean, N * sizeof(vec3), cudaMemcpyDeviceToHost);
+    cudaMemcpy(tau.data(), a.tau, N * sizeof(mat3sym), cudaMemcpyDeviceToHost);
+    cudaMemcpy(fd.data(), a.flux_div, N * sizeof(vec3), cudaMemcpyDeviceToHost);
+    cudaMemcpy(ce.data(), a.CoEps, N * sizeof(float), cudaMemcpyDeviceToHost);
+    cudaMemcpy(nut.data(), a.nuT, N * sizeof(float), cudaMemcpyDeviceToHost);
+    out.resize(14L * N);
+    for (long i = 0; i < N; i++) {
+      float *o = &out[14 * i];
+      o[0] = vm[i]._1, o[1] = vm[i]._2, o[2] = vm[i]._3;
+      o[3] = tau[i]._11, o[4] = tau[i]._12, o[5] = tau[i]._13, o[6] = tau[i]._22, o[7] = tau[i]._23, o[8] = tau[i]._33;
+      o[9] = fd[i]._1, o[10] = fd[i]._2, o[11] = fd[i]._3, o[12] = ce[i], o[13] = nut[i];
+    }
+  };
+  std::vector<float> ref, var;
+  interpolation->get(a, dw, dt, qes_grid, N);
+  fetch(ref);
+  ff->get(a, qes_grid, N);
+  fetch(var);
+  cudaError_t err = cudaGetLastError();
+  if (err != cudaSuccess) {
+    std::cerr << "[ERROR]\t CUDA error in the verification: " << cudaGetErrorString(err) << std::endl;
+    exit(EXIT_FAILURE);
+  }
+  partition->free_device_particle_list(a);
+
+  const char *names[14] = { "u", "v", "w", "txx", "txy", "txz", "tyy", "tyz", "tzz", "flux_div_x", "flux_div_y", "flux_div_z", "CoEps", "nuT" };
+  printf("[verify]\t variant %s, %d random positions, interpolated values vs the original kernels:\n", variant.c_str(), N);
+  for (int c = 0; c < 14; c++) {
+    long same = 0, zeroed = 0;
+    double maxref = 0.0, maxd = 0.0, sumd = 0.0, sumref = 0.0, maxrel = 0.0;
+    for (long i = 0; i < N; i++) maxref = std::max(maxref, (double)std::fabs(ref[14 * i + c]));
+    for (long i = 0; i < N; i++) {
+      const float r = ref[14 * i + c], v = var[14 * i + c];
+      if (std::memcmp(&r, &v, sizeof(float)) == 0) same++;
+      const double d = (double)v - r;
+      maxd = std::max(maxd, std::fabs(d));
+      sumd += d;
+      sumref += std::fabs(r);
+      if (r != 0.0f && v == 0.0f) zeroed++;
+      if (std::fabs(r) > 1e-3 * maxref) maxrel = std::max(maxrel, std::fabs(d) / std::fabs(r));
+    }
+    if (maxref == 0.0 && maxd == 0.0) {
+      printf("[verify]\t   %-10s identical %7.3f%%  (field is 0 everywhere)\n", names[c], 100.0 * same / N);
+    } else {
+      printf("[verify]\t   %-10s identical %7.3f%%  max|diff|/max|ref| %.2e  max rel (|ref|>1e-3 max) %.2e  bias sum(diff)/sum|ref| %+.2e  zeroed %ld  (max|ref| %.3e)\n",
+             names[c], 100.0 * same / N, maxref > 0 ? maxd / maxref : maxd, maxrel, sumref > 0 ? sumd / sumref : 0.0, zeroed, maxref);
+    }
   }
 }
 
@@ -278,15 +358,21 @@ int main(int argc, char *argv[])
   QESWindsData d_qes_winds_data;
   QESTurbData d_qes_turb_data;
   InterpolationFF *ff = nullptr;
-  if (args.fitFloat.empty()) {
+  if (args.fitFloat.empty() || args.verify > 0) {
     copy_winds_gpu(WGD, d_qes_winds_data);
     copy_turb_gpu(TGD, d_qes_turb_data);
-  } else {
+  }
+  if (!args.fitFloat.empty()) {
     ff = new InterpolationFF(args.fitFloat, WGD, TGD);
   }
 
   auto *concentration = new Concentration(param);
   auto *partition = new Partition(length);
+
+  if (args.verify > 0) {
+    verify_interpolation(args.verify, ff, interpolation, d_qes_winds_data, d_qes_turb_data, qes_grid, bc_param, partition, args.fitFloat);
+    return EXIT_SUCCESS;
+  }
 
   particle_array d_particle[2];
   partition->allocate_device_particle_list(d_particle[0], length);
@@ -420,6 +506,12 @@ int main(int argc, char *argv[])
     QEStime time;
     outfile->pushAllFieldsToFile(time);
     delete outfile;
+    // the same field as raw float32 (x fastest, then y, then z; 20 x 49 x 69 boxes) so the comparison needs only numpy
+    FILE *raw = fopen((args.outbasename + "_c.f32").c_str(), "wb");
+    if (raw) {
+      fwrite(CStar.data(), sizeof(float), CStar.size(), raw);
+      fclose(raw);
+    }
   }
 
   std::cout << "-------------------------------------------------------------------" << std::endl;
